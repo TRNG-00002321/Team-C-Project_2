@@ -44,20 +44,14 @@ pipeline {
             }
         }
         stage('Unit Tests') {
+            agent {
+                docker {
+                    image 'maven:3.9-eclipse-temurin-17'
+                    args '-v maven-repo:/root/.m2'
+                }
+            }
             steps {
-                echo '🧪 Running Java Unit Tests with Allure...'
-                    sh '''
-                        docker run --rm \
-                        -v ${WORKSPACE_HOST}:/app \
-                        -v maven-repo:/root/.m2 \
-                        -w /app \
-                        maven:3.9-eclipse-temurin-17 \
-                        ls -la \
-                        ls -la /app \
-                        mvn clean test \
-                        -Dtest="**/unit/**" \
-                        -B
-                        '''
+                sh 'mvn clean test -Dtest="**/unit/**" -B'
             }
             post {
                 always {
