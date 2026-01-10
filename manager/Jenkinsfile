@@ -52,6 +52,7 @@ pipeline {
                 }
             }
             steps {
+                checkout scm
                 sh 'mvn clean test -Dtest="**/unit/**" -B'
             }
             post {
