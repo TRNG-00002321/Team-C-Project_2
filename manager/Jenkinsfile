@@ -52,6 +52,12 @@ pipeline {
         }
         stage('Unit Tests') {
             steps {
+                sh '''
+                  echo "Current directory:"
+                  pwd
+                  echo "Workspace contents:"
+                  ls -la
+                '''
                 sh 'mvn clean test -Dtest="**/unit/**" -B'
             }
             post {
