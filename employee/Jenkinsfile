@@ -18,13 +18,13 @@ pipeline {
         stage('Initialize'){
             steps {
                 sh """
-                ===========================================
-                  Jenkins Pipeline - Employee Application
-                ===========================================
-                 Application: ${APP_NAME} v${APP_VERSION}
-                 Build Number: ${BUILD_NUMBER}
-                 Workspace: ${WORKSPACE}
-                ===========================================
+                echo "==========================================="
+                echo "  Jenkins Pipeline - Employee Application"
+                echo "==========================================="
+                echo " Application: ${APP_NAME} v${APP_VERSION}"
+                echo " Build Number: ${BUILD_NUMBER}"
+                echo " Workspace: ${WORKSPACE}"
+                echo "==========================================="
                 """
             }
         }
