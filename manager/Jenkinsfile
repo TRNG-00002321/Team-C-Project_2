@@ -35,6 +35,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'checkout step'
+                checkout scm
                 script {
                     env.GIT_COMMIT_SHORT = sh(
                         script: 'git rev-parse --short HEAD',
@@ -52,7 +53,6 @@ pipeline {
                 }
             }
             steps {
-                checkout scm
                 sh 'mvn clean test -Dtest="**/unit/**" -B'
             }
             post {
