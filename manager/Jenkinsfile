@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.9-eclipse-temurin-17'
+            args '-v maven-repo:/root/.m2'
+        }
+    }
 
 
     environment {
@@ -46,12 +51,6 @@ pipeline {
             }
         }
         stage('Unit Tests') {
-            agent {
-                docker {
-                    image 'maven:3.9-eclipse-temurin-17'
-                    args '-v maven-repo:/root/.m2'
-                }
-            }
             steps {
                 sh 'mvn clean test -Dtest="**/unit/**" -B'
             }
