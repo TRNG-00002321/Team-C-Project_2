@@ -38,6 +38,26 @@ pipeline {
                 }
             }
         }
+        stage('Unit Tests') {
+                    steps {
+                        echo '🧪 Running Java Unit Tests with Allure...'
+                        sh '''
+                            docker run --rm \
+                                -v ${WORKSPACE_HOST}:/app \
+                                -v maven-repo:/root/.m2 \
+                                -w /app \
+                                maven:3.9-eclipse-temurin-17 \
+                                mvn clean test \
+                                -Dtest="**/unit/**" \
+                                -B
+                        '''
+                    }
+                    post {
+                        always {
+                            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                        }
+                    }
+                }
     }
 
 //pipeline end
