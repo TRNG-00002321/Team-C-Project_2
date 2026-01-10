@@ -1,0 +1,135 @@
+pipeline {
+    agent any
+    environment {
+        APP_NAME = 'employee'
+        APP_VERSION = '1.1.0'
+        DOCKER_IMAGE = "${APP_NAME}"
+        DOCKER_TAG = "${BUILD_NUMBER}"
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timeout(time: 30, unit: 'MINUTES')
+        timestamps()
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('Initialize'){
+            steps {
+                sh """
+                ===========================================
+                  Jenkins Pipeline - Employee Application
+                ===========================================
+                 Application: ${APP_NAME} v${APP_VERSION}
+                 Build Number: ${BUILD_NUMBER}
+                 Workspace: ${WORKSPACE}
+                ===========================================
+                """
+            }
+        }
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                checkout scm
+                echo "Verifying files in workspace:"
+                sh 'ls -la'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Running Unit & API Tests...'
+                sh 'pytest --alluredir=reports/unit_tests'
+                echo 'Running End-to-End Tests...'
+                sh 'behave -f allure_behave.formatter:AllureFormatter -o reports/e2e_tests'
+            }
+            post {
+                always {
+                    echo 'Archiving test reports...'
+                    allure includeProperties: false, jdk: '', results: [[path: 'reports/unit_tests'], [path: 'reports/e2e_tests']]
+                }
+                success {
+                    echo 'All Tests Passesd!'
+                }
+                failure {
+                    echo 'Some Tests Failed!'
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                sh """
+                docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
+                """
+                echo 'Docker image built successfully:'
+                sh "docker images | grep ${DOCKER_IMAGE} || true"
+            }
+        }
+        stage('Test Docker Image') {
+            steps {
+                echo 'Testing Docker image...'
+                sh """
+                CONTAINER_ID=\$(docker run -d -p 5000:5000 ${DOCKER_IMAGE}:${DOCKER_TAG})
+                sleep 5
+                RESPONSE_CODE=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/health)
+                docker stop \$CONTAINER_ID
+                docker rm \$CONTAINER_ID
+                echo "Health check response code: \$RESPONSE_CODE"
+                if [ "\$RESPONSE_CODE" -ne 200 ]; then
+                    exit 1                    
+                fi
+                """
+            }
+            post {
+                success {
+                    echo 'Docker Image Ran Sucessfully!'
+                }
+                failure {
+                    echo 'Docker Image Failed !'
+                }
+            }
+        }
+        stage('Deploy'){
+            when {
+                expression { currentBuild.currentResult == 'SUCCESS' }
+            }
+            steps {
+                echo 'Deploying Docker Image...'
+            }
+        }
+    }
+    post {
+        always {
+            echo '==========================================='
+            echo '   Pipeline Execution Complete'
+            echo '==========================================='
+            echo "Result: ${currentBuild.currentResult}"
+            echo "Duration: ${currentBuild.durationString}"
+            echo '==========================================='
+        }
+        success {
+            echo 'Pipeline Completed Successfully!'
+        }
+        failure {
+            echo 'Pipeline Failed!'
+            // Uncomment for email notification:
+            // emailext subject: "Build ${BUILD_NUMBER} failed",
+            //          body: "Check console output at ${BUILD_URL}",
+            //          to: 'team@example.com'
+        }
+        unstable {
+            echo '⚠️ Pipeline Completed with Warnings!'
+        }
+        cleanup {
+            echo 'Cleaning Up Docker Images...'
+            sh '''
+                docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG} 2>/dev/null || true
+            '''
+            
+            echo 'Cleaning Up Workspace...'
+            cleanWs()
+        }
+    }
+}
