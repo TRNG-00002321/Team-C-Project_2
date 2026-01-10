@@ -28,7 +28,7 @@ pipeline {
     stages {
         stage("Validate"){
             steps{
-                echo ${WORKSPACE_HOST}
+                echo "${WORKSPACE_HOST}"
             }
         }
         stage('Checkout') {
