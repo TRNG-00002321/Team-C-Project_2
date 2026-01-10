@@ -52,6 +52,8 @@ pipeline {
                         -v maven-repo:/root/.m2 \
                         -w /app \
                         maven:3.9-eclipse-temurin-17 \
+                        ls -la \
+                        ls -la /app \
                         mvn clean test \
                         -Dtest="**/unit/**" \
                         -B
