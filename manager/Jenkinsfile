@@ -50,10 +50,19 @@ pipeline {
                 }
             }
         }
+        stage('Build') {
+            steps {
+                dir('manager') {
+                    sh 'mvn clean compile -B'
+                }
+            }
+        }
+
+
         stage('Unit Tests') {
             steps {
                 dir('manager'){
-                    sh 'mvn clean test -Dtest="**/unit/**" -B'
+                    sh 'mvn test -B'
                 }
             }
             post {
