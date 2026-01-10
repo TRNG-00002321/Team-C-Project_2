@@ -1,6 +1,6 @@
 import pytest
 from src.repository import User, UserRepository
-
+import allure
 
 @pytest.fixture
 def setUp(mocker):
@@ -10,8 +10,12 @@ def setUp(mocker):
     userRepo = UserRepository(mock_db)
     yield mock_db, mock_conn, mock_cursor, userRepo
 
+@allure.feature("Employee authorization")
 class TestUserRepository:
 
+    @allure.story("Employee login")
+    @allure.title("Test find by username, positive test")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_find_by_username_positive(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -36,6 +40,9 @@ class TestUserRepository:
             ("john123",)
         )
 
+    @allure.story("Employee login")
+    @allure.title("Test find by username, username not found")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_find_by_username_not_found(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -54,6 +61,9 @@ class TestUserRepository:
             ("DoesntExist",)
         )
 
+    @allure.story("Employee login")
+    @allure.title("Test find by username, username empty")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_find_by_username_empty(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -72,6 +82,9 @@ class TestUserRepository:
             ("",)
         )
 
+    @allure.story("Employee login")
+    @allure.title("Test find by id, positive test")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_find_by_id_positive(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -93,6 +106,9 @@ class TestUserRepository:
             (5,)
         )
 
+    @allure.story("Employee login")
+    @allure.title("Test find by id, id not found")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_find_by_id_not_found(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -110,6 +126,9 @@ class TestUserRepository:
             (9999,)
         )
 
+    @allure.story("Employee login")
+    @allure.title("Test find by id, negative number")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_find_by_id_negative_num(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -127,6 +146,9 @@ class TestUserRepository:
             (-1,)
         )
 
+    @allure.story("Employee login")
+    @allure.title("Test find by id, null id")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_find_by_id_null(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -144,6 +166,9 @@ class TestUserRepository:
             (None,)
         )
 
+    @allure.story("Employee creation")
+    @allure.title("Test create user, positive test")
+    @allure.severity(allure.severity_level.MINOR)
     def test_create_user_positive(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -166,6 +191,9 @@ class TestUserRepository:
         assert actualUser.password == newUser.password
         assert actualUser.role == newUser.role
 
+    @allure.story("Employee creation")
+    @allure.title("Test create user, null user")
+    @allure.severity(allure.severity_level.MINOR)
     def test_create_user_null(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -179,6 +207,9 @@ class TestUserRepository:
             setUp[3].create(newUser)
             assert str(ex) == "'NoneType' object has no attribute 'username'"
 
+    @allure.story("Employee creation")
+    @allure.title("Test create user with null attributes")
+    @allure.severity(allure.severity_level.MINOR)
     @pytest.mark.parametrize("userIdInput, usernameInput, passwordInput, roleInput", [
         (None, "user123", "password123", "Employee"),
         (1, None, "password123", "Employee"),
