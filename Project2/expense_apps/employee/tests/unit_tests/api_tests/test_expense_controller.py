@@ -5,6 +5,7 @@ from unittest.mock import MagicMock
 from src.repository import User, Expense, Approval
 from src.api import auth
 import src.api.expense_controller as expense_controller
+import allure
 
 BASE_ROUTE = "/api/expenses"
 FAKE_USER = User(1, "test_user", "test_pass", "Employee")
@@ -30,7 +31,11 @@ def app(monkeypatch):
 def client(app):
   return app.test_client()
 
+@allure.feature("Expense submission, editing, and deletion")
 class TestExpenseController:
+    @allure.story("Employee expense submission")
+    @allure.title("Test employee submitting expense, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
       "json, expected_amount, expected_description, expected_date",
       [
@@ -96,6 +101,9 @@ class TestExpenseController:
       assert response.json["expense"]["description"] == fake_expense.description
       assert response.json["expense"]["date"] == fake_expense.date
 
+    @allure.story("Employee expense submission")
+    @allure.title("Test employee submitting expense, negative test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
       "json, status_code, error_description",
       [
@@ -116,6 +124,9 @@ class TestExpenseController:
       assert response.get_json()["error"] == error_description
       app.expense_service.submit_expense.assert_not_called()
 
+    @allure.story("Employee expense submission")
+    @allure.title("Test employee submitting expense, throws exception")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
       "exception, status_code",
       [
@@ -146,7 +157,9 @@ class TestExpenseController:
         date="2025-12-19"
       )
 
-
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test employee get expense list based on status")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
       "status, expense_approval, expected_count",
       [
@@ -201,6 +214,9 @@ class TestExpenseController:
         status_filter=status
       )
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test employee get expense list, different list sizes")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
       "expense_approval, expected_count",
       [
@@ -246,6 +262,9 @@ class TestExpenseController:
         status_filter=None
       )
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test employee get expense list, exception 500")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_get_expense_list_exception_500(client, app, monkeypatch):
       # Mock authenticated user
       monkeypatch.setattr(
@@ -265,7 +284,9 @@ class TestExpenseController:
         status_filter=None
       )
 
-
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test employee get expense, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
       "expense_approval",
       [
@@ -302,6 +323,9 @@ class TestExpenseController:
         FAKE_USER.id
       )
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test employee get expense, 404 error")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_get_expense_negative_404(client, app, monkeypatch):
       monkeypatch.setattr(
         expense_controller,
@@ -321,6 +345,9 @@ class TestExpenseController:
         FAKE_USER.id
       )
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test employee get expense, status code 500")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_get_expense_exception_500(client, app, monkeypatch):
       monkeypatch.setattr(
         expense_controller,
@@ -340,6 +367,9 @@ class TestExpenseController:
         FAKE_USER.id
       )
 
+    @allure.story("Employee edit expenses")
+    @allure.title("Test employee update expense, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
       "json, expected_amount, expected_description, expected_date",
       [
@@ -402,6 +432,9 @@ class TestExpenseController:
       assert response.json["expense"]["description"] == fake_expense.description
       assert response.json["expense"]["date"] == fake_expense.date
 
+    @allure.story("Employee edit expenses")
+    @allure.title("Test employee update expense, negative test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
       "json, status_code, error_description",
       [
@@ -423,6 +456,9 @@ class TestExpenseController:
       assert response.get_json()["error"] == error_description
       app.expense_service.update_expense.assert_not_called()
 
+    @allure.story("Employee edit expenses")
+    @allure.title("Test employee update expense, throws exception")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
       "exception, status_code",
       [
@@ -453,6 +489,9 @@ class TestExpenseController:
         date="2025-12-19"
       )
 
+    @allure.story("Employee delete expenses")
+    @allure.title("Test employee delete expense, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_delete_expense_positive_200(client, app, monkeypatch):
       monkeypatch.setattr(
         expense_controller,
@@ -475,6 +514,9 @@ class TestExpenseController:
         FAKE_USER.id
       )
 
+    @allure.story("Employee delete expenses")
+    @allure.title("Test employee delete expense, 404 error")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_delete_expense_negative_404(client, app, monkeypatch):
       monkeypatch.setattr(
         expense_controller,
@@ -497,6 +539,9 @@ class TestExpenseController:
         FAKE_USER.id
       )
 
+    @allure.story("Employee delete expenses")
+    @allure.title("Test employee delete expense, throws exceptions")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
       "exception, status_code",
       [

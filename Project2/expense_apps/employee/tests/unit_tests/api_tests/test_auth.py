@@ -20,7 +20,12 @@ def app(monkeypatch):
 def client(app):
     return app.test_client()
 
+@allure.feature("Employee authorization")
 class TestAuth:
+
+    @allure.story("Employee login")
+    @allure.title("Test user login with no auth token")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_require_employee_auth_no_token(app):
       protected = require_employee_auth(lambda: ("OK", 200))
 
@@ -30,7 +35,9 @@ class TestAuth:
       assert status == 401
       assert response.json["error"] == "Authentication required"
 
-
+    @allure.story("Employee login")
+    @allure.title("Test user login with wrong role")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_require_employee_auth_wrong_role(app, monkeypatch):
       manager_user = SimpleNamespace(role="Manager")
 
