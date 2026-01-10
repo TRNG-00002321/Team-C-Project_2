@@ -29,7 +29,13 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'checkout step'
-
+                script {
+                    env.GIT_COMMIT_SHORT = sh(
+                        script: 'git rev-parse --short HEAD',
+                        returnStdout: true
+                    ).trim()
+                    echo "Building commit: ${env.GIT_COMMIT_SHORT}"
+                }
             }
         }
     }
