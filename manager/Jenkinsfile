@@ -1,9 +1,8 @@
 pipeline {
-//     agent {
-//         label 'docker'
-//     }
+    agent {
+        label 'docker'
+    }
 
-    agent any
 
     environment {
         // Application image name
@@ -49,8 +48,10 @@ pipeline {
         }
         stage('Unit Tests') {
             agent {
-                image 'maven:3.9-eclipse-temurin-17'
-                args '-v maven-repo:/root/.m2'
+                docker {
+                    image 'maven:3.9-eclipse-temurin-17'
+                    args '-v maven-repo:/root/.m2'
+                }
             }
             steps {
                 sh 'mvn clean test -Dtest="**/unit/**" -B'
