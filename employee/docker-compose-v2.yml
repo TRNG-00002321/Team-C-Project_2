@@ -80,6 +80,3 @@ services:
         - SELENIUM_URL=http://selenium-hub:4444/wd/hub
         - BASE_URL=http://test-server:5000
         - BROWSER_TYPE=chrome
-      volumes:
-        - ./allure-results:/employee/allure-results
-        - ./test-results:/employee/test-results
