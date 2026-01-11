@@ -47,18 +47,20 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 echo '🧪 Running Python Unit Tests with Allure...'
-                sh """
-                    mkdir -p allure-results test-results
-                    ls -la
-                    docker run --rm \
-                        -v ${WORKSPACE}:/employee \
-                        -w /employee \
-                        python:3.12-slim \
-                        sh -c "pip install -r requirements.txt && \
-                            pytest tests/unit -v \
-                            --alluredir=/employee/allure-results \
-                            --junitxml=/employee/test-results/unit-results.xml"
-                """
+                dir('employee')  {
+                    sh """
+                        mkdir -p allure-results test-results
+                        ls -la
+                        docker run --rm \
+                            -v ${WORKSPACE}/employee:/employee \
+                            -w /employee \
+                            python:3.12-slim \
+                            sh -c "pip install -r requirements.txt && \
+                                pytest tests/unit -v \
+                                --alluredir=/employee/allure-results \
+                                --junitxml=/employee/test-results/unit-results.xml"
+                    """
+                }
             }
             post {
                 always {
