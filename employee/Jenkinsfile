@@ -52,13 +52,19 @@ pipeline {
                         mkdir -p allure-results test-results
                         ls -la
                         docker build -t ${DOCKER_IMAGE}-unit-test --target test .
-                        docker run --rm \
-                            -v ${WORKSPACE}/employee/allure-results:/employee/allure-results \
-                            -v ${WORKSPACE}/employee/test-results:/employee/test-results \
-                            ${DOCKER_IMAGE}-unit-test \
-                            pytest tests/unit_tests -v\
+                        
+                        docker rm -f ${DOCKER_IMAGE}-unit-runner || true
+
+                        docker run --name ${DOCKER_IMAGE}-unit-runner ${DOCKER_IMAGE}-unit-test \
+                            pytest tests/unit_tests \
                             --alluredir=/employee/allure-results \
                             --junitxml=/employee/test-results/unit-results.xml
+
+                        mkdir -p allure-results test-results
+                        docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
+                        docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
+
+                        docker rm ${DOCKER_IMAGE}-unit-runner
                     """
                 }
             }
