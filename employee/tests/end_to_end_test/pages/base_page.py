@@ -1,11 +1,12 @@
 from abc import ABC
+import os
 from selenium.common import NoSuchElementException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # locators are tuples containing a 'By' object and a string
 class BasePage(ABC):
-    BASE_URL = "http://localhost:5000"
+    BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")
     def __init__(self, driver):
         self.driver = driver
         self.wait = WebDriverWait(self.driver, 10)
