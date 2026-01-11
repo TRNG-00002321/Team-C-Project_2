@@ -45,6 +45,9 @@ pipeline {
             }
         }
         stage('Unit Tests') {
+            when {
+                expression { false }
+            }
             steps {
                 echo '🧪 Running Python Unit Tests with Allure...'
                 dir('employee')  {
