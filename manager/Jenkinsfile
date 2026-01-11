@@ -53,11 +53,10 @@ pipeline {
         }
         stage('Build') {
             agent {
-                docker {
-                    image 'maven:3.9-eclipse-temurin-17'
-                    args '-v maven-repo:/root/.m2'
+                    docker {
+                        image 'maven:3.9.0-eclipse-temurin-11'
+                    }
                 }
-            }
             steps {
                 dir('manager') {
                     sh 'mvn clean compile -B'
@@ -67,11 +66,10 @@ pipeline {
 
         stage('Unit Tests') {
             agent {
-                docker {
-                    image 'maven:3.9-eclipse-temurin-17'
-                    args '-v maven-repo:/root/.m2'
+                    docker {
+                        image 'maven:3.9.0-eclipse-temurin-11'
+                    }
                 }
-            }
             steps {
                 dir('manager'){
                 //todo: only run unit tests!
@@ -126,6 +124,11 @@ pipeline {
 
 
         stage('Start Application') {
+            agent {
+                    docker {
+                        image 'maven:3.9.0-eclipse-temurin-11'
+                    }
+                }
             steps {
                 echo '🚀 Starting Manager App for API/E2E Testing...'
                 sh '''
