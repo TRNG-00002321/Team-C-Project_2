@@ -1,10 +1,6 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9-eclipse-temurin-17'
-            args '-v maven-repo:/root/.m2'
-        }
-    }
+    agent none
+
 
 
     environment {
@@ -35,16 +31,15 @@ pipeline {
     }
 
     stages {
+
         stage("Validate"){
+            agent none
             steps{
-                sh '''
-                which docker
-                docker --version
-                '''
                 echo "${WORKSPACE_HOST}"
             }
         }
         stage('Checkout') {
+            agent none
             steps {
                 echo 'checkout step'
                 checkout scm
@@ -57,32 +52,43 @@ pipeline {
                 }
             }
         }
-        stage('Build') {
-            steps {
-                dir('manager') {
-                    sh 'mvn clean compile -B'
+        stage("Build and perform unit tests"){
+            agent {
+                docker {
+                    image 'maven:3.9-eclipse-temurin-17'
+                    args '-v maven-repo:/root/.m2'
                 }
             }
-        }
-
-        stage('Unit Tests') {
-            steps {
-                dir('manager'){
-                //todo: only run unit tests!
-                    echo 'skipping tests for now:'
-//                     sh 'mvn test -B'
-                }
-            }
-            post {
-                always {
-                    dir('manager'){
-                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+            stage('Build') {
+                steps {
+                    dir('manager') {
+                        sh 'mvn clean compile -B'
                     }
                 }
             }
+
+            stage('Unit Tests') {
+                steps {
+                    dir('manager'){
+                    //todo: only run unit tests!
+                        echo 'skipping tests for now:'
+    //                     sh 'mvn test -B'
+                    }
+                }
+                post {
+                    always {
+                        dir('manager'){
+                            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                        }
+                    }
+                }
+            }
+
         }
 
+
         stage('Build Docker Image') {
+            agent any
             steps {
                 dir('manager'){
                     echo 'Building Java Manager Application...'
@@ -95,6 +101,12 @@ pipeline {
            }
         }
         stage('Tests Tests') {
+            agent {
+                docker {
+                    image 'maven:3.9-eclipse-temurin-17'
+                    args '-v maven-repo:/root/.m2'
+                }
+            }
             steps {
                 dir('manager'){
                 //todo: only run unit tests!
