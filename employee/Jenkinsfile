@@ -56,7 +56,7 @@ pipeline {
                             -v ${WORKSPACE}/employee/allure-results:/employee/allure-results \
                             -v ${WORKSPACE}/employee/test-results:/employee/test-results \
                             ${DOCKER_IMAGE}-unit-test \
-                            pytest tests/unit_tests \
+                            pytest tests/unit_tests -v\
                             --alluredir=/employee/allure-results \
                             --junitxml=/employee/test-results/unit-results.xml
                     """
@@ -64,8 +64,9 @@ pipeline {
             }
             post {
                 always {
-                    sh 'ls -la employee/test-results || true'
-                    sh 'ls -la employee/allure-results || true'
+                    sh "ls -la ${WORKSPACE}/employee/test-results || true"
+                    sh "ls -la ${WORKSPACE}/employee/allure-results || true"
+                    sh "pwd"
                     junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
                 }
             }
