@@ -31,15 +31,14 @@ pipeline {
     }
 
     stages {
-
         stage("Validate"){
-            agent none
+            agent any
             steps{
                 echo "${WORKSPACE_HOST}"
             }
         }
         stage('Checkout') {
-            agent none
+            agent any
             steps {
                 echo 'checkout step'
                 checkout scm
@@ -151,6 +150,7 @@ pipeline {
 //         }
     }
     post {
+        agent any
         always {
             echo '🧹 Cleaning up...'
             sh '''
