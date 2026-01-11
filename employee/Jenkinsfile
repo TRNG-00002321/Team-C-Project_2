@@ -114,6 +114,8 @@ pipeline {
                         else
                             echo "Container not found, skipping artifact copy."
                         fi
+                        ls -la allure-results || true
+                        ls -la test-results || true
                         """
                         sh "docker compose -f docker-compose-v2.yml down -v"
                     }
