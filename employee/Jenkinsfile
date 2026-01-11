@@ -105,7 +105,7 @@ pipeline {
                     dir('employee') {
                         // Extract artifacts before tear down
                         sh """
-                        CONTAINER_ID=\$(docker compose -f docker-compose-v2.yml ps -q behave-tests)
+                        CONTAINER_ID=\$(docker compose -f docker-compose-v2.yml ps -a -q behave-tests)
                         if [ ! -z "\$CONTAINER_ID" ]; then
                             echo "Copying artifacts from \$CONTAINER_ID..."
                             mkdir -p allure-results test-results
