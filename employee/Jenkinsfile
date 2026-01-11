@@ -49,7 +49,7 @@ pipeline {
                 echo '🧪 Running Python Unit Tests with Allure...'
                 sh """
                     mkdir -p allure-results test-results
-                    
+                    ls -la
                     docker run --rm \
                         -v ${WORKSPACE}:/employee \
                         -w /employee \
