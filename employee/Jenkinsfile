@@ -44,7 +44,29 @@ pipeline {
                 sh 'ls -la'
             }
         }
-        stage('Test') {
+        stage('Unit Tests') {
+            steps {
+                echo '🧪 Running Python Unit Tests with Allure...'
+                sh """
+                    mkdir -p allure-results test-results
+                    
+                    docker run --rm \
+                        -v ${WORKSPACE}:/employee \
+                        -w /employee \
+                        python:3.12-slim \
+                        sh -c "pip install -r requirements.txt && \
+                            pytest tests/unit -v \
+                            --alluredir=/employee/allure-results \
+                            --junitxml=/employee/test-results/unit-results.xml"
+                """
+            }
+            post {
+                always {
+                    junit allowEmptyResults: true, testResults: 'test-results/*.xml'
+                }
+            }
+        }
+        stage('Integration Tests') {
             when {
                 expression { params.TEST_MODE == true }
             }
@@ -69,7 +91,8 @@ pipeline {
                         sh "docker compose -f docker-compose-v2.yml down -v"
                     }
 
-                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'allure-results']]
+                    // Publish test results
+                    junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
                 }
                 success {
                     echo 'All Tests Passesd!'
