@@ -53,7 +53,7 @@ pipeline {
         }
         stage('Build') {
             agent {
-                    docker {
+                    dockerContainer {
                         image 'maven:3.9.0-eclipse-temurin-11'
                     }
                 }
@@ -66,7 +66,7 @@ pipeline {
 
         stage('Unit Tests') {
             agent {
-                    docker {
+                    dockerContainer {
                         image 'maven:3.9.0-eclipse-temurin-11'
                     }
                 }
@@ -101,7 +101,7 @@ pipeline {
         }
 //         stage('Tests Tests') {
 //             agent {
-//                 docker {
+//                 dockerContainer {
 //                     image 'maven:3.9-eclipse-temurin-17'
 //                     args '-v maven-repo:/root/.m2'
 //                 }
@@ -125,7 +125,7 @@ pipeline {
 
         stage('Start Application') {
             agent {
-                    docker {
+                    dockerContainer {
                         image 'maven:3.9.0-eclipse-temurin-11'
                     }
                 }
