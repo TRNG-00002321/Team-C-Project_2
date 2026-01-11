@@ -10,10 +10,10 @@ FROM base AS test
 COPY tests/ ./tests
 ENV TEST_MODE=true
 
-RUN pytest --alluredir=allure-results
+RUN python -m pytest --alluredir=allure-results
 COPY behave.ini .
 RUN python -m src.main & sleep 5 
-RUN behave
+RUN python -m behave
 
 FROM base AS production
 ENV TEST_MODE=false
