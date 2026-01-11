@@ -88,22 +88,7 @@ pipeline {
 
            }
         }
-//         stage('Tests Tests') {
-//             steps {
-//                 dir('manager'){
-//                 //todo: only run unit tests!
-//                     echo 'lumping tests together for now:'
-//                      sh 'mvn test -B'
-//                 }
-//             }
-//             post {
-//                 always {
-//                     dir('manager'){
-//                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-//                     }
-//                 }
-//             }
-//         }
+
 
 
         stage('Start Application') {
@@ -130,6 +115,22 @@ pipeline {
             }
         }
     }
+    //         stage('Tests Tests') {
+    //             steps {
+    //                 dir('manager'){
+    //                 //todo: only run unit tests!
+    //                     echo 'lumping tests together for now:'
+    //                      sh 'mvn test -B'
+    //                 }
+    //             }
+    //             post {
+    //                 always {
+    //                     dir('manager'){
+    //                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+    //                     }
+    //                 }
+    //             }
+    //         }
     post {
         always {
             echo '🧹 Cleaning up...'

@@ -9,7 +9,10 @@ WORKDIR /app
 # Copy pom.xml and download dependencies (cached layer)
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
+#Copy env and db files
 
+COPY .env .
+COPY ../test_expense_manager.db /app/test_expense_manager.db
 # Copy source code and build
 COPY src/ ./src/
 RUN mvn clean package -DskipTests -B
@@ -34,8 +37,6 @@ USER appuser
 
 # Environment variables
 ENV JAVA_OPTS="-Xms256m -Xmx512m"
-ENV DATABASE_PATH=/../test_expense_manager.db
-
 # Expose Javalin port
 EXPOSE 5001
 
