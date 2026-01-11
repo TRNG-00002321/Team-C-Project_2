@@ -44,43 +44,43 @@ pipeline {
                 sh 'ls -la'
             }
         }
-        // stage('Unit Tests') {
-        //     when {
-        //         expression { false }
-        //     }
-        //     steps {
-        //         echo '🧪 Running Python Unit Tests with Allure...'
-        //         dir('employee')  {
-        //             sh """
-        //                 mkdir -p allure-results test-results
-        //                 ls -la
-        //                 docker build -t ${DOCKER_IMAGE}-unit-test --target test .
+        stage('Unit Tests') {
+            when {
+                expression { params.TEST_MODE == true }
+            }
+            steps {
+                echo '🧪 Running Python Unit Tests with Allure...'
+                dir('employee')  {
+                    sh """
+                        mkdir -p allure-results test-results
+                        ls -la
+                        docker build -t ${DOCKER_IMAGE}-unit-test --target test .
                         
-        //                 docker rm -f ${DOCKER_IMAGE}-unit-runner || true
+                        docker rm -f ${DOCKER_IMAGE}-unit-runner || true
 
-        //                 docker run --name ${DOCKER_IMAGE}-unit-runner ${DOCKER_IMAGE}-unit-test \
-        //                     pytest tests/unit_tests \
-        //                     --alluredir=/employee/allure-results \
-        //                     --junitxml=/employee/test-results/unit-results.xml
+                        docker run --name ${DOCKER_IMAGE}-unit-runner ${DOCKER_IMAGE}-unit-test \
+                            pytest tests/unit_tests tests/integration_tests \
+                            --alluredir=/employee/allure-results \
+                            --junitxml=/employee/test-results/unit-results.xml
 
-        //                 mkdir -p allure-results test-results
-        //                 docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
-        //                 docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
+                        mkdir -p allure-results test-results
+                        docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
+                        docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
 
-        //                 docker rm ${DOCKER_IMAGE}-unit-runner
-        //             """
-        //         }
-        //     }
-        //     post {
-        //         always {
-        //             sh "ls -la ${WORKSPACE}/employee/test-results || true"
-        //             sh "ls -la ${WORKSPACE}/employee/allure-results || true"
-        //             sh "pwd"
-        //             allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
-        //             junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
-        //         }
-        //     }
-        // }
+                        docker rm ${DOCKER_IMAGE}-unit-runner
+                    """
+                }
+            }
+            post {
+                always {
+                    sh "ls -la ${WORKSPACE}/employee/test-results || true"
+                    sh "ls -la ${WORKSPACE}/employee/allure-results || true"
+                    sh "pwd"
+                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
+                    junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
+                }
+            }
+        }
         stage('E2E Tests') {
             when {
                 expression { params.TEST_MODE == true }
