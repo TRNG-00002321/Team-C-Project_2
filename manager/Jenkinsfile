@@ -1,8 +1,5 @@
 pipeline {
-    agent none
-
-
-
+    agent any
     environment {
         // Application image name
         APP_NAME = 'expense-manager'
@@ -32,13 +29,11 @@ pipeline {
 
     stages {
         stage("Validate"){
-            agent any
             steps{
                 echo "${WORKSPACE_HOST}"
             }
         }
         stage('Checkout') {
-            agent any
             steps {
                 echo 'checkout step'
                 checkout scm
@@ -52,11 +47,6 @@ pipeline {
             }
         }
         stage('Build') {
-            agent {
-                    docker {
-                        image 'maven:3.9.0-eclipse-temurin-11'
-                    }
-                }
             steps {
                 dir('manager') {
                     sh 'mvn clean compile -B'
@@ -65,11 +55,7 @@ pipeline {
         }
 
         stage('Unit Tests') {
-            agent {
-                    docker {
-                        image 'maven:3.9.0-eclipse-temurin-11'
-                    }
-                }
+
             steps {
                 dir('manager'){
                 //todo: only run unit tests!
@@ -87,7 +73,6 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            agent any
             steps {
                 dir('manager'){
                     echo 'Building Java Manager Application...'
@@ -100,12 +85,6 @@ pipeline {
            }
         }
 //         stage('Tests Tests') {
-//             agent {
-//                 docker {
-//                     image 'maven:3.9-eclipse-temurin-17'
-//                     args '-v maven-repo:/root/.m2'
-//                 }
-//             }
 //             steps {
 //                 dir('manager'){
 //                 //todo: only run unit tests!
@@ -124,11 +103,6 @@ pipeline {
 
 
         stage('Start Application') {
-            agent {
-                    docker {
-                        image 'maven:3.9.0-eclipse-temurin-11'
-                    }
-                }
             steps {
                 echo '🚀 Starting Manager App for API/E2E Testing...'
                 sh '''
