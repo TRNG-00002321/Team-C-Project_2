@@ -64,6 +64,8 @@ pipeline {
             }
             post {
                 always {
+                    sh 'ls -la employee/test-results || true'
+                    sh 'ls -la employee/allure-results || true'
                     junit allowEmptyResults: true, testResults: 'test-results/*.xml'
                 }
             }
