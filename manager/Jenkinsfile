@@ -150,7 +150,6 @@ pipeline {
 //         }
     }
     post {
-        agent any
         always {
             echo '🧹 Cleaning up...'
             sh '''
