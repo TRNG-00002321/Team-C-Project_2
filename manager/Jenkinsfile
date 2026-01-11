@@ -23,6 +23,9 @@ pipeline {
         // When Jenkins runs in a container, Docker daemon needs the HOST path
         // Set JENKINS_HOME_HOST in Jenkins container env (e.g., /home/ec2-user/jenkins_home)
         WORKSPACE_HOST = "${env.JENKINS_HOME_HOST ?: env.JENKINS_HOME}/workspace/${env.JOB_NAME}"
+
+        DOCKER_IMAGE = "manager_app"
+        BUILD_DOCKER = true
     }
 
     options {
@@ -79,12 +82,10 @@ pipeline {
             steps {
                 dir('manager'){
                     echo 'Building Java Manager Application...'
-                    sh  '''
-                        docker build \
-                        -t ${APP_NAME}:${BUILD_VERSION} \
-                        -t ${APP_NAME}:latest \
-                        -f Dockerfile .
-                        '''
+                    sh '''
+                        docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .
+                        docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest
+                    '''
                 }
 
            }
