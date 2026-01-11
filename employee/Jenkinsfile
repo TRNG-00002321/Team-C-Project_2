@@ -61,6 +61,7 @@ pipeline {
                             --junitxml=/employee/test-results/unit-results.xml
                     """
                 }
+            }
             post {
                 always {
                     junit allowEmptyResults: true, testResults: 'test-results/*.xml'
