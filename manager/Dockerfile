@@ -34,7 +34,7 @@ USER appuser
 
 # Environment variables
 ENV JAVA_OPTS="-Xms256m -Xmx512m"
-ENV DATABASE_PATH= /manager/test_expense_manager.db
+ENV DATABASE_PATH=/../test_expense_manager.db
 
 # Expose Javalin port
 EXPOSE 5001
