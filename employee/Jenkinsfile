@@ -73,6 +73,7 @@ pipeline {
                     sh "ls -la ${WORKSPACE}/employee/test-results || true"
                     sh "ls -la ${WORKSPACE}/employee/allure-results || true"
                     sh "pwd"
+                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
                     junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
                 }
             }
@@ -103,6 +104,7 @@ pipeline {
                     }
 
                     // Publish test results
+                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
                     junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
                 }
                 success {
