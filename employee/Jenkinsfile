@@ -44,94 +44,89 @@ pipeline {
                 sh 'ls -la'
             }
         }
-        stage('Unit Tests') {
+        stage('Test') {
             when {
                 expression { params.TEST_MODE == true }
             }
-            steps {
-                echo '🧪 Running Python Unit Tests with Allure...'
-                dir('employee')  {
-                    sh """
-                        mkdir -p allure-results test-results
-                        ls -la
-                        docker build -t ${DOCKER_IMAGE}-unit-test --target test .
-                        
-                        docker rm -f ${DOCKER_IMAGE}-unit-runner || true
+            stages {
+                stage('Unit Tests') {       
+                    steps {
+                        echo '🧪 Running Python Unit Tests with Allure...'
+                        dir('employee')  {
+                            sh """
+                                mkdir -p allure-results test-results
+                                ls -la
+                                docker build -t ${DOCKER_IMAGE}-unit-test --target test .
+                                
+                                docker rm -f ${DOCKER_IMAGE}-unit-runner || true
 
-                        docker run --name ${DOCKER_IMAGE}-unit-runner ${DOCKER_IMAGE}-unit-test \
-                            pytest tests/unit_tests tests/integration_tests \
-                            --alluredir=/employee/allure-results \
-                            --junitxml=/employee/test-results/unit-results.xml
+                                docker run --name ${DOCKER_IMAGE}-unit-runner ${DOCKER_IMAGE}-unit-test \
+                                    pytest tests/unit_tests tests/integration_tests \
+                                    --alluredir=/employee/allure-results \
+                                    --junitxml=/employee/test-results/unit-results.xml
 
-                        mkdir -p allure-results test-results
-                        docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
-                        docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
+                                mkdir -p allure-results test-results
+                                docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
+                                docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
 
-                        docker rm ${DOCKER_IMAGE}-unit-runner
-                    """
-                }
-            }
-            post {
-                always {
-                    sh "ls -la ${WORKSPACE}/employee/test-results || true"
-                    sh "ls -la ${WORKSPACE}/employee/allure-results || true"
-                    sh "pwd"
-                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
-                    junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
-                }
-            }
-        }
-        stage('E2E Tests') {
-            when {
-                expression { params.TEST_MODE == true }
-            }
-            // steps {
-            //     dir('employee') {
-            //         echo 'Running tests...'
-            //         sh """
-            //             docker build --target test -t ${DOCKER_IMAGE}-test:${DOCKER_TAG} .
-            //             docker run -v ${WORKSPACE}/allure-results:/employee/allure-results ${DOCKER_IMAGE}-test:${DOCKER_TAG}
-            //         """
-            //     }
-            // }
-            steps {
-                dir('employee') {
-                    echo 'Running tests with Docker Compose...'
-                    sh "docker compose -f docker-compose-v2.yml up --build --abort-on-container-exit --exit-code-from behave-tests"
-                }
-            }
-            post {
-                always {
-                    dir('employee') {
-                        // Extract artifacts before tear down
-                        sh """
-                        CONTAINER_ID=\$(docker compose -f docker-compose-v2.yml ps -a -q behave-tests)
-                        if [ ! -z "\$CONTAINER_ID" ]; then
-                            echo "Copying artifacts from \$CONTAINER_ID..."
-                            mkdir -p allure-results test-results
-                            docker cp \$CONTAINER_ID:/employee/allure-results/. allure-results/ || true
-                            docker cp \$CONTAINER_ID:/employee/test-results/. test-results/ || true
-                        else
-                            echo "Container not found, skipping artifact copy."
-                        fi
-                        ls -la allure-results || true
-                        ls -la test-results || true
-                        """
-                        sh "docker compose -f docker-compose-v2.yml down -v"
+                                docker rm ${DOCKER_IMAGE}-unit-runner
+                            """
+                        }
                     }
-
-                    // Publish test results
+                    post {
+                        always {
+                            sh "ls -la ${WORKSPACE}/employee/test-results || true"
+                            sh "ls -la ${WORKSPACE}/employee/allure-results || true"
+                            sh "pwd"
+                        }
+                    }
+                }
+                stage('E2E Tests') {
+                    when {
+                        expression { params.TEST_MODE == true }
+                    }
+                    steps {
+                        dir('employee') {
+                            echo 'Running tests with Docker Compose...'
+                            sh "docker compose -f docker-compose-v2.yml up --build --abort-on-container-exit --exit-code-from behave-tests"
+                        }
+                    }
+                    post {
+                        always {
+                            dir('employee') {
+                                // Extract artifacts before tear down
+                                sh """
+                                CONTAINER_ID=\$(docker compose -f docker-compose-v2.yml ps -a -q behave-tests)
+                                if [ ! -z "\$CONTAINER_ID" ]; then
+                                    echo "Copying artifacts from \$CONTAINER_ID..."
+                                    mkdir -p allure-results test-results
+                                    docker cp \$CONTAINER_ID:/employee/allure-results/. allure-results/ || true
+                                    docker cp \$CONTAINER_ID:/employee/test-results/. test-results/ || true
+                                else
+                                    echo "Container not found, skipping artifact copy."
+                                fi
+                                ls -la allure-results || true
+                                ls -la test-results || true
+                                """
+                                sh "docker compose -f docker-compose-v2.yml down -v"
+                            }
+                        }
+                        success {
+                            echo 'All Tests Passesd!'
+                        }
+                        failure {
+                            echo 'Some Tests Failed!'
+                        }
+                    }
+                }
+            }
+            post {
+                always {
                     allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
-                    junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
-                }
-                success {
-                    echo 'All Tests Passesd!'
-                }
-                failure {
-                    echo 'Some Tests Failed!'
                 }
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 dir('employee') {
