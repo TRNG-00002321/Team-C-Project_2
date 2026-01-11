@@ -130,24 +130,20 @@ pipeline {
 //                 '''
 //             }
 //         }
+    }
+    post {
+        always {
+            echo '🧹 Cleaning up...'
+            sh '''
+                docker stop ${APP_NAME}-test || true
+                docker rm ${APP_NAME}-test || true
+                docker rmi ${APP_NAME}:${BUILD_VERSION} || true
+            '''
 
-        post {
-            always {
-                echo '🧹 Cleaning up...'
-                sh '''
-                    docker stop ${APP_NAME}-test || true
-                    docker rm ${APP_NAME}-test || true
-                    docker rmi ${APP_NAME}:${BUILD_VERSION} || true
-                '''
-
-                archiveArtifacts artifacts: '''
-                    target/surefire-reports/**/*.xml,
+            archiveArtifacts artifacts: '''
+                target/surefire-reports/**/*.xml,
                 ''', allowEmptyArchive: true
-            }
         }
-
-
-
     }
 
 //pipeline end
