@@ -59,12 +59,16 @@ pipeline {
             // }
             steps {
                 dir('employee') {
-                    echo 'Running tests...'
-                    sh "docker compose up -f docker-compose-v2.yml --build --abort-on-container-exit --exit-code-from behave-tests"
+                    echo 'Running tests with Docker Compose...'
+                    sh "docker compose -f docker-compose-v2.yml up --build --abort-on-container-exit --exit-code-from behave-tests"
                 }
             }
-            post{
-                always{
+            post {
+                always {
+                    dir('employee') {
+                        sh "docker compose -f docker-compose-v2.yml down -v"
+                    }
+
                     allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'allure-results']]
                 }
                 success {
