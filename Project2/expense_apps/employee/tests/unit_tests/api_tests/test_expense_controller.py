@@ -65,7 +65,7 @@ class TestExpenseController:
         ),
       ],
     )
-    def test_submit_expense_positive_inputs_201_expense(client, app, monkeypatch, json, expected_amount, expected_description, expected_date):
+    def test_submit_expense_positive_inputs_201_expense(self, client, app, monkeypatch, json, expected_amount, expected_description, expected_date):
       # sample data
       fake_expense = Expense(
         101,
@@ -114,7 +114,7 @@ class TestExpenseController:
         ({"amount" : "abc", "description": "lunch"}, 400, "Amount must be a valid number"),
       ],
     )
-    def test_submit_expense_negative_inputs_errors(client, app, monkeypatch, json, status_code, error_description):
+    def test_submit_expense_negative_inputs_errors(self, client, app, monkeypatch, json, status_code, error_description):
       # Mock ExpenseService
       app.expense_service = MagicMock()
 
@@ -134,7 +134,7 @@ class TestExpenseController:
         (Exception(), 500),
       ]
     )
-    def test_submit_expense_exception_error(client, app, monkeypatch, exception, status_code):
+    def test_submit_expense_exception_error(self, client, app, monkeypatch, exception, status_code):
       # Mock authenticated user
       monkeypatch.setattr(
         expense_controller,
@@ -186,7 +186,7 @@ class TestExpenseController:
         ),
       ],
     )
-    def test_get_expense_list_different_statuses_filtered(client, app,  monkeypatch, status, expense_approval, expected_count):
+    def test_get_expense_list_different_statuses_filtered(self, client, app,  monkeypatch, status, expense_approval, expected_count):
       monkeypatch.setattr(
         expense_controller,
         "get_current_user",
@@ -233,7 +233,7 @@ class TestExpenseController:
         ),
       ],
     )
-    def test_get_expense_list_different_sizes(client, app, monkeypatch, expense_approval, expected_count):
+    def test_get_expense_list_different_sizes(self, client, app, monkeypatch, expense_approval, expected_count):
       monkeypatch.setattr(
         expense_controller,
         "get_current_user",
@@ -265,7 +265,7 @@ class TestExpenseController:
     @allure.story("Employee viewing expenses")
     @allure.title("Test employee get expense list, exception 500")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_get_expense_list_exception_500(client, app, monkeypatch):
+    def test_get_expense_list_exception_500(self, client, app, monkeypatch):
       # Mock authenticated user
       monkeypatch.setattr(
         expense_controller,
@@ -295,7 +295,7 @@ class TestExpenseController:
         (Expense(103, 1, 100.1, "Lunch", "2025-12-19"), Approval(101, 103, "denied", 2, "denial comment", "2025-12-20"))
       ]
     )
-    def test_get_expense(client, app, monkeypatch, expense_approval):
+    def test_get_expense(self, client, app, monkeypatch, expense_approval):
       fake_expense, fake_approval = expense_approval
 
       monkeypatch.setattr(
@@ -326,7 +326,7 @@ class TestExpenseController:
     @allure.story("Employee viewing expenses")
     @allure.title("Test employee get expense, 404 error")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_get_expense_negative_404(client, app, monkeypatch):
+    def test_get_expense_negative_404(self, client, app, monkeypatch):
       monkeypatch.setattr(
         expense_controller,
         "get_current_user",
@@ -348,7 +348,7 @@ class TestExpenseController:
     @allure.story("Employee viewing expenses")
     @allure.title("Test employee get expense, status code 500")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_get_expense_exception_500(client, app, monkeypatch):
+    def test_get_expense_exception_500(self, client, app, monkeypatch):
       monkeypatch.setattr(
         expense_controller,
         "get_current_user",
@@ -399,7 +399,7 @@ class TestExpenseController:
         ),
       ],
     )
-    def test_update_expense_positive_inputs_200(client, app, monkeypatch, json, expected_amount, expected_description, expected_date):
+    def test_update_expense_positive_inputs_200(self, client, app, monkeypatch, json, expected_amount, expected_description, expected_date):
       fake_expense = Expense(
         101,
         1,
@@ -447,7 +447,7 @@ class TestExpenseController:
         ({"amount" : "abc", "description": "lunch", "date" : "2025-12-20"}, 400, "Amount must be a valid number"),
       ],
     )
-    def test_update_expense_negative_inputs_error(client, app, monkeypatch, json, status_code, error_description):
+    def test_update_expense_negative_inputs_error(self, client, app, monkeypatch, json, status_code, error_description):
       app.expense_service = MagicMock()
 
       response = client.put(f"{BASE_ROUTE}/101", json=json)
@@ -466,7 +466,7 @@ class TestExpenseController:
         (Exception(), 500),
       ]
     )
-    def test_update_expense_exception_error(client, app, monkeypatch, exception, status_code):
+    def test_update_expense_exception_error(self, client, app, monkeypatch, exception, status_code):
       monkeypatch.setattr(
         expense_controller,
         "get_current_user",
@@ -492,7 +492,7 @@ class TestExpenseController:
     @allure.story("Employee delete expenses")
     @allure.title("Test employee delete expense, positive test")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_delete_expense_positive_200(client, app, monkeypatch):
+    def test_delete_expense_positive_200(self, client, app, monkeypatch):
       monkeypatch.setattr(
         expense_controller,
         "get_current_user",
@@ -517,7 +517,7 @@ class TestExpenseController:
     @allure.story("Employee delete expenses")
     @allure.title("Test employee delete expense, 404 error")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_delete_expense_negative_404(client, app, monkeypatch):
+    def test_delete_expense_negative_404(self, client, app, monkeypatch):
       monkeypatch.setattr(
         expense_controller,
         "get_current_user",
@@ -549,7 +549,7 @@ class TestExpenseController:
         (Exception(), 500),
       ]
     )
-    def test_delete_expense_exceptions_error(client, app, monkeypatch, exception, status_code):
+    def test_delete_expense_exceptions_error(self, client, app, monkeypatch, exception, status_code):
       monkeypatch.setattr(
         expense_controller,
         "get_current_user",

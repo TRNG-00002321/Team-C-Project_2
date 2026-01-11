@@ -12,7 +12,7 @@ class TestDatabase:
     @allure.title("Test database connection returns a connection")
     @allure.severity(allure.severity_level.BLOCKER)
     @patch("src.repository.database.sqlite3.connect")
-    def test_get_connection_returns_connection(mock_sqlite_connect):
+    def test_get_connection_returns_connection(self, mock_sqlite_connect):
       connection_mock = MagicMock()
       mock_sqlite_connect.return_value = connection_mock
 
@@ -25,7 +25,7 @@ class TestDatabase:
     @allure.title("Test initialize database")
     @allure.severity(allure.severity_level.BLOCKER)
     @patch("src.repository.database.DatabaseConnection.get_connection")
-    def test_initialize_database_commit_called(mock_get_connection):
+    def test_initialize_database_commit_called(self, mock_get_connection):
       mock_connection = MagicMock(spec=sqlite3.Connection)
       mock_connection.execute = MagicMock()
       mock_connection.commit = MagicMock()

@@ -36,7 +36,7 @@ class TestExpenseService:
         -2.0
     ])
     #EU-022
-    def test_submit_expense_negative_amount_returns_exception(expense_service_test, amount):
+    def test_submit_expense_negative_amount_returns_exception(self, expense_service_test, amount):
         #Arrange
         with pytest.raises(ValueError, match="Amount must be greater than 0"):
 
@@ -50,7 +50,7 @@ class TestExpenseService:
     @allure.story("Employee expense submission")
     @allure.title("Test submit expense with empty description")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_submit_expense_empty_description_returns_exception(expense_service_test):
+    def test_submit_expense_empty_description_returns_exception(self, expense_service_test):
         # Arrange
         with pytest.raises(ValueError, match="Description is required"):
             # Act
@@ -63,7 +63,7 @@ class TestExpenseService:
     @allure.story("Employee expense submission")
     @allure.title("Test submit expense, positive test")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_submit_expense_returns_expense(expense_service_test, mock_expense_repo):
+    def test_submit_expense_returns_expense(self, expense_service_test, mock_expense_repo):
         #Arrange
         expense = Expense(1, 1, 1.0, "test", "date")
         mock_expense_repo.create.return_value = expense
@@ -82,7 +82,7 @@ class TestExpenseService:
     @allure.story("Employee viewing expenses")
     @allure.title("Test get user expenses with status, positive test")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_get_user_expenses_with_status_returns_list(expense_service_test, mock_approval_repo):
+    def test_get_user_expenses_with_status_returns_list(self, expense_service_test, mock_approval_repo):
 
         #Arrange
         user_id = 1
@@ -98,7 +98,7 @@ class TestExpenseService:
     @allure.story("Employee viewing expenses")
     @allure.title("Test get user expenses with status, empty list")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_get_user_expenses_with_status_returns_emptyList(expense_service_test, mock_approval_repo):
+    def test_get_user_expenses_with_status_returns_emptyList(self, expense_service_test, mock_approval_repo):
 
         #Arrange
         user_id = 1
@@ -119,7 +119,7 @@ class TestExpenseService:
     @allure.story("Employee viewing expenses")
     @allure.title("Test get expenses by id, positive test")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_get_expense_by_id_returns_expense(expense_service_test, mock_expense_repo):
+    def test_get_expense_by_id_returns_expense(self, expense_service_test, mock_expense_repo):
         #Arrange
         expense = Expense(1, 1, 1.0, 'test', 'date')
         mock_expense_repo.find_by_id.return_value = expense
@@ -135,7 +135,7 @@ class TestExpenseService:
     @allure.story("Employee viewing expenses")
     @allure.title("Test get expenses by id, returns none")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_get_expense_by_id_returns_None(expense_service_test, mock_expense_repo):
+    def test_get_expense_by_id_returns_None(self, expense_service_test, mock_expense_repo):
         #Arrange
         mock_expense_repo.find_by_id.return_value = None
 
@@ -152,7 +152,7 @@ class TestExpenseService:
     @allure.story("Employee viewing expenses")
     @allure.title("Test get expenses with status, returns tuple")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_get_expense_with_status_returns_tuple(expense_service_test, mock_approval_repo, mock_expense_repo):
+    def test_get_expense_with_status_returns_tuple(self, expense_service_test, mock_approval_repo, mock_expense_repo):
         #Arrange
         expense_id = 1
         user_id = 1
@@ -172,7 +172,7 @@ class TestExpenseService:
     @allure.story("Employee viewing expenses")
     @allure.title("Test get expenses with status, returns none")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_get_expense_with_status_returns_None(expense_service_test, mock_approval_repo, mock_expense_repo):
+    def test_get_expense_with_status_returns_None(self, expense_service_test, mock_approval_repo, mock_expense_repo):
 
         #Arrange
         mock_approval_repo.find_by_expense_id.return_value = None
@@ -191,7 +191,7 @@ class TestExpenseService:
     @allure.story("Employee editing expenses")
     @allure.title("Test update expense, positive test")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_update_expense_returns_expense(expense_service_test, mock_expense_repo):
+    def test_update_expense_returns_expense(self, expense_service_test, mock_expense_repo):
 
         #Arrange
         expense = Expense(1, 1, 1.0, 'test', 'date')
@@ -211,7 +211,7 @@ class TestExpenseService:
     @allure.story("Employee editing expenses")
     @allure.title("Test update expense, returns none")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_update_expense_returns_none(expense_service_test, mock_expense_repo):
+    def test_update_expense_returns_none(self, expense_service_test, mock_expense_repo):
         #Arrange
         result = None
 
@@ -230,7 +230,7 @@ class TestExpenseService:
         'approved'
     ])
     #EU-033
-    def test_update_expense_not_pending_returns_exception(expense_service_test, mock_expense_repo, status):
+    def test_update_expense_not_pending_returns_exception(self, expense_service_test, mock_expense_repo, status):
         #Arrange
         expense = Expense(1, 1, 1.0, 'test', 'date')
         approval = Approval(1, 1, status, None, None, None)
@@ -252,7 +252,7 @@ class TestExpenseService:
         0.0
     ])
     #EU-034
-    def test_update_expense_negative_amount_returns_exception(expense_service_test, mock_expense_repo, amount):
+    def test_update_expense_negative_amount_returns_exception(self, expense_service_test, mock_expense_repo, amount):
         #Arrange
         expense = Expense(1, 1, 1.0, 'test', 'date')
         approval = Approval(1, 1, 'pending', None, None, None)
@@ -270,7 +270,7 @@ class TestExpenseService:
     @allure.story("Employee editing expenses")
     @allure.title("Test update expense with empty description")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_update_expense_empty_description_returns_exception(expense_service_test, mock_expense_repo):
+    def test_update_expense_empty_description_returns_exception(self, expense_service_test, mock_expense_repo):
         #Arrange
         expense = Expense(1, 1, 1.0, 'test', 'date')
         approval = Approval(1, 1, 'pending', None, None, None)
@@ -291,7 +291,7 @@ class TestExpenseService:
     @allure.story("Employee deleting expenses")
     @allure.title("Test delete expense, positive test")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_delete_expense_returns_true(expense_service_test, mock_expense_repo):
+    def test_delete_expense_returns_true(self, expense_service_test, mock_expense_repo):
         #Arrange
         expense = Expense(1, 1, 1.0, 'test', 'date')
         approval = Approval(1, 1, 'pending', None, None, None)
@@ -312,7 +312,7 @@ class TestExpenseService:
         'approved',
     ])
     #EU-037
-    def test_delete_expense_returns_exception_if_status_not_pending(expense_service_test, status):
+    def test_delete_expense_returns_exception_if_status_not_pending(self, expense_service_test, status):
         #Arrange
         expense = Expense(1, 1, 1.0, 'test', 'date')
         approval = Approval(1, 1, status, None, None, None)
@@ -329,7 +329,7 @@ class TestExpenseService:
     @allure.story("Employee deleting expenses")
     @allure.title("Test delete expense, returns false")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_delete_expense_returns_false(expense_service_test):
+    def test_delete_expense_returns_false(self, expense_service_test):
 
         #Arrange
         with patch("src.service.expense_service.ExpenseService.get_expense_with_status", return_value = None):
@@ -351,7 +351,7 @@ class TestExpenseService:
         'pending',
     ])
     #EU-039
-    def test_get_expense_history_returns_list(expense_service_test, status):
+    def test_get_expense_history_returns_list(self, expense_service_test, status):
         #Arrange
         expense = Expense(1, 1, 1.0, 'test', 'date')
         approval = Approval(1, 1, status, None, None, None)
@@ -369,7 +369,7 @@ class TestExpenseService:
     @allure.story("Employee viewing expenses")
     @allure.title("Test get expense history, empty list")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_get_expense_history_returns_empty_list(expense_service_test):
+    def test_get_expense_history_returns_empty_list(self, expense_service_test):
         #Arrange
         with patch("src.service.expense_service.ExpenseService.get_user_expenses_with_status",
                    return_value = []):

@@ -26,7 +26,7 @@ class TestAuth:
     @allure.story("Employee login")
     @allure.title("Test user login with no auth token")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_require_employee_auth_no_token(app):
+    def test_require_employee_auth_no_token(self, app):
       protected = require_employee_auth(lambda: ("OK", 200))
 
       with app.test_request_context("/"):
@@ -38,7 +38,7 @@ class TestAuth:
     @allure.story("Employee login")
     @allure.title("Test user login with wrong role")
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_require_employee_auth_wrong_role(app, monkeypatch):
+    def test_require_employee_auth_wrong_role(self, app, monkeypatch):
       manager_user = SimpleNamespace(role="Manager")
 
       auth_service = MagicMock()
