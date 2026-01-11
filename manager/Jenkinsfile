@@ -37,6 +37,10 @@ pipeline {
     stages {
         stage("Validate"){
             steps{
+                sh '''
+                which docker
+                docker --version
+                '''
                 echo "${WORKSPACE_HOST}"
             }
         }
