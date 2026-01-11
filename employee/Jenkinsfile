@@ -60,9 +60,7 @@ pipeline {
             steps {
                 dir('employee') {
                     echo 'Running tests...'
-                    sh """
-                        docker compose -f docker-compose-v2.yml up --build --abort-on-container-exit --exit-code-from behave-tests
-                    """
+                    sh "docker compose up -f docker-compose-v2.yml --build --abort-on-container-exit --exit-code-from behave-tests"
                 }
             }
             post{
