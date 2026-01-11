@@ -52,40 +52,42 @@ pipeline {
                 }
             }
         }
-        stage("Build and perform unit tests"){
+        stage('Build') {
             agent {
                 docker {
                     image 'maven:3.9-eclipse-temurin-17'
                     args '-v maven-repo:/root/.m2'
                 }
             }
-            stage('Build') {
-                steps {
-                    dir('manager') {
-                        sh 'mvn clean compile -B'
-                    }
+            steps {
+                dir('manager') {
+                    sh 'mvn clean compile -B'
                 }
             }
-
-            stage('Unit Tests') {
-                steps {
-                    dir('manager'){
-                    //todo: only run unit tests!
-                        echo 'skipping tests for now:'
-    //                     sh 'mvn test -B'
-                    }
-                }
-                post {
-                    always {
-                        dir('manager'){
-                            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-                        }
-                    }
-                }
-            }
-
         }
 
+        stage('Unit Tests') {
+            agent {
+                docker {
+                    image 'maven:3.9-eclipse-temurin-17'
+                    args '-v maven-repo:/root/.m2'
+                }
+            }
+            steps {
+                dir('manager'){
+                //todo: only run unit tests!
+                    echo 'skipping tests for now:'
+//                     sh 'mvn test -B'
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
 
         stage('Build Docker Image') {
             agent any
