@@ -93,7 +93,7 @@ pipeline {
                             }
                         }
                         stages {
-                            stage("Running ${BROWSER_TYPE} E2E Tests"){
+                            stage("Running E2E Tests"){
                                 steps {
                                     dir('employee') {
                                         echo "Running E2E tests for ${BROWSER_TYPE}..."
