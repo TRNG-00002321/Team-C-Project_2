@@ -49,7 +49,7 @@ pipeline {
                 expression { params.TEST_MODE == true }
             }
             stages {
-                stage('Unit Tests') {       
+                stage('Unit & Integration Tests') {       
                     steps {
                         echo '🧪 Running Python Unit Tests with Allure...'
                         dir('employee')  {
@@ -85,37 +85,45 @@ pipeline {
                     when {
                         expression { params.TEST_MODE == true }
                     }
-                    steps {
-                        dir('employee') {
-                            echo 'Running tests with Docker Compose...'
-                            sh "docker compose -f docker-compose-v2.yml up --build --abort-on-container-exit --exit-code-from behave-tests"
-                        }
-                    }
-                    post {
-                        always {
-                            dir('employee') {
-                                // Extract artifacts before tear down
-                                sh """
-                                CONTAINER_ID=\$(docker compose -f docker-compose-v2.yml ps -a -q behave-tests)
-                                if [ ! -z "\$CONTAINER_ID" ]; then
-                                    echo "Copying artifacts from \$CONTAINER_ID..."
-                                    mkdir -p allure-results test-results
-                                    docker cp \$CONTAINER_ID:/employee/allure-results/. allure-results/ || true
-                                    docker cp \$CONTAINER_ID:/employee/test-results/. test-results/ || true
-                                else
-                                    echo "Container not found, skipping artifact copy."
-                                fi
-                                ls -la allure-results || true
-                                ls -la test-results || true
-                                """
-                                sh "docker compose -f docker-compose-v2.yml down -v"
+                    matrix {
+                        axes {
+                            axis {
+                                name 'BROWSER_TYPE'
+                                values 'firefox', 'chrome', 'edge'
                             }
                         }
-                        success {
-                            echo 'All Tests Passesd!'
+                        steps {
+                            dir('employee') {
+                                echo "Running E2E tests for ${BROWSER_TYPE}..."
+                                sh "docker compose -f docker-compose-v2.yml up --build --abort-on-container-exit --exit-code-from behave-tests"
+                            }
                         }
-                        failure {
-                            echo 'Some Tests Failed!'
+                        post {
+                            always {
+                                dir('employee') {
+                                    // Extract artifacts before tear down
+                                    sh """
+                                    CONTAINER_ID=\$(docker compose -f docker-compose-v2.yml ps -a -q behave-tests)
+                                    if [ ! -z "\$CONTAINER_ID" ]; then
+                                        echo "Copying artifacts from \$CONTAINER_ID..."
+                                        mkdir -p allure-results test-results
+                                        docker cp \$CONTAINER_ID:/employee/allure-results/. allure-results/${BROWSER_TYPE} || true
+                                        docker cp \$CONTAINER_ID:/employee/test-results/. test-results/${BROWSER_TYPE} || true
+                                    else
+                                        echo "Container not found, skipping artifact copy."
+                                    fi
+                                    ls -la allure-results || true
+                                    ls -la test-results || true
+                                    """
+                                    sh "docker compose -f docker-compose-v2.yml down -v"
+                                }
+                            }
+                            success {
+                                echo 'All Tests Passesd!'
+                            }
+                            failure {
+                                echo 'Some Tests Failed!'
+                            }
                         }
                     }
                 }

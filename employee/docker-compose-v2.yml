@@ -56,7 +56,6 @@ services:
     environment:
       - TEST_MODE=true
     healthcheck:
-      # test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
       interval: 5s
       timeout: 10s
@@ -79,4 +78,4 @@ services:
         - HEADLESS=true
         - SELENIUM_URL=http://selenium-hub:4444/wd/hub
         - BASE_URL=http://test-server:5000
-        - BROWSER_TYPE=chrome
+        - BROWSER_TYPE=${BROWSER_TYPE}
