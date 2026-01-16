@@ -139,10 +139,10 @@ pipeline {
                             dir('employee') {
                                 sh """
                                     docker cp ${DOCKER_IMAGE}-e2e-runner:/employee/allure-results/. allure-results/
-                                    docker cp ${DOCKER_IMAGE}-e2e-runner:/employee/app_logs.txt logs/
 
                                     docker rm ${DOCKER_IMAGE}-e2e-runner
                                 """
+                                    // docker cp ${DOCKER_IMAGE}-e2e-runner:/employee/app_logs.txt logs/
                             }
                         }
                         success {
