@@ -48,12 +48,14 @@ pipeline {
             when {
                 expression { params.TEST_MODE == true }
             }
-            steps {
-                dir('employee') {
-                    sh "docker build -t ${DOCKER_IMAGE}-test --target test ."
-                }
-            }
             stages {
+                stage('Setup') {
+                    steps {
+                        dir('employee') {
+                            sh "docker build -t ${DOCKER_IMAGE}-test --target test ."
+                        }
+                    }
+                }
                 stage('Unit Test') {       
                     steps {
                         dir('employee')  {
