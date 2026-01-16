@@ -19,7 +19,7 @@ pipeline {
         booleanParam(
             name: "TEST_MODE", 
             defaultValue: true,
-            description: 'Run test exectution'
+            description: 'Run Tests?'
         )    }
 
     stages {
@@ -48,24 +48,24 @@ pipeline {
             when {
                 expression { params.TEST_MODE == true }
             }
+            steps {
+                dir('employee') {
+                    sh "docker build -t ${DOCKER_IMAGE}-test --target test ."
+                }
+            }
             stages {
-                stage('Unit & Integration Tests') {       
+                stage('Unit Test') {       
                     steps {
-                        echo '🧪 Running Python Unit Tests with Allure...'
                         dir('employee')  {
+                            echo 'Running Unit Tests...'
                             sh """
-                                mkdir -p allure-results test-results
-                                ls -la
-                                docker build -t ${DOCKER_IMAGE}-unit-test --target test .
-                                
                                 docker rm -f ${DOCKER_IMAGE}-unit-runner || true
 
-                                docker run --name ${DOCKER_IMAGE}-unit-runner ${DOCKER_IMAGE}-unit-test \
-                                    pytest tests/unit_tests tests/integration_tests \
+                                docker run --name ${DOCKER_IMAGE}-unit-runner ${DOCKER_IMAGE}-test \
+                                    python -m pytest tests/unit_tests \
                                     --alluredir=/employee/allure-results \
                                     --junitxml=/employee/test-results/unit-results.xml
 
-                                mkdir -p allure-results test-results
                                 docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
                                 docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
 
@@ -75,59 +75,86 @@ pipeline {
                     }
                     post {
                         always {
-                            sh "ls -la ${WORKSPACE}/employee/test-results || true"
-                            sh "ls -la ${WORKSPACE}/employee/allure-results || true"
-                            sh "pwd"
+                            dir('employee'){
+                                sh """
+                                    docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
+                                    docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
+                                    docker rm ${DOCKER_IMAGE}-unit-runner
+                                """
+                            }
+                        }
+                        success {
+                            echo 'Unit Tests Passesd!'
+                        }
+                        failure {
+                            echo 'Unit Tests Failed!'
                         }
                     }
                 }
-                stage('E2E Tests') {
-                    when {
-                        expression { params.TEST_MODE == true }
-                    }
-                    matrix {
-                        axes {
-                            axis {
-                                name 'BROWSER_TYPE'
-                                values 'firefox', 'chrome', 'edge'
+                stage('Integration Test'){
+                    steps {
+                        dir('employee')  {
+                            echo 'Running Integration Tests...'
+                            sh """
+                                docker rm -f ${DOCKER_IMAGE}-int-runner || true
+
+                                docker run --name ${DOCKER_IMAGE}-int-runner ${DOCKER_IMAGE}-test \
+                                    python -m pytest tests/integration_tests \
+                                    --alluredir=/employee/allure-results \
+                                    --junitxml=/employee/test-results/integration-results.xml
+                            """
+                        }
+                    }  
+                    post {
+                        always {
+                            dir('employee'){
+                                sh """
+                                    docker cp ${DOCKER_IMAGE}-int-runner:/employee/allure-results/. allure-results/
+                                    docker cp ${DOCKER_IMAGE}-int-runner:/employee/test-results/. test-results/
+                                    docker rm ${DOCKER_IMAGE}-int-runner
+                                """
                             }
                         }
-                        stages {
-                            stage("Running E2E Tests"){
-                                steps {
-                                    dir('employee') {
-                                        echo "Running E2E tests for ${BROWSER_TYPE}..."
-                                        sh "docker compose -f docker-compose-v2.yml up --build --abort-on-container-exit --exit-code-from behave-tests"
-                                    }
-                                }
-                                post {
-                                    always {
-                                        dir('employee') {
-                                            // Extract artifacts before tear down
-                                            sh """
-                                            CONTAINER_ID=\$(docker compose -f docker-compose-v2.yml ps -a -q behave-tests)
-                                            if [ ! -z "\$CONTAINER_ID" ]; then
-                                                echo "Copying artifacts from \$CONTAINER_ID..."
-                                                mkdir -p allure-results test-results
-                                                docker cp \$CONTAINER_ID:/employee/allure-results/. allure-results/${BROWSER_TYPE} || true
-                                                docker cp \$CONTAINER_ID:/employee/test-results/. test-results/${BROWSER_TYPE} || true
-                                            else
-                                                echo "Container not found, skipping artifact copy."
-                                            fi
-                                            ls -la allure-results || true
-                                            ls -la test-results || true
-                                            """
-                                            sh "docker compose -f docker-compose-v2.yml down -v"
-                                        }
-                                    }
-                                    success {
-                                        echo 'All Tests Passesd!'
-                                    }
-                                    failure {
-                                        echo 'Some Tests Failed!'
-                                    }
-                                }
+                        success {
+                            echo 'Integration Tests Passesd!'
+                        }
+                        failure {
+                            echo 'Integration Tests Failed!'
+                        }
+                    }                  
+                }
+                stage('E2E Test') {
+                    steps {
+                        dir('employee') {
+                            echo "Running E2E tests..."
+                            sh """
+                                docker rm -f ${DOCKER_IMAGE}-e2e-runner || true
+
+                                docker run --name ${DOCKER_IMAGE}-e2e-runner \
+                                    --shm-size-2gb \
+                                    ${DOCKER_IMAGE}-test \
+                                    sh -c "python -m src.main > app_logs.txt 2>&1 & wait-for-it localhost:5000 -- python -m behave"
+                            """
+                            CMD ["sh", "-c", ""]
+
+                        }
+                    }
+                    post {
+                        always {
+                            dir('employee') {
+                                sh """
+                                    docker cp ${DOCKER_IMAGE}-e2e-runner:/employee/allure-results/. allure-results/
+                                    docker cp ${DOCKER_IMAGE}-e2e-runner:/employee/app_logs.txt logs/
+
+                                    docker rm ${DOCKER_IMAGE}-e2e-runner
+                                """
                             }
+                        }
+                        success {
+                            echo 'E2E Tests Passed!'
+                        }
+                        failure {
+                            echo 'E2E Tests Failed!'
                         }
                     }
                 }
@@ -144,9 +171,13 @@ pipeline {
                 dir('employee') {
                     echo 'Building Docker image...'
                     sh """
-                    docker build --target production -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                    docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
+                        docker build --target production -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                        docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
                     """
+                }
+            }
+            post{
+                success{
                     echo 'Docker image built successfully:'
                     sh "docker images | grep ${DOCKER_IMAGE} || true"
                 }
