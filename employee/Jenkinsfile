@@ -67,11 +67,6 @@ pipeline {
                                     python -m pytest tests/unit_tests \
                                     --alluredir=/employee/allure-results \
                                     --junitxml=/employee/test-results/unit-results.xml
-
-                                docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
-                                docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
-
-                                docker rm ${DOCKER_IMAGE}-unit-runner
                             """
                         }
                     }
