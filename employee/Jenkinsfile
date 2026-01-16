@@ -128,7 +128,7 @@ pipeline {
                                 docker rm -f ${DOCKER_IMAGE}-e2e-runner || true
 
                                 docker run --name ${DOCKER_IMAGE}-e2e-runner \
-                                    --shm-size-2gb \
+                                    --shm-size=2gb \
                                     ${DOCKER_IMAGE}-test \
                                     sh -c "python -m src.main > app_logs.txt 2>&1 & wait-for-it localhost:5000 -- python -m behave"
                             """
