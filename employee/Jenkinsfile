@@ -137,8 +137,6 @@ pipeline {
                                     ${DOCKER_IMAGE}-test \
                                     sh -c "python -m src.main > app_logs.txt 2>&1 & wait-for-it localhost:5000 -- python -m behave"
                             """
-                            CMD ["sh", "-c", ""]
-
                         }
                     }
                     post {
