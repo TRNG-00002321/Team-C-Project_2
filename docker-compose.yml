@@ -22,4 +22,4 @@ networks:
 
 volumes:
   jenkins_home:
-    name: jenkins_p2_home
+    name: jenkins_home_p2
