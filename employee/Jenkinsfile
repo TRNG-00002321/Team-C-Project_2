@@ -183,9 +183,11 @@ pipeline {
                 dir('employee') {
                     echo 'Testing Docker image...'
                     sh """
+                    NET_NAME=\$(docker inspect jenkins-p2 -f '{{range \$k, \$v := .NetworkSettings.Networks}}{{\$k}}{{end}}')
+                    echo "Detected Jenkins Network: \$NET_NAME"
                     docker rm -f employee_temp || true
                     docker run -d --name employee_temp \
-                        --network jenkins-net \
+                        --network \$NET_NAME \
                         ${DOCKER_IMAGE}:${DOCKER_TAG}
                     
                     sleep 5
