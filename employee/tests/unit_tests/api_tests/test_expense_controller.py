@@ -367,7 +367,7 @@ class TestExpenseController:
         FAKE_USER.id
       )
 
-    @allure.story("Employee edit expenses")
+    @allure.story("Employee editing expenses")
     @allure.title("Test employee update expense, positive test")
     @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
@@ -432,7 +432,7 @@ class TestExpenseController:
       assert response.json["expense"]["description"] == fake_expense.description
       assert response.json["expense"]["date"] == fake_expense.date
 
-    @allure.story("Employee edit expenses")
+    @allure.story("Employee editing expenses")
     @allure.title("Test employee update expense, negative test")
     @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
@@ -456,7 +456,7 @@ class TestExpenseController:
       assert response.get_json()["error"] == error_description
       app.expense_service.update_expense.assert_not_called()
 
-    @allure.story("Employee edit expenses")
+    @allure.story("Employee editing expenses")
     @allure.title("Test employee update expense, throws exception")
     @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
@@ -489,7 +489,7 @@ class TestExpenseController:
         date="2025-12-19"
       )
 
-    @allure.story("Employee delete expenses")
+    @allure.story("Employee deleting expenses")
     @allure.title("Test employee delete expense, positive test")
     @allure.severity(allure.severity_level.CRITICAL)
     def test_delete_expense_positive_200(self, client, app, monkeypatch):
@@ -514,7 +514,7 @@ class TestExpenseController:
         FAKE_USER.id
       )
 
-    @allure.story("Employee delete expenses")
+    @allure.story("Employee deleting expenses")
     @allure.title("Test employee delete expense, 404 error")
     @allure.severity(allure.severity_level.CRITICAL)
     def test_delete_expense_negative_404(self, client, app, monkeypatch):
@@ -539,7 +539,7 @@ class TestExpenseController:
         FAKE_USER.id
       )
 
-    @allure.story("Employee delete expenses")
+    @allure.story("Employee deleting expenses")
     @allure.title("Test employee delete expense, throws exceptions")
     @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(

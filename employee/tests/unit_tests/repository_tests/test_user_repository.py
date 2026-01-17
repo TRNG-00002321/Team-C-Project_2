@@ -41,9 +41,13 @@ class TestUserRepository:
         )
 
     @allure.story("Employee login")
-    @allure.title("Test find by username, username not found")
+    @allure.title("Test find by username, negative tests")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_find_by_username_not_found(self, setUp):
+    @pytest.mark.parametrize("username", [
+        ("DoesntExist"),
+        ("")
+    ])
+    def test_find_by_username_negative(self, setUp, username):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
         # setUp[2] = mock_cursor, setUp[3] = userRepo
@@ -52,35 +56,56 @@ class TestUserRepository:
         setUp[2].fetchone.return_value = None
 
         # Act
-        actualUser = setUp[3].find_by_username("DoesntExist")
+        actualUser = setUp[3].find_by_username(username)
 
         # Assert
         assert actualUser is None
         setUp[1].execute.assert_called_once_with(
             "SELECT id, username, password, role FROM users WHERE username = ?",
-            ("DoesntExist",)
+            (username,)
         )
 
-    @allure.story("Employee login")
-    @allure.title("Test find by username, username empty")
-    @allure.severity(allure.severity_level.NORMAL)
-    def test_find_by_username_empty(self, setUp):
+    #@allure.story("Employee login")
+    #@allure.title("Test find by username, username not found")
+    #@allure.severity(allure.severity_level.NORMAL)
+    #def test_find_by_username_not_found(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
         # setUp[2] = mock_cursor, setUp[3] = userRepo
-        setUp[0].get_connection.return_value.__enter__.return_value = setUp[1]
-        setUp[1].execute.return_value = setUp[2]
-        setUp[2].fetchone.return_value = None
+    #    setUp[0].get_connection.return_value.__enter__.return_value = setUp[1]
+    #    setUp[1].execute.return_value = setUp[2]
+    #    setUp[2].fetchone.return_value = None
 
         # Act
-        actualUser = setUp[3].find_by_username("")
+    #    actualUser = setUp[3].find_by_username("DoesntExist")
+
+        # Assert
+    #    assert actualUser is None
+    #    setUp[1].execute.assert_called_once_with(
+    #        "SELECT id, username, password, role FROM users WHERE username = ?",
+    #        ("DoesntExist",)
+    #    )
+
+    #@allure.story("Employee login")
+    #@allure.title("Test find by username, username empty")
+    #@allure.severity(allure.severity_level.NORMAL)
+    #def test_find_by_username_empty(self, setUp):
+        # Arrange
+        # setUp[0] = mock_db, setUp[1] = mock_conn,
+        # setUp[2] = mock_cursor, setUp[3] = userRepo
+    #    setUp[0].get_connection.return_value.__enter__.return_value = setUp[1]
+    #    setUp[1].execute.return_value = setUp[2]
+    #    setUp[2].fetchone.return_value = None
+
+        # Act
+    #    actualUser = setUp[3].find_by_username("")
 
         #Assert
-        assert actualUser is None
-        setUp[1].execute.assert_called_once_with(
-            "SELECT id, username, password, role FROM users WHERE username = ?",
-            ("",)
-        )
+    #    assert actualUser is None
+    #    setUp[1].execute.assert_called_once_with(
+    #        "SELECT id, username, password, role FROM users WHERE username = ?",
+    #        ("",)
+    #    )
 
     @allure.story("Employee login")
     @allure.title("Test find by id, positive test")
@@ -107,9 +132,14 @@ class TestUserRepository:
         )
 
     @allure.story("Employee login")
-    @allure.title("Test find by id, id not found")
+    @allure.title("Test find by id, negative tests")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_find_by_id_not_found(self, setUp):
+    @pytest.mark.parametrize("id", [
+        (999999999),
+        (-1),
+        (None)
+    ])
+    def test_find_by_id_negative(self, setUp, id):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
         # setUp[2] = mock_cursor, setUp[3] = userRepo
@@ -117,54 +147,74 @@ class TestUserRepository:
         setUp[1].execute.return_value = setUp[2]
         setUp[2].fetchone.return_value = None
         # Act
-        actualUser = setUp[3].find_by_id(9999)
+        actualUser = setUp[3].find_by_id(id)
 
         # Assert
         assert actualUser is None
         setUp[1].execute.assert_called_once_with(
             "SELECT id, username, password, role FROM users WHERE id = ?",
-            (9999,)
+            (id,)
         )
 
-    @allure.story("Employee login")
-    @allure.title("Test find by id, negative number")
-    @allure.severity(allure.severity_level.NORMAL)
-    def test_find_by_id_negative_num(self, setUp):
+    #@allure.story("Employee login")
+    #@allure.title("Test find by id, id not found")
+    #@allure.severity(allure.severity_level.NORMAL)
+    #def test_find_by_id_not_found(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
         # setUp[2] = mock_cursor, setUp[3] = userRepo
-        setUp[0].get_connection.return_value.__enter__.return_value = setUp[1]
-        setUp[1].execute.return_value = setUp[2]
-        setUp[2].fetchone.return_value = None
+    #    setUp[0].get_connection.return_value.__enter__.return_value = setUp[1]
+    #    setUp[1].execute.return_value = setUp[2]
+    #    setUp[2].fetchone.return_value = None
         # Act
-        actualUser = setUp[3].find_by_id(-1)
+    #    actualUser = setUp[3].find_by_id(9999)
 
         # Assert
-        assert actualUser is None
-        setUp[1].execute.assert_called_once_with(
-            "SELECT id, username, password, role FROM users WHERE id = ?",
-            (-1,)
-        )
+    #    assert actualUser is None
+    #    setUp[1].execute.assert_called_once_with(
+    #        "SELECT id, username, password, role FROM users WHERE id = ?",
+    #        (9999,)
+    #    )
 
-    @allure.story("Employee login")
-    @allure.title("Test find by id, null id")
-    @allure.severity(allure.severity_level.NORMAL)
-    def test_find_by_id_null(self, setUp):
+    #@allure.story("Employee login")
+    #@allure.title("Test find by id, negative number")
+    #@allure.severity(allure.severity_level.NORMAL)
+    #def test_find_by_id_negative_num(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
         # setUp[2] = mock_cursor, setUp[3] = userRepo
-        setUp[0].get_connection.return_value.__enter__.return_value = setUp[1]
-        setUp[1].execute.return_value = setUp[2]
-        setUp[2].fetchone.return_value = None
+    #    setUp[0].get_connection.return_value.__enter__.return_value = setUp[1]
+    #    setUp[1].execute.return_value = setUp[2]
+    #    setUp[2].fetchone.return_value = None
         # Act
-        actualUser = setUp[3].find_by_id(None)
+    #    actualUser = setUp[3].find_by_id(-1)
 
         # Assert
-        assert actualUser is None
-        setUp[1].execute.assert_called_once_with(
-            "SELECT id, username, password, role FROM users WHERE id = ?",
-            (None,)
-        )
+    #    assert actualUser is None
+    #    setUp[1].execute.assert_called_once_with(
+    #        "SELECT id, username, password, role FROM users WHERE id = ?",
+    #        (-1,)
+    #    )
+
+    #@allure.story("Employee login")
+    #@allure.title("Test find by id, null id")
+    #@allure.severity(allure.severity_level.NORMAL)
+    #def test_find_by_id_null(self, setUp):
+        # Arrange
+        # setUp[0] = mock_db, setUp[1] = mock_conn,
+        # setUp[2] = mock_cursor, setUp[3] = userRepo
+    #    setUp[0].get_connection.return_value.__enter__.return_value = setUp[1]
+    #    setUp[1].execute.return_value = setUp[2]
+    #    setUp[2].fetchone.return_value = None
+        # Act
+    #    actualUser = setUp[3].find_by_id(None)
+
+        # Assert
+    #    assert actualUser is None
+    #    setUp[1].execute.assert_called_once_with(
+    #        "SELECT id, username, password, role FROM users WHERE id = ?",
+    #        (None,)
+    #    )
 
     @allure.story("Employee creation")
     @allure.title("Test create user, positive test")
