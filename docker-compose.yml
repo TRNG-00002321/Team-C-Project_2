@@ -5,7 +5,6 @@ services:
     ports:
       - "8080:8080"      # Web UI
       - "50000:50000"    # Agent communication
-      - "5000:5000"      # Employee port
     volumes:
       - jenkins_home:/var/jenkins_home
       # Mount Docker socket for Docker-in-Docker builds

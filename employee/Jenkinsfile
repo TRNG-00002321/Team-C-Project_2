@@ -183,11 +183,16 @@ pipeline {
                 dir('employee') {
                     echo 'Testing Docker image...'
                     sh """
-                    CONTAINER_ID=\$(docker run -d -p 5000:5000 ${DOCKER_IMAGE}:${DOCKER_TAG})
+                    docker run -d --name employee_temp \
+                        --network jenkins-net \
+                        ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    
                     sleep 5
-                    RESPONSE_CODE=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/health)
-                    docker stop \$CONTAINER_ID
-                    docker rm \$CONTAINER_ID
+                    
+                    RESPONSE_CODE=\$(curl -s -o /dev/null -w "%{http_code}" http://employee_temp:5000/health)
+                    docker stop employee_temp
+                    docker rm employee_temp
+
                     echo "Health check response code: \$RESPONSE_CODE"
                     if [ "\$RESPONSE_CODE" -ne 200 ]; then
                         exit 1                    
