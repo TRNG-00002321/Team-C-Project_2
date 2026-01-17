@@ -183,6 +183,7 @@ pipeline {
                 dir('employee') {
                     echo 'Testing Docker image...'
                     sh """
+                    docker rm -f employee_temp || true
                     docker run -d --name employee_temp \
                         --network jenkins-net \
                         ${DOCKER_IMAGE}:${DOCKER_TAG}
