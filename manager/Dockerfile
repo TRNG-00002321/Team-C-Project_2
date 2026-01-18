@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy pom.xml and download dependencies (cached layer)
+COPY manager/.env .
 COPY manager/pom.xml .
 RUN mvn dependency:go-offline -B
 #Copy env and db files

@@ -108,9 +108,14 @@ pipeline {
                     # Wait for app to be healthy
                     echo "Waiting for application to start..."
                     sleep 30
-                    curl -f http://172.17.0.1:${APP_PORT}/health || exit 1
+                    RESPONSE_CODE=\$(curl -f http://172.17.0.1:${APP_PORT}/health)
+                    echo "Health check response code: \$RESPONSE_CODE"
+                                        if [ "\$RESPONSE_CODE" -ne 200 ]; then
+                                            exit 1
+                                        fi
                     echo "✅ Application is ready!"
                 '''
+
             }
         }
             stage('Tests Tests') {
