@@ -145,7 +145,8 @@ pipeline {
                     dir('manager'){
                     //todo: only run unit tests!
                         echo 'lumping tests together for now:'
-                         sh 'mvn test -B'
+                        sh 'docker exec -it ${APP_NAME}:${BUILD_VERSION} mvn test -B'
+                        sh 'mvn test -B'
                     }
                 }
                 post {
