@@ -18,7 +18,7 @@ public class Hooks {
         //Reset scenario state
         context.getDriver().manage().deleteAllCookies();
         context.getDriver().navigate().refresh();
-        context.getDriver().get("http://localhost:5001/");
+        context.getDriver().get("http://172.17.0.1:5001/");
     }
     @After
     public void tearDown(){
