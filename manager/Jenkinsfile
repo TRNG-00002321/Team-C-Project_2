@@ -103,10 +103,11 @@ pipeline {
                         -p ${APP_PORT}:${APP_PORT} \
                         -v expense-data:/data \
                         ${APP_NAME}:${BUILD_VERSION}
-
+                '''
+                sh '''
                     # Wait for app to be healthy
                     echo "Waiting for application to start..."
-                    sleep 30
+                    sleep 100
                     curl -f http://localhost:${APP_PORT}/health || exit 1
                     echo "✅ Application is ready!"
                 '''
