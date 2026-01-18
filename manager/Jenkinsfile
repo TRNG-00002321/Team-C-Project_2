@@ -129,7 +129,7 @@ pipeline {
                     echo "Waiting for application to start..."
                     sleep 5
                     # curl -v http://${APP_NAME}:8080
-                    # curl -f http://localhost:5001/health
+                    curl -f http://localhost:5001/health
                     RESPONSE_CODE=\$(curl -f http://${APP_NAME}:${APP_PORT}/health)
                     echo "Health check response code: \$RESPONSE_CODE"
                                         if [ "\$RESPONSE_CODE" -ne 200 ]; then
