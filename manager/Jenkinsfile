@@ -112,7 +112,6 @@ pipeline {
                 '''
             }
         }
-    }
             stage('Tests Tests') {
                 steps {
                     dir('manager'){
@@ -129,6 +128,8 @@ pipeline {
                     }
                 }
             }
+    }
+
     post {
         always {
             echo '🧹 Cleaning up...'
