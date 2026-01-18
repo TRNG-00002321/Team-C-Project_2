@@ -52,7 +52,7 @@ public class Main {
                     it.allowHost("http://172.17.0.1:8080");
                     it.allowHost("http://172.17.0.1:5001");
                     it.allowHost("http://0.0.0.0:5001");
-                    it.allowCredentials = true;
+//                    it.allowCredentials = true;
                 });
             });
             
