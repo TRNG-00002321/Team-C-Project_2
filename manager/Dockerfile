@@ -18,7 +18,7 @@ COPY ./test_expense_manager.db /app/test_expense_manager.db
 
 # Copy source code and build
 
-COPY manager/src/ ./src/
+COPY manager/src ./src/
 RUN mvn clean package -DskipTests -B
 
 # Production stage

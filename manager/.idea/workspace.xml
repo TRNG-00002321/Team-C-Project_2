@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dc1e0e1f-cfcb-4d65-8ee3-0abc9b71fbb2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/public/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/public/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/manager.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/public/manager.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/public/manager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/db/test_expense_manager.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/db/test_expense_manager.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
