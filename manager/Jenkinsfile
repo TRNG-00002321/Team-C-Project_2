@@ -57,17 +57,17 @@ pipeline {
                 }
             }
         }
-        stage('Setup network') {
-                    steps {
-                        script {
-                            // Create a Docker network if it doesn't already exist
-                            sh '''
-                                docker network inspect man-test >/dev/null 2>&1 || \
-                                docker network create man-test
-                            '''
-                        }
-                    }
-                }
+//         stage('Setup network') {
+//                     steps {
+//                         script {
+//                             // Create a Docker network if it doesn't already exist
+//                             sh '''
+//                                 docker network inspect man-test >/dev/null 2>&1 || \
+//                                 docker network create man-test
+//                             '''
+//                         }
+//                     }
+//                 }
 
         stage('Unit Tests') {
 
@@ -103,7 +103,14 @@ pipeline {
         stage('Start Application') {
             steps {
                 echo '🚀 Starting Manager App for API/E2E Testing...'
+                 sh '''
+
+                 '''
                 sh '''
+                    NET_NAME=\$(docker inspect jenkins-p2 -f '{{range \$k, \$v := .NetworkSettings.Networks}}{{\$k}}{{end}}')
+                    echo "Detected Jenkins Network: \$NET_NAME"
+
+
                     # Stop any existing container
                     docker stop ${APP_NAME} || true
                     docker rm ${APP_NAME} || true
@@ -111,7 +118,7 @@ pipeline {
                     # Start the container
                     docker run -d \
                         --name ${APP_NAME} \
-                        --network man-test \
+                        --network \$NET_NAME \
                         -p ${APP_PORT}:${APP_PORT} \
                         -v expense-data:/data \
                         ${APP_NAME}:${BUILD_VERSION}
