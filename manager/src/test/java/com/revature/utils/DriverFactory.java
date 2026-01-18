@@ -22,7 +22,13 @@ public class DriverFactory {
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions options = new ChromeOptions();
                 if (headless) {
-                    options.addArguments("--headless=new");
+                    options.addArguments(
+                            "--headless=new",
+                            "--no-sandbox",
+                            "--disable-dev-shm-usage",
+                            "--disable-gpu",
+                            "--window-size=1920,1080"
+                    );
                 }
 
                 options.setExperimentalOption(
