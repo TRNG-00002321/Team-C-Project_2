@@ -107,7 +107,8 @@ pipeline {
 
                  '''
                 sh '''
-                    NET_NAME=\$(docker inspect jenkinsdemo3 -f '{{range \$k, \$v := .NetworkSettings.Networks}}{{\$k}}{{end}}')
+                    NET_NAME=$(docker inspect jenkinsdemo3 \
+                      -f '{{range $k, $v := .NetworkSettings.Networks}}{{if ne $k "bridge"}}{{$k}}{{end}}{{end}}')
                     echo "Detected Jenkins Network: \$NET_NAME"
 
 
