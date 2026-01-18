@@ -4,8 +4,11 @@ import com.revature.repository.DatabaseConnection;
 import com.revature.repository.Expense;
 import com.revature.repository.ExpenseRepository;
 import com.revature.repository.ExpenseWithUser;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +26,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+@Epic("Manager App Unit Tests")
+@Feature("Expense Management")
+
+@Tag("Unit")
 @ExtendWith(MockitoExtension.class)
 public class TestExpenseRepository {
     @Mock
