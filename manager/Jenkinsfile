@@ -107,7 +107,8 @@ pipeline {
                 sh '''
                     # Wait for app to be healthy
                     echo "Waiting for application to start..."
-                    sleep 30
+                    sleep 5
+                    curl -v http://172.17.0.1:8080
                     RESPONSE_CODE=\$(curl -f http://172.17.0.1:${APP_PORT}/health)
                     echo "Health check response code: \$RESPONSE_CODE"
                                         if [ "\$RESPONSE_CODE" -ne 200 ]; then
