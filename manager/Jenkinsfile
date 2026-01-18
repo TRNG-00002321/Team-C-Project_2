@@ -6,7 +6,7 @@ pipeline {
 
     environment {
         // Application image name
-        APP_NAME = 'expense-manager'
+        APP_NAME = 'manager_app'
         APP_PORT = '5001'
 
         // AWS EC2 deployment target
@@ -113,22 +113,22 @@ pipeline {
             }
         }
     }
-    //         stage('Tests Tests') {
-    //             steps {
-    //                 dir('manager'){
-    //                 //todo: only run unit tests!
-    //                     echo 'lumping tests together for now:'
-    //                      sh 'mvn test -B'
-    //                 }
-    //             }
-    //             post {
-    //                 always {
-    //                     dir('manager'){
-    //                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-    //                     }
-    //                 }
-    //             }
-    //         }
+            stage('Tests Tests') {
+                steps {
+                    dir('manager'){
+                    //todo: only run unit tests!
+                        echo 'lumping tests together for now:'
+                         sh 'mvn test -B'
+                    }
+                }
+                post {
+                    always {
+                        dir('manager'){
+                            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                        }
+                    }
+                }
+            }
     post {
         always {
             echo '🧹 Cleaning up...'
