@@ -108,7 +108,7 @@ pipeline {
                     # Wait for app to be healthy
                     echo "Waiting for application to start..."
                     sleep 100
-                    curl -f http://localhost:${APP_PORT}/health || exit 1
+                    curl -f http://172.17.0.1:${APP_PORT}/health || exit 1
                     echo "✅ Application is ready!"
                 '''
             }
