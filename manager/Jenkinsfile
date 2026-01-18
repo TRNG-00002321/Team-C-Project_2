@@ -57,6 +57,17 @@ pipeline {
                 }
             }
         }
+        stage('Setup network') {
+                    steps {
+                        script {
+                            // Create a Docker network if it doesn't already exist
+                            sh '''
+                                docker network inspect man-test >/dev/null 2>&1 || \
+                                docker network create man-test
+                            '''
+                        }
+                    }
+                }
 
         stage('Unit Tests') {
 
@@ -100,6 +111,7 @@ pipeline {
                     # Start the container
                     docker run -d \
                         --name ${APP_NAME} \
+                        --network man-test \
                         -p ${APP_PORT}:${APP_PORT} \
                         -v expense-data:/data \
                         ${APP_NAME}:${BUILD_VERSION}
