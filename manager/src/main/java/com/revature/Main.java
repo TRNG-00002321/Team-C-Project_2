@@ -48,6 +48,8 @@ public class Main {
                 cors.addRule(it -> {
                     it.allowHost("http://127.0.0.1:5000");
                     it.allowHost("http://localhost:5000");
+                    it.allowHost("http://172.17.0.1:8080");
+                    it.allowHost("http://172.17.0.1:5001");
                     it.allowCredentials = true;
                 });
             });
