@@ -15,7 +15,11 @@ public class DatabaseConnection {
     private final String databasePath;
 
     public DatabaseConnection() {
-        Dotenv dotenv = Dotenv.load();
+        Dotenv dotenv = Dotenv.configure()
+                .systemProperties()
+                .ignoreIfMissing()
+                .load();
+//        Dotenv dotenv = Dotenv.load();
 
         boolean testMode = dotenv.get("TEST_MODE", "false").equalsIgnoreCase("true");
 

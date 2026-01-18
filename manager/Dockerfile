@@ -13,7 +13,11 @@ COPY manager/pom.xml .
 RUN mvn dependency:go-offline -B
 #Copy env and db files
 
-COPY manager/.env .
+ENV BROWSER=chrome
+ENV DATABASE_PATH=/app/expense_manager.db
+ENV TEST_DATABASE_PATH=/app/test_expense_manager.db
+ENV TEST_MODE=true
+COPY ./expense_manager.db /app/expense_manager.db
 COPY ./test_expense_manager.db /app/test_expense_manager.db
 
 # Copy source code and build
