@@ -55,10 +55,11 @@ public class Main {
             // Enable static file serving from resources
             config.staticFiles.add(staticFiles -> {
                 staticFiles.hostedPath = "/";
-                staticFiles.directory = "/";
+                staticFiles.directory = "/public";
                 staticFiles.location = Location.CLASSPATH;
             });
-            
+
+
             // Enable request logging
             config.bundledPlugins.enableDevLogging();
         });

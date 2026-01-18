@@ -2,19 +2,23 @@
 # Multi-stage build for optimized production image
 
 # Build stage
+#NOTICE: MUST BE BUILT FROM THE PARENT DIRECTORY
+#this is so we can access the db file
 FROM maven:3.9-eclipse-temurin-17 AS builder
 
 WORKDIR /app
 
 # Copy pom.xml and download dependencies (cached layer)
-COPY pom.xml .
+COPY manager/pom.xml .
 RUN mvn dependency:go-offline -B
 #Copy env and db files
 
-COPY .env .
-COPY ../test_expense_manager.db /app/test_expense_manager.db
+COPY manager/.env .
+COPY ./test_expense_manager.db /app/test_expense_manager.db
+
 # Copy source code and build
-COPY src/ ./src/
+
+COPY manager/src/ ./src/
 RUN mvn clean package -DskipTests -B
 
 # Production stage
@@ -27,7 +31,7 @@ RUN addgroup -g 1001 appgroup && \
     adduser -u 1001 -G appgroup -D appuser
 
 # Copy the built JAR from builder stage
-COPY --from=builder /app/target/manager-1.0-SNAPSHOT.jar app.jar
+COPY --from=builder /app/target/manager-1.0-SNAPSHOT-jar-with-dependencies.jar app.jar
 
 # Create directory for database (shared volume mount point)
 RUN mkdir -p /data && chown appuser:appgroup /data
@@ -37,6 +41,7 @@ USER appuser
 
 # Environment variables
 ENV JAVA_OPTS="-Xms256m -Xmx512m"
+ENV DATABASE_PATH=/app/test_expense_manager.db
 # Expose Javalin port
 EXPOSE 5001
 
