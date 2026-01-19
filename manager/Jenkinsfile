@@ -119,6 +119,7 @@ pipeline {
                     # Start the container
                     docker run -d \
                         --name ${APP_NAME} \
+                        --shm-size=2gb \
                         --network \$NET_NAME \
                         -p ${APP_PORT}:${APP_PORT} \
                         -v expense-data:/data \
