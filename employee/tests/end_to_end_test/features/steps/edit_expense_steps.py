@@ -46,7 +46,15 @@ def input_date(context, date):
     year = date[0:4]
     month = date[5:7]
     day = date[8:10]
-    new_date = month+"-"+day+"-"+year
+    new_date = ""
+
+    browser = context.driver.capabilities['browserName'].lower()
+
+    if browser == "chrome":
+        new_date = month + "/" + day + "/" + year
+    else:
+        new_date = date
+
     date_field_locator = (By.ID, "edit-date")
     context.dashboard_page.type(date_field_locator, new_date)
 
@@ -67,6 +75,16 @@ def expense_is_shown_updated(context, amount, desc, date):
     refresh_button_locator = (By.ID, "refresh-expenses")
     refresh_button = context.dashboard_page.wait_for_clickable(refresh_button_locator)
     refresh_button.click()
+
+    try:
+        table_locator = (By.TAG_NAME, "table")
+        old_table = context.dashboard_page.wait_for_element(table_locator)
+        wait = WebDriverWait(context.driver, 5)
+        wait.until(EC.staleness_of(old_table))
+    except TimeoutException:
+        # new table exists already
+        pass
+
     # wait for all new elements to exist first
     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '${amount}')]"))
     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{desc}')]"))

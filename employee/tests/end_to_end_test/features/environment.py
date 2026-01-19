@@ -1,5 +1,8 @@
 import os
 from dotenv import load_dotenv
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
 from src.repository import DatabaseConnection
 from tests.end_to_end_test.drivers.browser_manager import create_driver
 
@@ -10,8 +13,10 @@ SEED_SQL_PATH = os.path.abspath(
 #implement multi browser functionality?
 
 def before_all(context):
-    # Read DB path from environment
+    #load .env file data
     load_dotenv()
+
+    # Read DB path from environment
     db_path = os.getenv("BEHAVE_TEST_DATABASE_PATH")
     if not db_path:
         raise RuntimeError(
@@ -41,8 +46,10 @@ def before_scenario(context, scenario):
 
         conn.commit()
 
-    # --- Browser setup ---
-    browser = os.getenv("BROWSER", "chrome").lower()
+    # --- Browser setup
+    # Read Browsers from environment
+    #browser = os.getenv("BROWSER", "chrome").lower()
+    browser = context.config.userdata.get("browser", "chrome").lower()
     headless = os.getenv("HEADLESS", "false").lower() == "true"
 
     context.driver = create_driver(browser, headless)
