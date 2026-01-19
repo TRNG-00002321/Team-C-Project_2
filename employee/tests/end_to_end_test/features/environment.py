@@ -9,7 +9,7 @@ SEED_SQL_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../../sql/seed.sql")
 )
 
-# implement multi browser functionality?
+#  implement multi browser functionality?
 
 
 def before_all(context):

@@ -1,115 +1,73 @@
-import os
-
 import pytest
+import allure
 
-from src.main import create_app
-from src.repository import DatabaseConnection
 
-TEST_DB_PATH = os.path.abspath(os.path.join(
-    os.path.dirname(__file__),
-    "../../test_db/test_expense_manager.db"
-))
-SEED_SQL_PATH = os.path.abspath(os.path.join(
-    os.path.dirname(__file__),
-    "../../sql/seed.sql"
-))
-
-@pytest.fixture()
-def test_client():
-    # Ensure test DB directory exists
-    os.makedirs(os.path.dirname(TEST_DB_PATH), exist_ok=True)
-
-    # Set DB path BEFORE app creation
-    os.environ["TEST_MODE"] = "true"
-    os.environ["TEST_DATABASE_PATH"] = TEST_DB_PATH
-
-    # Initialize schema once
-    db = DatabaseConnection()
-    db.initialize_database()
-
-    app = create_app()
-    app.config["TESTING"] = True
-
-    with app.test_client() as client:
-        yield client
-
-@pytest.fixture
-def setup_database(test_client):
-    """
-    Reset database state before each test and reseed.
-    Depends on test_client to guarantee schema exists.
-    """
-    db = DatabaseConnection()
-
-    with db.get_connection() as conn:
-        conn.execute("DELETE FROM approvals")
-        conn.execute("DELETE FROM expenses")
-        conn.execute("DELETE FROM users")
-
-        with open(SEED_SQL_PATH, "r") as f:
-            conn.executescript(f.read())
-
-        conn.commit()
-
-    yield
-
+@allure.feature("Expense submission, editing, and deletion")
 class TestSpecificExpenseAPI:
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get specific expense by id positive")
+    @allure.severity(allure.severity_level.CRITICAL)
+    @pytest.mark.parametrize(
+        "expense_id, expected_amount", [(1, 50.0), (2, 200.0), (3, 30.0), (6, 200.0)]
+    )
+    def test_get_specific_expense_by_id_positive(
+        self, authenticated_session, expense_id, expected_amount
+    ):
+        """Test retrieving specific expenses belonging to the authenticated user."""
+        response = authenticated_session.get(f"/api/expenses/{expense_id}")
+        assert response.status_code == 200
 
-    @pytest.fixture
-    def credentials(self):
-        return {"username": "employee1", "password": "password123", "role": "employee"}
+        data = response.get_json()
+        assert "expense" in data
+        expense_data = data["expense"]
 
-    @pytest.fixture
-    def sample_expense(self):
-        return {
-            "amount": 50.0,
-            "date": "2025-01-05",
-            "description" : "Client lunch",
-            "status": "pending"
-        }
-
-
-    def test_get_specific_expense_by_id_positive(self, credentials, sample_expense, test_client, setup_database):
-        # Login
-        login_url = "/api/auth/login"
-        login_response = test_client.post(login_url, json = credentials)
-        assert login_response.status_code == 200
-
-        expense_id = 1
-
-        # Get expense by id
-        expense_response = test_client.get(f"/api/expenses/{expense_id}")
-        assert expense_response.status_code == 200
-        expense_data = expense_response.get_json()["expense"]
-
-        assert expense_data["amount"] == sample_expense["amount"]
         assert expense_data["id"] == expense_id
+        assert expense_data["amount"] == expected_amount
+        assert isinstance(expense_data["amount"], (int, float))
+        assert "status" in expense_data
+        assert "description" in expense_data
 
-    def test_get_specific_expense_by_id_negative(self, credentials, test_client, setup_database):
-        # Login
-        login_url = "/api/auth/login"
-        login_response = test_client.post(login_url, json=credentials)
-        assert login_response.status_code == 200
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get specific expense by id not found")
+    @allure.severity(allure.severity_level.NORMAL)
+    @pytest.mark.parametrize("expense_id", [999, 0])
+    def test_get_specific_expense_by_id_not_found(
+        self, authenticated_session, expense_id
+    ):
+        """Test retrieving non-existent expense IDs (within integer range)."""
+        response = authenticated_session.get(f"/api/expenses/{expense_id}")
+        assert response.status_code == 404
+        assert response.get_json()["error"] == "Expense not found"
 
-        expense_id = 999
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get specific expense by id isolation")
+    @allure.severity(allure.severity_level.CRITICAL)
+    @pytest.mark.parametrize("expense_id", [4, 5])
+    def test_get_specific_expense_by_id_isolation(
+        self, authenticated_session, expense_id
+    ):
+        """Test that a user cannot access another user's expense."""
+        # IDs 4 and 5 belong to employee2 (user_id 2). authenticated_session is employee1.
+        response = authenticated_session.get(f"/api/expenses/{expense_id}")
+        assert response.status_code == 404
+        assert response.get_json()["error"] == "Expense not found"
 
-        # Get expense by id - not found
-        expense_response = test_client.get(f"/api/expenses/{expense_id}")
-        assert expense_response.status_code == 404
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get specific expense by id invalid format")
+    @allure.severity(allure.severity_level.MINOR)
+    @pytest.mark.parametrize("expense_id", ["abc", "1.5", "@#$", -1])
+    def test_get_specific_expense_by_id_invalid_format(
+        self, authenticated_session, expense_id
+    ):
+        """Test retrieving expenses with invalid ID formats or out-of-range values."""
+        response = authenticated_session.get(f"/api/expenses/{expense_id}")
+        # Flask routing <int:expense_id> returns 404 for non-positive integers
+        assert response.status_code == 404
 
-    def test_get_expense_user_not_logged_in(self, test_client):
-        # get expense without login
-        expense_id = 1
-        response = test_client.get(f"/api/expenses/{expense_id}")
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get specific expense unauthorized")
+    @allure.severity(allure.severity_level.CRITICAL)
+    def test_get_expense_unauthorized(self, test_client):
+        """Test retrieving an expense without authentication."""
+        response = test_client.get("/api/expenses/1")
         assert response.status_code == 401
-
-
-
-
-
-
-
-
-
-
-
