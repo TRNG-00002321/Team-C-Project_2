@@ -38,7 +38,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-edge.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list \
     && apt-get update && apt-get install -y --no-install-recommends \
     google-chrome-stable \
-    firefox-esr \
+    firefox \
     microsoft-edge-stable \
     && rm -rf /var/lib/apt/lists/*
 
