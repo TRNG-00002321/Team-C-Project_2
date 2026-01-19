@@ -144,9 +144,7 @@ pipeline {
             stage('Tests Tests') {
                 steps {
                     dir('manager'){
-                     script {
-                                    docker.withNetwork('jenkins_network') {
-                                       sh '''
+                    sh '''
                                                            # Wait for app to be healthy
                                                            echo "Waiting for application to start..."
                                                            sleep 5
@@ -159,15 +157,9 @@ pipeline {
                                                                                fi
                                                            echo "✅ Application is ready!"
                                                        '''
-                                    }
-                                }
                     //todo: only run unit tests!
                         echo 'lumping tests together for now:'
-                        script {
-                                       docker.withNetwork('jenkins_network') {
-                                           sh 'mvn test -B'
-                                       }
-                                   }
+                        sh 'mvn test -B'
 
                     }
                 }
