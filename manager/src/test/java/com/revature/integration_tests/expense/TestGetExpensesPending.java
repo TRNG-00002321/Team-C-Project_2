@@ -20,7 +20,7 @@ public class TestGetExpensesPending {
 
     @BeforeAll
     static void setup(){
-        RestAssured.baseURI = "http://localhost";
+        RestAssured.baseURI = "http://manager_app";
         RestAssured.port = 5001;
 
         //Get JWT cookie authorization
