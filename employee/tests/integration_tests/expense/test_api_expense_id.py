@@ -1,7 +1,12 @@
 import pytest
+import allure
 
 
+@allure.feature("Expense submission, editing, and deletion")
 class TestSpecificExpenseAPI:
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get specific expense by id positive")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
         "expense_id, expected_amount", [(1, 50.0), (2, 200.0), (3, 30.0), (6, 200.0)]
     )
@@ -22,6 +27,9 @@ class TestSpecificExpenseAPI:
         assert "status" in expense_data
         assert "description" in expense_data
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get specific expense by id not found")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.parametrize("expense_id", [999, 0])
     def test_get_specific_expense_by_id_not_found(
         self, authenticated_session, expense_id
@@ -31,6 +39,9 @@ class TestSpecificExpenseAPI:
         assert response.status_code == 404
         assert response.get_json()["error"] == "Expense not found"
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get specific expense by id isolation")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize("expense_id", [4, 5])
     def test_get_specific_expense_by_id_isolation(
         self, authenticated_session, expense_id
@@ -41,6 +52,9 @@ class TestSpecificExpenseAPI:
         assert response.status_code == 404
         assert response.get_json()["error"] == "Expense not found"
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get specific expense by id invalid format")
+    @allure.severity(allure.severity_level.MINOR)
     @pytest.mark.parametrize("expense_id", ["abc", "1.5", "@#$", -1])
     def test_get_specific_expense_by_id_invalid_format(
         self, authenticated_session, expense_id
@@ -50,6 +64,9 @@ class TestSpecificExpenseAPI:
         # Flask routing <int:expense_id> returns 404 for non-positive integers
         assert response.status_code == 404
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get specific expense unauthorized")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_get_expense_unauthorized(self, test_client):
         """Test retrieving an expense without authentication."""
         response = test_client.get("/api/expenses/1")

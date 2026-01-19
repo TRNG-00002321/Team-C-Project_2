@@ -1,4 +1,11 @@
+import allure
+
+
+@allure.feature("Expense submission, editing, and deletion")
 class TestDeleteExpenseAPI:
+    @allure.story("Employee deleting expenses")
+    @allure.title("Test delete expense success")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_delete_expense_success(self, authenticated_session):
         """Test deleting a pending expense successfully."""
         # Expense 1 is pending for employee1
@@ -9,6 +16,9 @@ class TestDeleteExpenseAPI:
         data = response.get_json()
         assert data["message"] == "Expense deleted successfully"
 
+    @allure.story("Employee deleting expenses")
+    @allure.title("Test delete expense not found")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_delete_expense_not_found(self, authenticated_session):
         """Test deleting a non-existent expense."""
         expense_id = 9999
@@ -16,6 +26,9 @@ class TestDeleteExpenseAPI:
         assert response.status_code == 404
         assert response.get_json()["error"] == "Expense not found"
 
+    @allure.story("Employee deleting expenses")
+    @allure.title("Test delete expense isolation")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_delete_expense_isolation(self, authenticated_session):
         """Test that a user cannot delete another user's expense."""
         # Expense 4 belongs to employee2
@@ -24,6 +37,9 @@ class TestDeleteExpenseAPI:
         assert response.status_code == 404
         assert response.get_json()["error"] == "Expense not found"
 
+    @allure.story("Employee deleting expenses")
+    @allure.title("Test delete expense reviewed fails")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_delete_expense_reviewed_fails(self, authenticated_session):
         """Test that approved or denied expenses cannot be deleted."""
         # Expense 2 is approved, Expense 3 is denied
@@ -33,6 +49,9 @@ class TestDeleteExpenseAPI:
             assert response.status_code == 400
             assert "has been reviewed" in response.get_json()["error"].lower()
 
+    @allure.story("Employee deleting expenses")
+    @allure.title("Test delete expense unauthorized")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_delete_expense_unauthorized(self, test_client):
         """Test deleting an expense without authentication."""
         expense_id = 1

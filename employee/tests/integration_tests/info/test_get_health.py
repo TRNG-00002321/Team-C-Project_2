@@ -1,13 +1,14 @@
 import os
 import pytest
+import allure
 
 from src.main import create_app
 from src.repository import DatabaseConnection
 
-TEST_DB_PATH = os.path.abspath(os.path.join(
-    os.path.dirname(__file__),
-    "../../test_db/test_expense_manager.db"
-))
+TEST_DB_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../test_db/test_expense_manager.db")
+)
+
 
 @pytest.fixture()
 def test_client():
@@ -28,8 +29,15 @@ def test_client():
     with app.test_client() as client:
         yield client
 
-def test_get_api_info(test_client):
+
+@allure.feature("API Information")
+@allure.story("API Health Check")
+@allure.title("Test get health")
+@allure.severity(allure.severity_level.NORMAL)
+def test_get_health(test_client):
     response = test_client.get("/health")
     assert response.status_code == 200
-    assert response.get_json()["message"] == "Employee Expense Management API is running"
+    assert (
+        response.get_json()["message"] == "Employee Expense Management API is running"
+    )
     assert response.get_json()["status"] == "healthy"

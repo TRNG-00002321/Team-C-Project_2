@@ -1,7 +1,12 @@
 import pytest
+import allure
 
 
+@allure.feature("Expense submission, editing, and deletion")
 class TestSubmitExpenseAPI:
+    @allure.story("Employee expense submission")
+    @allure.title("Test api submit new expense success")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_api_submit_new_expense_success(self, authenticated_session):
         """Test submitting a valid expense."""
         payload = {
@@ -21,6 +26,9 @@ class TestSubmitExpenseAPI:
         assert expense["status"] == "pending"
         assert "id" in expense
 
+    @allure.story("Employee expense submission")
+    @allure.title("Test api submit expense validation fails")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.parametrize(
         "payload, expected_error",
         [
@@ -41,6 +49,9 @@ class TestSubmitExpenseAPI:
         assert response.status_code == 400
         assert response.get_json()["error"] == expected_error
 
+    @allure.story("Employee expense submission")
+    @allure.title("Test api submit expense unauthorized")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_api_submit_expense_unauthorized(self, test_client):
         """Test submitting an expense without authentication."""
         payload = {"amount": 50.0, "description": "Unauthorized"}

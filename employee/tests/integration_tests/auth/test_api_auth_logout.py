@@ -1,10 +1,15 @@
 import pytest
+import allure
 
 
 # EI-217
+@allure.feature("Employee authorization")
 class TestLogout:
     logout_url = "/api/auth/logout"
 
+    @allure.story("Employee logout")
+    @allure.title("Test logout success")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_api_logout_success(self, authenticated_session):
         """
         Authenticated user can log out successfully
@@ -18,6 +23,9 @@ class TestLogout:
         json_response = auth_response.get_json()
         assert json_response.get("authenticated") is False
 
+    @allure.story("Employee logout")
+    @allure.title("Test logout unauthorized")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.skip(reason="Known bug")
     def test_api_logout_unauthorized(self, setup_database, test_client):
         auth_response = test_client.post(
@@ -26,6 +34,9 @@ class TestLogout:
         assert auth_response.status_code == 401
 
     # EI-218
+    @allure.story("Employee logout")
+    @allure.title("Test access protected endpoint fails after logout")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_api_access_protected_endpoint_fails_after_logout(
         self, authenticated_session
     ):

@@ -1,7 +1,12 @@
 import pytest
+import allure
 
 
+@allure.feature("Expense submission, editing, and deletion")
 class TestAllExpenseAPI:
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get all expense positive")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_get_all_expense_positive(self, authenticated_session):
         """Test retrieving all expenses for personal user."""
         response = authenticated_session.get("/api/expenses")
@@ -14,6 +19,9 @@ class TestAllExpenseAPI:
         # employee1 has 4 expenses in seed.sql (IDs 1, 2, 3, 6)
         assert data["count"] == 4
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get expenses with status filter")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
         "status_filter, expected_count",
         [
@@ -32,7 +40,11 @@ class TestAllExpenseAPI:
         data = response.get_json()
         assert data["count"] == expected_count
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test get all expense unauthorized")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_get_all_expense_unauthorized(self, test_client):
         """Test retrieving expenses without authentication."""
+        # Using test_client specifically to ensure no session exists
         response = test_client.get("/api/expenses")
         assert response.status_code == 401

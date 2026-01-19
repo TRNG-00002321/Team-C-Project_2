@@ -1,7 +1,12 @@
 import pytest
+import allure
 
 
+@allure.feature("Expense submission, editing, and deletion")
 class TestUpdateExpenseAPI:
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense success")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_update_expense_success(self, authenticated_session):
         """Test updating a pending expense successfully."""
         expense_id = 1
@@ -20,6 +25,9 @@ class TestUpdateExpenseAPI:
         assert data["expense"]["amount"] == 99.99
         assert data["expense"]["description"] == "Updated lunch"
 
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense validation fails")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.parametrize(
         "payload, expected_error",
         [
@@ -53,6 +61,9 @@ class TestUpdateExpenseAPI:
         assert response.status_code == 400
         assert response.get_json()["error"] == expected_error
 
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense not found")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_update_expense_not_found(self, authenticated_session):
         """Test updating a non-existent expense."""
         expense_id = 9999
@@ -63,6 +74,9 @@ class TestUpdateExpenseAPI:
         assert response.status_code == 404
         assert response.get_json()["error"] == "Expense not found"
 
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense isolation")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_update_expense_isolation(self, authenticated_session):
         """Test that a user cannot update another user's expense."""
         # Expense 4 belongs to employee2
@@ -73,6 +87,9 @@ class TestUpdateExpenseAPI:
         )
         assert response.status_code == 404
 
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense approved denied fails")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_update_expense_approved_denied_fails(self, authenticated_session):
         """Test that an approved or denied expense cannot be edited."""
         # Expense 2 is approved, Expense 3 is denied (for employee1)
@@ -89,6 +106,9 @@ class TestUpdateExpenseAPI:
             assert response.status_code == 400
             assert "has been reviewed" in response.get_json()["error"].lower()
 
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense unauthorized")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_update_expense_unauthorized(self, test_client):
         """Test updating an expense without authentication."""
         expense_id = 1
