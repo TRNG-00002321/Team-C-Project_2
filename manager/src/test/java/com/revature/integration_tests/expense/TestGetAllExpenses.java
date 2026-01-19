@@ -19,7 +19,7 @@ public class TestGetAllExpenses {
 
   @BeforeAll
   public static void setUp() {
-    RestAssured.baseURI="http://localhost:5001";
+    RestAssured.baseURI="http://manager_app:5001";
       System.out.println("Looking to snag one " + RestAssured.baseURI);
       requestSpec= new RequestSpecBuilder()
       .setContentType(ContentType.JSON)

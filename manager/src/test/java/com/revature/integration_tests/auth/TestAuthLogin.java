@@ -10,7 +10,7 @@ import static io.restassured.RestAssured.given;
 public class TestAuthLogin {
     @BeforeAll
     static void setup(){
-        RestAssured.baseURI = "http://localhost";
+        RestAssured.baseURI = "http://manager_app";
         RestAssured.port = 5001;
     }
 

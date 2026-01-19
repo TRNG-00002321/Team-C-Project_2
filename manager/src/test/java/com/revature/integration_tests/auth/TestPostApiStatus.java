@@ -21,7 +21,7 @@ public class TestPostApiStatus {
 
     @BeforeAll
     public static void setUp(){
-        RestAssured.baseURI="http://localhost:5001/";
+        RestAssured.baseURI="http://manager_app:5001/";
         requestSpec= new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
