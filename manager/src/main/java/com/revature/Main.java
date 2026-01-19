@@ -155,6 +155,7 @@ public class Main {
                 }
             } catch (Exception e) {
                 ctx.status(400);
+                System.out.println(e.getMessage());
                 ctx.json(Map.of(
                     "success", false,
                     "error", "Invalid request format"

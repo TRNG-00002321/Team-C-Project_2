@@ -24,7 +24,6 @@ public class DatabaseConnection {
         boolean testMode = dotenv.get("TEST_MODE", "false").equalsIgnoreCase("true");
 
         String path = testMode ? dotenv.get("TEST_DATABASE_PATH") : dotenv.get("DATABASE_PATH");
-
         if (path == null) {
             throw new RuntimeException("Database path not configured");
         }

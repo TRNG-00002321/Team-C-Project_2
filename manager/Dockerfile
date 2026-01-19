@@ -28,10 +28,7 @@ COPY manager/pom.xml .
 RUN mvn dependency:go-offline -B
 #Copy env and db files
 
-ENV BROWSER=chrome
-ENV DATABASE_PATH=/app/expense_manager.db
-ENV TEST_DATABASE_PATH=/app/test_expense_manager.db
-ENV TEST_MODE=true
+
 COPY ./expense_manager.db /app/expense_manager.db
 COPY ./test_expense_manager.db /app/test_expense_manager.db
 
@@ -57,10 +54,14 @@ RUN mkdir -p /data && chown appuser:appgroup /data
 
 # Switch to non-root user
 USER appuser
-
+COPY ./expense_manager.db .
+COPY ./test_expense_manager.db .
 # Environment variables
 ENV JAVA_OPTS="-Xms256m -Xmx512m"
-ENV DATABASE_PATH=/app/test_expense_manager.db
+ENV BROWSER=chrome \
+    DATABASE_PATH=./expense_manager.db \
+    TEST_DATABASE_PATH=./test_expense_manager.db \
+    TEST_MODE=true
 # Expose Javalin port
 EXPOSE 5001
 

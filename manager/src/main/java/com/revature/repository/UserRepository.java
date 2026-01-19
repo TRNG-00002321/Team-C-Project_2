@@ -57,7 +57,7 @@ public class UserRepository {
         
         try (Connection conn = databaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+            System.out.println("Looking for user: " + username);
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             
@@ -71,6 +71,9 @@ public class UserRepository {
             }
             
         } catch (SQLException e) {
+            System.out.println("here be dragons, " + e.getMessage());
+            System.out.println("Working Directory = " + System.getProperty("user.dir"));
+
             throw new RuntimeException("Error finding user by username: " + username, e);
         }
         
