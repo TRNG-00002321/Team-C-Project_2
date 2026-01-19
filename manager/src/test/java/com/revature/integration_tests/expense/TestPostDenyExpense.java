@@ -23,7 +23,9 @@ public class TestPostDenyExpense {
 
     @BeforeAll
     static void setUp(){
+
         RestAssured.baseURI="http://manager_app:5001";
+        System.out.println("Looking to snag one " + RestAssured.baseURI);
         requestSpec= new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
