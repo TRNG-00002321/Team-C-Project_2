@@ -3,6 +3,9 @@ package com.revature.unit_tests.service_tests;
 import com.revature.repository.User;
 import com.revature.repository.UserRepository;
 import com.revature.service.AuthenticationService;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,6 +20,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@Epic("Manager App Unit Tests")
+@Feature("Manager Authentication")
+
+@Tag("Unit")
 @ExtendWith(MockitoExtension.class)
 public class TestAuthenticationService {
   @Mock

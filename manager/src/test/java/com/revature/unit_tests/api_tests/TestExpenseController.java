@@ -9,7 +9,10 @@ import io.javalin.http.Context;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.NotFoundResponse;
 import io.javalin.http.InternalServerErrorResponse;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +27,10 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+@Epic("Manager App Unit Tests")
+@Feature("Expense Management")
 
+@Tag("Unit")
 @ExtendWith(MockitoExtension.class)
 public class TestExpenseController {
     @Mock

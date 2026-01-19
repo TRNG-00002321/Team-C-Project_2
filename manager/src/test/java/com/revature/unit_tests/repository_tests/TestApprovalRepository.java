@@ -3,8 +3,11 @@ package com.revature.unit_tests.repository_tests;
 import com.revature.repository.Approval;
 import com.revature.repository.ApprovalRepository;
 import com.revature.repository.DatabaseConnection;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +25,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+@Epic("Manager App Unit Tests")
+@Feature("Expense Management")
+
+@Tag("Unit")
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class                                            TestApprovalRepository {
+public class TestApprovalRepository {
     @Mock
     private DatabaseConnection db;
 
