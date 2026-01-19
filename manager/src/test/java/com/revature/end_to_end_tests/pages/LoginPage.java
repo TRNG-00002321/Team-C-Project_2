@@ -21,6 +21,9 @@ public class LoginPage extends BasePage{
     public LoginPage(WebDriver driver){
         super(driver);
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(DEFAULT_TIMEOUT));
+
+        //Testing
+        System.out.println("Login page init with driver" + driver.getCurrentUrl());
         PageFactory.initElements(driver, this);
     }
 
