@@ -26,7 +26,7 @@ public class TestPostApproveExpense {
 
     @BeforeAll
     public static void setUp() throws SQLException {
-        RestAssured.baseURI="http://manager_app:5001/";
+        RestAssured.baseURI="http://manager_app:5001";
         requestSpec= new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)

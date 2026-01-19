@@ -13,7 +13,7 @@ public abstract class BasePage {
     protected WebDriver driver;
     protected WebDriverWait wait;
     protected static final int DEFAULT_TIMEOUT = 10;
-    private String BASE_URL = "http://manager_app:5001/";
+    private String BASE_URL = "http://manager_app:5001";
 
     public BasePage(){
     }
