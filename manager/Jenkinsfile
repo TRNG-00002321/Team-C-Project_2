@@ -144,25 +144,30 @@ pipeline {
             stage('Tests Tests') {
                 steps {
                     dir('manager'){
-                    docker.network('jenkins_network').inside {
-                        sh '''
-                            echo "Container:"
-                            hostname
-                            echo "DNS:"
-                            getent hosts webapp || true
-                            echo "Curl:"
-                            RESPONSE_CODE=\$(curl -f http://${APP_NAME}:${APP_PORT}/health)
-                                                echo "Health check response code: \$RESPONSE_CODE"
-                                                                    if [ "\$RESPONSE_CODE" -ne 200 ]; then
-                                                                        exit 1
-                                                                    fi
-                        '''
-                    }
+                     script {
+                                    docker.withNetwork('jenkins_network') {
+                                       sh '''
+                                                           # Wait for app to be healthy
+                                                           echo "Waiting for application to start..."
+                                                           sleep 5
+                                                           # curl -v http://${APP_NAME}:8080
+                                                           # curl -f http://172.17.0.1:5001/health
+                                                           RESPONSE_CODE=\$(curl -f http://${APP_NAME}:${APP_PORT}/health)
+                                                           echo "Health check response code: \$RESPONSE_CODE"
+                                                                               if [ "\$RESPONSE_CODE" -ne 200 ]; then
+                                                                                   exit 1
+                                                                               fi
+                                                           echo "✅ Application is ready!"
+                                                       '''
+                                    }
+                                }
                     //todo: only run unit tests!
                         echo 'lumping tests together for now:'
-                        docker.network('jenkins_network').inside {
-                            sh 'mvn test -B'
-                        }
+                        script {
+                                       docker.withNetwork('jenkins_network') {
+                                           sh 'mvn test -B'
+                                       }
+                                   }
 
                     }
                 }
