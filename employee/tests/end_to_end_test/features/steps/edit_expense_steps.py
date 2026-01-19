@@ -1,5 +1,6 @@
 from behave.api.pending_step import StepNotImplementedError
 from behave import given, when, then
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 import time
 
@@ -134,10 +135,15 @@ def expense_shown_with_updates(context, amount, desc, date):
     refresh_button = context.dashboard_page.wait_for_clickable(refresh_button_locator)
     refresh_button.click()
     # wait for all new elements to exist first
-    table_locator = (By.TAG_NAME, "table")
-    old_table = context.dashboard_page.wait_for_element(table_locator)
-    wait = WebDriverWait(context.driver, 10)
-    wait.until(EC.staleness_of(old_table))
+    try:
+        table_locator = (By.TAG_NAME, "table")
+        old_table = context.dashboard_page.wait_for_element(table_locator)
+        wait = WebDriverWait(context.driver, 5)
+        wait.until(EC.staleness_of(old_table))
+    except TimeoutException:
+        # new table exists already
+        pass
+
     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '${amount}')]"))
     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{desc}')]"))
     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{date}')]"))
