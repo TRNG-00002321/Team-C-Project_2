@@ -1,3 +1,4 @@
+import allure
 import pytest
 from unittest.mock import Mock, MagicMock
 from contextlib import contextmanager
@@ -63,10 +64,13 @@ def create_mock_connection(cursor_mock):
         yield conn
     return mock_get_connection
 
-
+@allure.feature("Expense submission, editing, and deletion")
 class TestFindByExpenseId:
     """Test cases for find_by_expense_id."""
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test find by expense id, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_find_by_expense_id_positive(self, approval_repository, mock_db_connection, mock_user_row):
         """Test finding a user by expense id successfully."""
         #Arrange
@@ -90,6 +94,9 @@ class TestFindByExpenseId:
         assert result.comment == 'this is a comment'
         assert result.review_date == '02/02/2025'
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test find by expense id, negative test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
         "expense_id",
         [
@@ -113,7 +120,9 @@ class TestFindByExpenseId:
         # Assert
         assert result is None
 
-
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test find by expense id, verify sql execution")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_find_by_expense_id_correct_sql_executed(self, approval_repository, mock_db_connection, mock_user_row):
         """Test that the correct SQL query is executed."""
         # Arrange
@@ -138,8 +147,12 @@ class TestFindByExpenseId:
 
 
 # Find expense with status for user review test
+@allure.feature("Expense submission, editing, and deletion")
 class TestFindExpensesWithStatusForUser:
     """Test cases for find_expenses_with_status_for_user."""
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test find by expenses with status, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_find_expenses_with_status_positive(self, approval_repository, mock_db_connection, mock_expense_approval_row):
         """Test finding expenses with status positive."""
         #Arrange
@@ -159,6 +172,9 @@ class TestFindExpensesWithStatusForUser:
         assert approval.status == "approved"
         assert approval.comment == "this is a comment"
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test find by expenses with status, negative test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
         "user_id",
         [
@@ -168,7 +184,6 @@ class TestFindExpensesWithStatusForUser:
             9999999
         ]
     )
-
     def test_find_expenses_with_status_negative(self, user_id, approval_repository, mock_db_connection):
         """Test finding expenses with status returns empty list if no rows found."""
         #Arrange
@@ -187,9 +202,12 @@ class TestFindExpensesWithStatusForUser:
 
 
 # update status tests
+@allure.feature("Expense editing")
 class TestUpdateApproval:
     """Test cases for update_approval."""
-
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expenses, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_update_user_positive(self, approval_repository, mock_db_connection):
         """Testing updating a user's approval status positive."""
         #Arrange
@@ -204,6 +222,9 @@ class TestUpdateApproval:
         #Assert
         assert result is True
 
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expenses, negative test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
         "expense_id",
         [
@@ -213,7 +234,6 @@ class TestUpdateApproval:
             9999999
         ]
     )
-
     def test_update_user_negative(self, expense_id, approval_repository, mock_db_connection):
         """Testing updating a user's approval status negative."""
         #Arrange
@@ -228,6 +248,9 @@ class TestUpdateApproval:
         #Assert
         assert result is False
 
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expenses, verify sql execution")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_update_approvals_correct_sql_executed(self, approval_repository, mock_db_connection):
         #Arrange
         cursor_mock = Mock()

@@ -9,7 +9,8 @@ SEED_SQL_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../../sql/seed.sql")
 )
 
-#implement multi browser functionality?
+# implement multi browser functionality?
+
 
 def before_all(context):
     # Read DB path from environment
@@ -26,10 +27,10 @@ def before_all(context):
 
     # Use the SAME database as the running server
     context.db = DatabaseConnection(db_path)
-    
+
     # Wait for application to be ready
     base_url = os.getenv("BASE_URL", "http://localhost:5000")
-    
+
     print(f"Waiting for application at {base_url}...")
     max_retries = 30
     retry_delay = 1
@@ -48,6 +49,7 @@ def before_all(context):
 
 def after_all(context):
     pass
+
 
 def before_scenario(context, scenario):
     # --- Reset & reseed database ---
@@ -70,5 +72,5 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
-    if hasattr(context, 'driver') and context.driver:
+    if hasattr(context, "driver") and context.driver:
         context.driver.quit()
