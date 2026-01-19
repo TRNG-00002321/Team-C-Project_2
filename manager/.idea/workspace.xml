@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dc1e0e1f-cfcb-4d65-8ee3-0abc9b71fbb2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestAuthLogin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestAuthLogin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestLogout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestLogout.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestPostApiStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestPostApiStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestGetAllExpenses.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestGetAllExpenses.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/info/TestGetHealthCheck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/info/TestGetHealthCheck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/report/TestGenerateCsvReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/report/TestGenerateCsvReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
