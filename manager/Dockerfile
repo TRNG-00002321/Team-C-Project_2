@@ -27,20 +27,24 @@ RUN mvn clean package -DskipTests -B
 FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    gnupg \
-    ca-certificates \
-    wait-for-it \
-    && curl -fSsL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-    && curl -fSsL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-edge.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-edge.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list \
-    && apt-get update && apt-get install -y --no-install-recommends \
-    google-chrome-stable \
-    firefox \
-    microsoft-edge-stable \
-    && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     curl \
+#     gnupg \
+#     ca-certificates \
+#     wait-for-it \
+#     && curl -fSsL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+#     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+#     && curl -fSsL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-edge.gpg \
+#     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-edge.gpg] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list \
+#     && apt-get update && apt-get install -y --no-install-recommends \
+#     google-chrome-stable \
+#     firefox \
+#     microsoft-edge-stable \
+#     && rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y wget
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+RUN apt-get update && apt-get -y install google-chrome-stable
 
 # Create non-root user for security
 RUN groupadd -g 1001 appgroup && \
