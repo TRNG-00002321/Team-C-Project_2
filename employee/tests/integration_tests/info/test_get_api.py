@@ -1,13 +1,14 @@
 import os
 import pytest
+import allure
 
 from src.main import create_app
 from src.repository import DatabaseConnection
 
-TEST_DB_PATH = os.path.abspath(os.path.join(
-    os.path.dirname(__file__),
-    "../../test_db/test_expense_manager.db"
-))
+TEST_DB_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../test_db/test_expense_manager.db")
+)
+
 
 @pytest.fixture()
 def test_client():
@@ -28,6 +29,11 @@ def test_client():
     with app.test_client() as client:
         yield client
 
+
+@allure.feature("API Information")
+@allure.story("Viewing API root info")
+@allure.title("Test get api info")
+@allure.severity(allure.severity_level.MINOR)
 def test_get_api_info(test_client):
     response = test_client.get("/api")
     assert response.status_code == 200
