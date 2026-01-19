@@ -4,8 +4,11 @@ package com.revature.unit_tests.service_tests;
 import com.revature.repository.*;
 
 import com.revature.service.ExpenseService;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,6 +23,10 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Epic("Manager App Unit Tests")
+@Feature("Expense Management")
+
+@Tag("Unit")
 @ExtendWith(MockitoExtension.class)
 public class TestExpenseService {
 

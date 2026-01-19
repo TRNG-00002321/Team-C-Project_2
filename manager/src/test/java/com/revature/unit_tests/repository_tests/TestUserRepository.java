@@ -3,10 +3,10 @@ package com.revature.unit_tests.repository_tests;
 import com.revature.repository.DatabaseConnection;
 import com.revature.repository.User;
 import com.revature.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,6 +24,10 @@ import static org.mockito.Mockito.*;
 // Testing repository layer with mocked database connection
 // Mocking JDBC PreparedStatement and ResultSet
 // Testing SQL Query execution in isolation
+
+
+@Epic("Manager App Unit Tests")
+@Feature("Manager Authentication")
 
 @ExtendWith(MockitoExtension.class)
 public class TestUserRepository {
