@@ -21,14 +21,14 @@ public class DriverFactory {
             case "chrome" -> {
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions options = new ChromeOptions();
+                options.addArguments(
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu",
+                        "--window-size=1920,1080"
+                );
                 if (headless) {
-                    options.addArguments(
-                            "--headless=new",
-                            "--no-sandbox",
-                            "--disable-dev-shm-usage",
-                            "--disable-gpu",
-                            "--window-size=1920,1080"
-                    );
+                    options.addArguments("--headless=new");
                 }
 
                 options.setExperimentalOption(
