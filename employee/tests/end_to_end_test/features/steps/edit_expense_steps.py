@@ -59,13 +59,26 @@ def input_date(context, date):
 
     if browser == "chrome":
         new_date = month + "/" + day + "/" + year
+        date_field_locator = (By.ID, "edit-date")
+        context.dashboard_page.type(date_field_locator, new_date)
     elif browser == "edge":
-        new_date = year + "/" + day + "/" + month
+        # new_date = day + "/" + month + "/" + year
+        date_input = context.dashboard_page.wait.until(EC.visibility_of_element_located(("id", "edit-date")))
+        context.driver.execute_script(
+            """
+            arguments[0].value = arguments[1];
+            arguments[0].dispatchEvent(new Event('input', {bubbles: true}));
+            arguments[0].dispatchEvent(new Event('change', {bubbles: true}));
+            """,
+            date_input, date
+        )
     else:
         new_date = date
+        date_field_locator = (By.ID, "edit-date")
+        context.dashboard_page.type(date_field_locator, new_date)
 
-    date_field_locator = (By.ID, "edit-date")
-    context.dashboard_page.type(date_field_locator, new_date)
+
+    time.sleep(5)
 
 
 @when("the employee clicks the update expense button")
