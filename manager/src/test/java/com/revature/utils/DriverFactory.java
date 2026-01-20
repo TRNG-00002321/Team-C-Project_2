@@ -19,7 +19,7 @@ public class DriverFactory {
         switch (browser.toLowerCase()) {
 
             case "chrome" -> {
-//                WebDriverManager.chromedriver().setup();
+                WebDriverManager.chromedriver().setup();
                 ChromeOptions options = new ChromeOptions();
                 options.addArguments(
                         "--no-sandbox",

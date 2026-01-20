@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="dc1e0e1f-cfcb-4d65-8ee3-0abc9b71fbb2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/utils/DriverFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/utils/DriverFactory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

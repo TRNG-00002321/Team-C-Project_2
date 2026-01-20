@@ -71,6 +71,8 @@ RUN mkdir -p /data && chown appuser:appgroup /data
 USER appuser
 COPY ./expense_manager.db .
 COPY ./test_expense_manager.db .
+RUN chown appuser:appuser /app/expense_manager.db
+RUN chown appuser:appuser /app/test_expense_manager.db
 # Environment variables
 ENV JAVA_OPTS="-Xms256m -Xmx512m"
 ENV BROWSER=chrome \
