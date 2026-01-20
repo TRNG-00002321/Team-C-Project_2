@@ -33,10 +33,6 @@ def redirected_to_edit_menu(context):
     # header = context.dashboard_page.get_text(header_locator)
     # header = context.driver.find_element(By.CSS_SELECTOR, "#edit-expense-section > h3")
     # assert "Edit Expense" in header
-    # header_locator = (By.CSS_SELECTOR, "div[id='edit-expense-section'] > h3")
-    # header = context.dashboard_page.get_text(header_locator)
-    # header = context.driver.find_element(By.CSS_SELECTOR, "#edit-expense-section > h3")
-    # assert "Edit Expense" in header
     edit_amount_input_locator = (By.ID, "edit-amount")
     amount_field = context.dashboard_page.wait_for_clickable(edit_amount_input_locator)
     assert amount_field.is_displayed()
@@ -44,7 +40,6 @@ def redirected_to_edit_menu(context):
 
 @when('the employee inputs into the amount field: "{amount}"')
 def input_amount(context, amount):
-    amount_field_locator = (By.ID, "edit-amount")
     amount_field_locator = (By.ID, "edit-amount")
     context.dashboard_page.type(amount_field_locator, amount)
 
@@ -57,7 +52,6 @@ def input_description(context, desc):
 
 @when('the employee inputs into the date field: "{date}"')
 def input_date(context, date):
-    # adjust date format from YYYY-MM-DD to MM-DD-YYYY
     # adjust date format from YYYY-MM-DD to MM-DD-YYYY
     year = date[0:4]
     month = date[5:7]
@@ -81,10 +75,6 @@ def click_update_expense_button(context):
         By.CSS_SELECTOR,
         "#edit-expense-form button[type='submit']",
     )
-    update_button_locator = (
-        By.CSS_SELECTOR,
-        "#edit-expense-form button[type='submit']",
-    )
     context.dashboard_page.click(update_button_locator)
 
 
@@ -97,7 +87,6 @@ def edit_message_shown(context, message):
 
 @then('the expense is updated with the given "{amount}", "{desc}", and "{date}"')
 def expense_is_shown_updated(context, amount, desc, date):
-    # wait till you're back on the My Expenses screen
     # wait till you're back on the My Expenses screen
     refresh_button_locator = (By.ID, "refresh-expenses")
     refresh_button = context.dashboard_page.wait_for_clickable(refresh_button_locator)
@@ -125,44 +114,21 @@ def expense_is_shown_updated(context, amount, desc, date):
     context.dashboard_page.wait_for_element(
         (By.XPATH, f"//td[contains(text(), 'PENDING')]")
     )
-    # time.sleep(1)
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '${amount}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '{desc}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '{date}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), 'PENDING')]")
-    )
-    # time.sleep(1)
     # find the specific row with specified fields
     rows = context.driver.find_elements(By.TAG_NAME, "tr")
     found = False
     expected_amount = "$" + amount
-    expected_amount = "$" + amount
     for row in rows[1:]:
         row_date = row.find_element(By.CSS_SELECTOR, "td:nth-child(1)").text
         print(row_date + " vs " + date)
-        print(row_date + " vs " + date)
         row_amount = row.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text
-        print(row_amount + " vs " + expected_amount)
         print(row_amount + " vs " + expected_amount)
         row_description = row.find_element(By.CSS_SELECTOR, "td:nth-child(3)").text
         print(row_description + " vs " + desc)
-        print(row_description + " vs " + desc)
         row_status = row.find_element(By.CSS_SELECTOR, "td:nth-child(4)").text
         print(row_status + " vs PENDING")
-        if (
-            row_date == date
-            and expected_amount in row_amount
-            and row_description == desc
-            and row_status == "PENDING"
-        ):
-            print(row_status + " vs PENDING")
+
+        print(row_status + " vs PENDING")
         if (
             row_date == date
             and expected_amount in row_amount
@@ -228,7 +194,6 @@ def expense_with_values_exists(context, desc, amount, date):
     rows = context.driver.find_elements(By.TAG_NAME, "tr")
     found = False
     expected_amount = "$" + amount
-    expected_amount = "$" + amount
     for row in rows[1:]:
         row_date = row.find_element(By.CSS_SELECTOR, "td:nth-child(1)").text
         row_amount = row.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text
@@ -262,19 +227,6 @@ def expense_shown_with_updates(context, amount, desc, date):
         # new table exists already
         pass
 
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '${amount}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '{desc}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '{date}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), 'PENDING')]")
-    )
-    # time.sleep(1)
     context.dashboard_page.wait_for_element(
         (By.XPATH, f"//td[contains(text(), '${amount}')]")
     )
