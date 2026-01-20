@@ -4,6 +4,11 @@ import com.revature.utils.TestDatabaseUtil;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 
@@ -24,39 +29,28 @@ public class TestAuthLogin {
         TestDatabaseUtil.resetAndSeed();
     }
 
-    //MI-221
-    @Test
-    @DisplayName("Test API: Manager Login Positive")
-    void testAuthLogin_Positive(){
-        given()
-                .contentType(ContentType.JSON)
-                .body("""
-                      {
-                        "username": "manager1",
-                        "password": "password123"
-                      }
-                      """)
-                .when()
-                .post("/api/auth/login")
-                .then()
-                .statusCode(200);
+    static Stream<Arguments> loginTestData() {
+        return Stream.of(
+                Arguments.of("Valid login", "manager1", "password123", 200), //MI-221
+                Arguments.of("Invalid login", "invalid", "invalid", 401)     //MI-222
+        );
     }
 
-    //MI-222
-    @Test
-    @DisplayName("Test API: Manager Login Invalid Login")
-    void testAuthLogin_Negative(){
+    @ParameterizedTest(name = "API Manager Login Test: {0}")
+    @MethodSource("loginTestData")
+    void testAuthLogin(String scenario, String username, String password, int expectedStatus) {
+
         given()
                 .contentType(ContentType.JSON)
                 .body("""
-                      {
-                        "username": "invalid",
-                        "password": "invalid"
-                      }
-                      """)
+                  {
+                    "username": "%s",
+                    "password": "%s"
+                  }
+                  """.formatted(username, password))
                 .when()
                 .post("/api/auth/login")
                 .then()
-                .statusCode(401);
+                .statusCode(expectedStatus);
     }
 }
