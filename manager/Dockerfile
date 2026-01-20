@@ -66,13 +66,13 @@ COPY --from=builder /app/target/manager-1.0-SNAPSHOT-jar-with-dependencies.jar a
 
 # Create directory for database (shared volume mount point)
 RUN mkdir -p /data && chown appuser:appgroup /data
-
-# Switch to non-root user
-USER appuser
 COPY ./expense_manager.db .
 COPY ./test_expense_manager.db .
-RUN chown appuser:appuser /app/expense_manager.db
-RUN chown appuser:appuser /app/test_expense_manager.db
+RUN chown appuser:appgroup /app/expense_manager.db
+RUN chown appuser:appgroup /app/test_expense_manager.db
+# Switch to non-root user
+USER appuser
+
 # Environment variables
 ENV JAVA_OPTS="-Xms256m -Xmx512m"
 ENV BROWSER=chrome \
