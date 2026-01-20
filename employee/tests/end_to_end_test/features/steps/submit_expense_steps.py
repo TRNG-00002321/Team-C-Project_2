@@ -45,7 +45,15 @@ def step_enter_date(context, date):
     year = date[0:4]
     month = date[5:7]
     day = date[8:10]
-    new_date = month + "-" + day + "-" + year
+    new_date = ""
+    browser = context.driver.capabilities['browserName'].lower()
+
+    if browser == "chrome":
+        new_date = month + "/" + day + "/" + year
+    else:
+        new_date = date
+
+
     date_field_locator = (By.ID, "date")
     context.dashboard_page.type(date_field_locator, new_date)
 
