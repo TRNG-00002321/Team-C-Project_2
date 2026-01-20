@@ -41,7 +41,7 @@ def create_driver(browser_name: str, headless: bool = False):
             options.add_argument("-headless")
 
         # service = FirefoxService(GeckoDriverManager().install())
-        return webdriver.Firefox(service=service, options=options)
+        return webdriver.Firefox(options=options)
 
     elif browser == "edge":
         options = webdriver.EdgeOptions()
