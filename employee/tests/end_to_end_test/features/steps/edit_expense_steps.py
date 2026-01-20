@@ -60,7 +60,7 @@ def input_date(context, date):
     if browser == "chrome":
         new_date = month + "/" + day + "/" + year
     elif browser == "edge":
-        new_date = month + "/" + day + "/" + year
+        new_date = year + "/" + day + "/" + month
     else:
         new_date = date
 
