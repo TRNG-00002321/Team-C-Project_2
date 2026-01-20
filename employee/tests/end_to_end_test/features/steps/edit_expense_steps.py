@@ -178,7 +178,7 @@ def expense_is_shown_updated(context, amount, desc, date):
             and row_description == desc
             and row_status == "PENDING"
         ):
-        print(row_status + " vs PENDING")
+            print(row_status + " vs PENDING")
         if (
             row_date == date
             and expected_amount in row_amount
@@ -264,12 +264,6 @@ def expense_with_values_exists(context, desc, amount, date):
             and row_description == desc
             and row_status == "PENDING"
         ):
-        if (
-            row_date == date
-            and expected_amount in row_amount
-            and row_description == desc
-            and row_status == "PENDING"
-        ):
             found = True
             break
     assert found
@@ -332,12 +326,6 @@ def expense_shown_with_updates(context, amount, desc, date):
         row_amount = row.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text
         row_description = row.find_element(By.CSS_SELECTOR, "td:nth-child(3)").text
         row_status = row.find_element(By.CSS_SELECTOR, "td:nth-child(4)").text
-        if (
-            row_date == date
-            and expected_amount in row_amount
-            and row_description == desc
-            and row_status == "PENDING"
-        ):
         if (
             row_date == date
             and expected_amount in row_amount
