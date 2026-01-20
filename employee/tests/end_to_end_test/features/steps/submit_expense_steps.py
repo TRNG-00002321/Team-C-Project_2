@@ -50,6 +50,8 @@ def step_enter_date(context, date):
 
     if browser == "chrome":
         new_date = month + "/" + day + "/" + year
+    elif browser == "edge":
+        new_date = day + "/" + month + "/" + year
     else:
         new_date = date
 
@@ -122,22 +124,22 @@ def step_expense_is_shown(context, amount, description, date):
 #    date_input.send_keys(date)
 
 
-@then(u'the expense is shown with the amount: 999, description: fix door, and the date: 2025-10-10')
-def step_expense_is_shown(context, amount, description, date):
-   #dashboard_page = DashboardPage(context.driver)
-   rows = context.dashboard_page.wait_for_clickable((By.CSS_SELECTOR, "table#expenses tbody tr"))
+#@then(u'the expense is shown with the amount: 999, description: fix door, and the date: 2025-10-10')
+#def step_expense_is_shown(context, amount, description, date):
+#    #dashboard_page = DashboardPage(context.driver)
+#    rows = context.dashboard_page.wait_for_clickable((By.CSS_SELECTOR, "table#expenses tbody tr"))
 
-   found = False
-   for row in rows:
-       cols = row.find_elements(By.TAG_NAME, "td")
-       row_amount = cols[0].text
-       row_description = cols[1].text
-       row_date = cols[2].text
+#    found = False
+#    for row in rows:
+#        cols = row.find_elements(By.TAG_NAME, "td")
+#        row_amount = cols[0].text
+#        row_description = cols[1].text
+#        row_date = cols[2].text
 
-       if row_amount == amount and row_description == description and row_date == date:
-           found = True
-           break
-   assert found, f"Expense not found: {amount}, {description}, {date}"
+#        if row_amount == amount and row_description == description and row_date == date:
+#            found = True
+#            break
+#    assert found, f"Expense not found: {amount}, {description}, {date}"
 
 
 @when(u'the amount field is empty')

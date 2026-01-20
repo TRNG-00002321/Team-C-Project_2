@@ -59,6 +59,8 @@ def input_date(context, date):
 
     if browser == "chrome":
         new_date = month + "/" + day + "/" + year
+    elif browser == "edge":
+        new_date = day + "/" + month + "/" + year
     else:
         new_date = date
 
@@ -111,6 +113,8 @@ def expense_is_shown_updated(context, amount, desc, date):
     context.dashboard_page.wait_for_element(
         (By.XPATH, f"//td[contains(text(), 'PENDING')]")
     )
+
+    # time.sleep(1)
     # find the specific row with specified fields
     rows = context.driver.find_elements(By.TAG_NAME, "tr")
     found = False
@@ -124,8 +128,6 @@ def expense_is_shown_updated(context, amount, desc, date):
         print(row_description + " vs " + desc)
         row_status = row.find_element(By.CSS_SELECTOR, "td:nth-child(4)").text
         print(row_status + " vs PENDING")
-
-        print(row_status + " vs PENDING")
         if (
             row_date == date
             and expected_amount in row_amount
@@ -135,7 +137,6 @@ def expense_is_shown_updated(context, amount, desc, date):
             found = True
             break
     assert found
-
 
 @when("the employee clicks the cancel button")
 def click_cancel_button(context):
@@ -176,11 +177,11 @@ def expense_with_description_still_exists(context, desc):
 #         wait.until(EC.staleness_of(old_table))
 #     except:
 #         pass
-#     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '${amount}')]"))
-#     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{desc}')]"))
-#     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{date}')]"))
-#     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), 'PENDING')]"))
-#     time.sleep(1)
+#     # context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '${amount}')]"))
+#     # context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{desc}')]"))
+#     # context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{date}')]"))
+#     # context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), 'PENDING')]"))
+#     # time.sleep(1)
 
 
 @given(
@@ -205,6 +206,8 @@ def expense_with_values_exists(context, desc, amount, date):
             found = True
             break
     assert found
+
+
 
 @then(
     'the expense is shown with the the amount: "{amount}", description: "{desc}", and the date: "{date}"'
@@ -272,8 +275,6 @@ def expense_shown_with_updates(context, amount, desc, date):
 #            break
 #    assert specific_row.is_displayed()
 
-# @given(u'the expense with description "{desc}" is pending')
-# def expense_with_description_is_pending(context, desc):
 # @given(u'the expense with description "{desc}" is pending')
 # def expense_with_description_is_pending(context, desc):
 #    # get the row with specified fields
