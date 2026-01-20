@@ -46,17 +46,17 @@ WORKDIR /app
 # RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
 #     && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
 # RUN apt-get update && apt-get -y install google-chrome-stable
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-RUN apt-get -y update
-RUN apt-get install -y google-chrome-stable
-
-# install chromedriver
-RUN apt-get install -yqq unzip
-RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
-RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
-
-# Create non-root user for security
+# RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+# RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+# RUN apt-get -y update
+# RUN apt-get install -y google-chrome-stable
+#
+# # install chromedriver
+# RUN apt-get install -yqq unzip
+# RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
+# RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
+#
+# # Create non-root user for security
 RUN groupadd -g 1001 appgroup && \
     useradd -u 1001 -g appgroup -m -s /bin/bash appuser
 
@@ -66,18 +66,19 @@ COPY --from=builder /app/target/manager-1.0-SNAPSHOT-jar-with-dependencies.jar a
 
 # Create directory for database (shared volume mount point)
 RUN mkdir -p /data && chown appuser:appgroup /data
-COPY ./expense_manager.db .
-COPY ./test_expense_manager.db .
-RUN chown appuser:appgroup /app/expense_manager.db
-RUN chown appuser:appgroup /app/test_expense_manager.db
+COPY ./expense_manager.db ../data
+COPY ./test_expense_manager.db ../data
+RUN chown appuser:appgroup /data/expense_manager.db
+RUN chown appuser:appgroup /data/test_expense_manager.db
+RUN chmod -R 777 /app
 # Switch to non-root user
 USER appuser
 
 # Environment variables
 ENV JAVA_OPTS="-Xms256m -Xmx512m"
 ENV BROWSER=chrome \
-    DATABASE_PATH=./expense_manager.db \
-    TEST_DATABASE_PATH=./test_expense_manager.db \
+    DATABASE_PATH=../data/expense_manager.db \
+    TEST_DATABASE_PATH=../data/test_expense_manager.db \
     TEST_MODE=true
 # Expose Javalin port
 EXPOSE 5001
