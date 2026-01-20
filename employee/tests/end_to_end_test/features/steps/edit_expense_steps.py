@@ -21,9 +21,6 @@ def click_edit_button(context, desc):
     editButton = specific_row.find_element(
         By.CSS_SELECTOR, "button[onclick='expenseManager.editExpense(1)']"
     )
-    editButton = specific_row.find_element(
-        By.CSS_SELECTOR, "button[onclick='expenseManager.editExpense(1)']"
-    )
     editButton.click()
 
 
