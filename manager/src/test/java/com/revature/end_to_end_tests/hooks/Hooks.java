@@ -14,7 +14,7 @@ public class Hooks {
     // Before each scenario
     @Before
     public void setUp(){
-        context.initializeDriver(false);
+        context.initializeDriver(true);
         //Reset scenario state
         context.getDriver().manage().deleteAllCookies();
         context.getDriver().navigate().refresh();

@@ -50,6 +50,8 @@ def step_enter_date(context, date):
 
     if browser == "chrome":
         new_date = month + "/" + day + "/" + year
+    elif browser == "edge":
+        new_date = day + "/" + month + "/" + year
     else:
         new_date = date
 
