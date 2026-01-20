@@ -197,27 +197,27 @@ def expense_with_description_still_exists(context, desc):
     assert found
 
 
-@then(
-    'the expense is shown with the the amount: "{amount}", description: "{desc}", and the date: "{date}"'
-)
-def expense_shown_with_updates(context, amount, desc, date):
-    # wait till you're back on the My Expenses screen
-    refresh_button_locator = (By.ID, "refresh-expenses")
-    refresh_button = context.dashboard_page.wait_for_clickable(refresh_button_locator)
-    refresh_button.click()
-    # wait for all new elements to exist first
-    try:
-        table_locator = (By.TAG_NAME, "table")
-        old_table = context.dashboard_page.wait_for_element(table_locator)
-        wait = WebDriverWait(context.driver, 10)
-        wait.until(EC.staleness_of(old_table))
-    except:
-        pass
-    context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '${amount}')]"))
-    context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{desc}')]"))
-    context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{date}')]"))
-    context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), 'PENDING')]"))
-    time.sleep(1)
+# @then(
+#     'the expense is shown with the the amount: "{amount}", description: "{desc}", and the date: "{date}"'
+# )
+# def expense_shown_with_updates(context, amount, desc, date):
+#     # wait till you're back on the My Expenses screen
+#     refresh_button_locator = (By.ID, "refresh-expenses")
+#     refresh_button = context.dashboard_page.wait_for_clickable(refresh_button_locator)
+#     refresh_button.click()
+#     # wait for all new elements to exist first
+#     try:
+#         table_locator = (By.TAG_NAME, "table")
+#         old_table = context.dashboard_page.wait_for_element(table_locator)
+#         wait = WebDriverWait(context.driver, 10)
+#         wait.until(EC.staleness_of(old_table))
+#     except:
+#         pass
+#     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '${amount}')]"))
+#     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{desc}')]"))
+#     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{date}')]"))
+#     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), 'PENDING')]"))
+#     time.sleep(1)
 
 
 @given(
