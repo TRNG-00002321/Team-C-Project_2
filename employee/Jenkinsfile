@@ -130,7 +130,7 @@ pipeline {
                                 docker run --name ${DOCKER_IMAGE}-e2e-runner \
                                     --shm-size=2gb \
                                     ${DOCKER_IMAGE}-test \
-                                    sh -c "python -m src.main > /dev/null 2>&1 & wait-for-it localhost:5000 -- python -m behave -Dbrowser=firefox"
+                                    sh -c "python -m src.main > /dev/null 2>&1 & wait-for-it localhost:5000 -- python -m behave -Dbrowser=edge"
                             """
                         }
                     }
