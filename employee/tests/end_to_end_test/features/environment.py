@@ -1,4 +1,6 @@
 import os
+import requests
+import time
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -10,13 +12,12 @@ SEED_SQL_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../../sql/seed.sql")
 )
 
-#implement multi browser functionality?
+#  implement multi browser functionality?
+
 
 def before_all(context):
-    #load .env file data
-    load_dotenv()
-
     # Read DB path from environment
+    load_dotenv(override=False)
     db_path = os.getenv("BEHAVE_TEST_DATABASE_PATH")
     if not db_path:
         raise RuntimeError(
@@ -33,6 +34,7 @@ def before_all(context):
 
 def after_all(context):
     pass
+
 
 def before_scenario(context, scenario):
     # --- Reset & reseed database ---
