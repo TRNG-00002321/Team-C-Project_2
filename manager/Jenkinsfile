@@ -135,10 +135,7 @@ pipeline {
                                         fi
                     echo "✅ Application is ready!"
                 '''
-                dir('manager'){
-                    sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" test -B'
 
-                }
 
             }
         }
@@ -148,6 +145,11 @@ pipeline {
                     //todo: only run unit tests!
                         echo 'lumping tests together for now:'
                         sh 'mvn  -Dtest="com.revature.integration_tests.**" test -B'
+
+
+                    }
+                    dir('manager'){
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" test -B'
 
                     }
                 }
