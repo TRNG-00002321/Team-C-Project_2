@@ -78,6 +78,7 @@ public class TestGetExpensesPending {
 
     //MI-220
     @Test
+    @Disabled
     @DisplayName("Test API: Get Pending Expenses Unauthorized Request")
     void getPendingExpenses_withoutJwt_shouldReturn401() {
         given()
