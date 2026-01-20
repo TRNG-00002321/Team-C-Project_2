@@ -9,8 +9,6 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 @when('the employee clicks the edit button for the expense with description "{desc}"')
-
-@when('the employee clicks the edit button for the expense with description "{desc}"')
 def click_edit_button(context, desc):
     #  get the row with specified fields
     rows = context.driver.find_elements(By.TAG_NAME, "tr")
@@ -30,8 +28,6 @@ def click_edit_button(context, desc):
 
 
 @when("the employee is redirected to the edit menu")
-
-@when("the employee is redirected to the edit menu")
 def redirected_to_edit_menu(context):
     # header_locator = (By.CSS_SELECTOR, "div[id='edit-expense-section'] > h3")
     # header = context.dashboard_page.get_text(header_locator)
@@ -47,8 +43,6 @@ def redirected_to_edit_menu(context):
 
 
 @when('the employee inputs into the amount field: "{amount}"')
-
-@when('the employee inputs into the amount field: "{amount}"')
 def input_amount(context, amount):
     amount_field_locator = (By.ID, "edit-amount")
     amount_field_locator = (By.ID, "edit-amount")
@@ -56,14 +50,10 @@ def input_amount(context, amount):
 
 
 @when('the employee inputs into the description field: "{desc}"')
-
-@when('the employee inputs into the description field: "{desc}"')
 def input_description(context, desc):
     description_field_locator = (By.ID, "edit-description")
     context.dashboard_page.type(description_field_locator, desc)
 
-
-@when('the employee inputs into the date field: "{date}"')
 
 @when('the employee inputs into the date field: "{date}"')
 def input_date(context, date):
@@ -86,8 +76,6 @@ def input_date(context, date):
 
 
 @when("the employee clicks the update expense button")
-
-@when("the employee clicks the update expense button")
 def click_update_expense_button(context):
     update_button_locator = (
         By.CSS_SELECTOR,
@@ -101,15 +89,11 @@ def click_update_expense_button(context):
 
 
 @then('the employee sees the edit message: "{message}"')
-
-@then('the employee sees the edit message: "{message}"')
 def edit_message_shown(context, message):
     edit_message_locator = (By.CSS_SELECTOR, "#edit-message p")
     edit_message = context.dashboard_page.get_text(edit_message_locator)
     assert edit_message == message
 
-
-@then('the expense is updated with the given "{amount}", "{desc}", and "{date}"')
 
 @then('the expense is updated with the given "{amount}", "{desc}", and "{date}"')
 def expense_is_shown_updated(context, amount, desc, date):
@@ -191,14 +175,10 @@ def expense_is_shown_updated(context, amount, desc, date):
 
 
 @when("the employee clicks the cancel button")
-
-@when("the employee clicks the cancel button")
 def click_cancel_button(context):
     cancel_button_locator = (By.ID, "cancel-edit")
     context.dashboard_page.click(cancel_button_locator)
 
-
-@then('the expense with description "{desc}" still exists')
 
 @then('the expense with description "{desc}" still exists')
 def expense_with_description_still_exists(context, desc):
@@ -243,10 +223,6 @@ def expense_shown_with_updates(context, amount, desc, date):
 @given(
     'an expense with the description: "{desc}", amount: "{amount}", and date: "{date}"'
 )
-
-@given(
-    'an expense with the description: "{desc}", amount: "{amount}", and date: "{date}"'
-)
 def expense_with_values_exists(context, desc, amount, date):
     # get the row with specified fields
     rows = context.driver.find_elements(By.TAG_NAME, "tr")
@@ -267,11 +243,6 @@ def expense_with_values_exists(context, desc, amount, date):
             found = True
             break
     assert found
-
-
-@then(
-    'the expense is shown with the the amount: "{amount}", description: "{desc}", and the date: "{date}"'
-)
 
 @then(
     'the expense is shown with the the amount: "{amount}", description: "{desc}", and the date: "{date}"'
