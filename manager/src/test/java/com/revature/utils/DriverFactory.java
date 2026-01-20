@@ -42,7 +42,7 @@ public class DriverFactory {
             }
 
             case "edge" -> {
-                WebDriverManager.edgedriver().setup();
+                //WebDriverManager.edgedriver().setup();
                 EdgeOptions options = new EdgeOptions();
                 if (headless) {
                     options.addArguments("--headless=new");
