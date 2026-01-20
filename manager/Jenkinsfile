@@ -75,7 +75,7 @@ pipeline {
                 dir('manager'){
                 //todo: only run unit tests!
                     echo 'skipping tests for now:'
-                    sh 'mvn test -Dtest=com.revature.unit_tests -B'
+                    sh 'mvn test -Dtest=com.revature.unit_tests.* -B'
                 }
             }
             post {
@@ -135,7 +135,7 @@ pipeline {
                                         fi
                     echo "✅ Application is ready!"
                 '''
-                sh 'mvn test -Dtest=com.revature.end_to_end_tests -B'
+                sh 'mvn test -Dtest=com.revature.end_to_end_tests.* -B'
 
             }
         }
@@ -144,7 +144,7 @@ pipeline {
                     dir('manager'){
                     //todo: only run unit tests!
                         echo 'lumping tests together for now:'
-                        sh 'mvn test -Dtest=com.revature.integration_tests -B'
+                        sh 'mvn test -Dtest=com.revature.integration_tests.* -B'
 
                     }
                 }
