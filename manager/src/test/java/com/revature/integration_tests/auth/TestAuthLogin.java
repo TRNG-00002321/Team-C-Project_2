@@ -21,7 +21,9 @@ public class TestAuthLogin {
 
     @BeforeEach
     void resetDatabase() {
+        System.out.println("Starting seed");
         TestDatabaseUtil.resetAndSeed();
+        System.out.println("Finished seed");
     }
 
     //MI-221
