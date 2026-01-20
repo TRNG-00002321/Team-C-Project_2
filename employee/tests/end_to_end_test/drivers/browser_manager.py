@@ -48,10 +48,10 @@ def create_driver(browser_name: str, headless: bool = False):
         if headless:
             options.add_argument("--headless=new")
         
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--remote-debugging-pipe")
+        # options.add_argument("--no-sandbox")
+        # options.add_argument("--disable-dev-shm-usage")
+        # options.add_argument("--disable-gpu")
+        # options.add_argument("--remote-debugging-pipe")
 
         return webdriver.Edge(options=options) #service=service
 
