@@ -96,23 +96,24 @@ def expense_is_shown_updated(context, amount, desc, date):
         old_table = context.dashboard_page.wait_for_element(table_locator)
         wait = WebDriverWait(context.driver, 5)
         wait.until(EC.staleness_of(old_table))
+            # wait for all new elements to exist first
+        context.dashboard_page.wait_for_element(
+            (By.XPATH, f"//td[contains(text(), '${amount}')]")
+        )
+        context.dashboard_page.wait_for_element(
+            (By.XPATH, f"//td[contains(text(), '{desc}')]")
+        )
+        context.dashboard_page.wait_for_element(
+            (By.XPATH, f"//td[contains(text(), '{date}')]")
+        )
+        context.dashboard_page.wait_for_element(
+            (By.XPATH, f"//td[contains(text(), 'PENDING')]")
+        )
     except TimeoutException:
         # new table exists already
         pass
 
-    # wait for all new elements to exist first
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '${amount}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '{desc}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '{date}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), 'PENDING')]")
-    )
+
 
     # time.sleep(1)
     # find the specific row with specified fields
