@@ -142,6 +142,8 @@ pipeline {
             stage('Tests Tests') {
                 steps {
                     dir('manager'){
+                        sh 'ls'
+                        sh 'ls ..'
                     //todo: only run unit tests!
                         echo 'lumping tests together for now:'
                         sh 'mvn  -Dtest="com.revature.integration_tests.**" test -B'
