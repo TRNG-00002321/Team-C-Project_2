@@ -135,7 +135,10 @@ pipeline {
                                         fi
                     echo "✅ Application is ready!"
                 '''
-                sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" test -B'
+                dir('manager'){
+                    sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" test -B'
+
+                }
 
             }
         }
