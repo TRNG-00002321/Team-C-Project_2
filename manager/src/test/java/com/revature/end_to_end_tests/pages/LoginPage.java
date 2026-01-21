@@ -40,7 +40,9 @@ public class LoginPage extends BasePage{
     }
 
     public DashboardPage clickLogin() {
+        System.out.println("Clicking login button on page" + driver.getCurrentUrl());
         wait.until(ExpectedConditions.elementToBeClickable(loginButton));
+        System.out.println("Login button is clickable" + driver.getCurrentUrl());
         loginButton.click();
         return new DashboardPage(this.driver);
     }
