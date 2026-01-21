@@ -70,7 +70,7 @@ COPY ./expense_manager.db ../data
 COPY ./test_expense_manager.db ../data
 RUN chown appuser:appgroup /data/expense_manager.db
 RUN chown appuser:appgroup /data/test_expense_manager.db
-RUN chmod -R 777 /app
+RUN chmod -R 777 /data
 # Switch to non-root user
 USER appuser
 
