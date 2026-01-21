@@ -148,7 +148,7 @@ public class ReportSteps {
         }
 
         endDateField.clear();
-        String browser = System.getProperty("browser").toLowerCase();
+        String browser = System.getProperty("BROWSER").toLowerCase();
         endDate = normalizeDate(endDate,browser);
         endDateField.sendKeys(endDate);
 
