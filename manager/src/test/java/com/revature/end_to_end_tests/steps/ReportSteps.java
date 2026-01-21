@@ -123,7 +123,7 @@ public class ReportSteps {
         }
 
         startDateField.clear();
-        String browser = System.getProperty("browser").toLowerCase();
+        String browser = System.getProperty("BROWSER").toLowerCase();
 
         startDate = normalizeDate(startDate,browser);
         startDateField.sendKeys(startDate);
