@@ -50,6 +50,16 @@ def step_enter_date(context, date):
 
     if browser == "chrome":
         new_date = month + "/" + day + "/" + year
+    elif browser == "edge" or browser == 'microsoftedge':
+        new_date = month + "/" + day + "/" + year
+        # date_input = context.dashboard_page.wait.until(EC.visibility_of_element_located(("id", "date")))
+        # context.driver.execute_script(
+        #     """
+        #     arguments[0].value = arguments[1];
+        #     arguments[0].dispatchEvent(new Event('input', {bubbles: true}));
+        #     arguments[0].dispatchEvent(new Event('change', {bubbles: true}));
+        #     """,
+        #     date_input, date)
     else:
         new_date = date
 

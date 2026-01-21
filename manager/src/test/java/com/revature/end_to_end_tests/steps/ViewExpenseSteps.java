@@ -28,6 +28,7 @@ public class ViewExpenseSteps {
     @Given("the manager is on the all expenses screen")
     public void theManagerIsOnTheAllExpensesScreen() {
         LoginPage loginPage = new LoginPage(driver);
+        System.out.println("we are paging it" + driver.getCurrentUrl());
         dashboardPage = loginPage.login("manager1", "password123");
         dashboardPage.goToAllExpensesScreen();
     }

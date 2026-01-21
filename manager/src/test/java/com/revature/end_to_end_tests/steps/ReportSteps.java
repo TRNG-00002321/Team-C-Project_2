@@ -123,6 +123,9 @@ public class ReportSteps {
         }
 
         startDateField.clear();
+        String browser = System.getProperty("browser").toLowerCase();
+
+        startDate = normalizeDate(startDate,browser);
         startDateField.sendKeys(startDate);
 
         // Ensure value is set before continuing
@@ -145,6 +148,8 @@ public class ReportSteps {
         }
 
         endDateField.clear();
+        String browser = System.getProperty("browser").toLowerCase();
+        endDate = normalizeDate(endDate,browser);
         endDateField.sendKeys(endDate);
 
         wait.until(driver ->
@@ -180,5 +185,24 @@ public class ReportSteps {
         WebElement generateButton = wait.until(ExpectedConditions.elementToBeClickable(By.id(buttonId)));
         generateButton.click();
       }
+
+
+    private String normalizeDate(String date, String browser) {
+        if(browser.equals("firefox"))
+        {
+            // converts mm/dd/yyyy → yyyy-MM-dd
+            String[] parts = date.split("/");
+            return parts[2] + "-" + parts[0] + "-" + parts[1];
+        }
+        else if (browser.equals("edge"))
+        {
+            // converts mm/dd/yyyy → dd-MM-yyyy
+            String[] parts = date.split("/");
+            return parts[1] + "-" + parts[0] + "-" + parts[2];
+        }
+        else return date;
+
+
+    }
     }
 

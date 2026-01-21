@@ -15,7 +15,7 @@ import static io.restassured.RestAssured.given;
 public class TestAuthLogin {
     @BeforeAll
     static void setup(){
-        RestAssured.baseURI = "http://localhost";
+        RestAssured.baseURI = "http://manager_app";
         RestAssured.port = 5001;
     }
 
@@ -26,7 +26,9 @@ public class TestAuthLogin {
 
     @BeforeEach
     void resetDatabase() {
+        System.out.println("Starting seed");
         TestDatabaseUtil.resetAndSeed();
+        System.out.println("Finished seed");
     }
 
     static Stream<Arguments> loginTestData() {
