@@ -5,108 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dc1e0e1f-cfcb-4d65-8ee3-0abc9b71fbb2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/Main.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/api/AuthenticationMiddleware.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/api/ExpenseController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/api/ReportController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/repository/Approval.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/repository/ApprovalRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/repository/DatabaseConnection.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/repository/Expense.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/repository/ExpenseRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/repository/ExpenseWithUser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/repository/User.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/repository/UserRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/service/AuthenticationService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/com/revature/service/ExpenseService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/end_to_end_tests/context/TestContext.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/end_to_end_tests/hooks/Hooks.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/end_to_end_tests/pages/BasePage.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/end_to_end_tests/pages/DashboardPage.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/end_to_end_tests/pages/LoginPage.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/end_to_end_tests/runners/TestRunner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/end_to_end_tests/steps/AuthSteps.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/end_to_end_tests/steps/ReportSteps.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/end_to_end_tests/steps/ReviewExpenseSteps.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/end_to_end_tests/steps/ViewExpenseSteps.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/auth/Dummy.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/auth/TestAuthLogin.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/auth/TestLogout.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/auth/TestPostApiStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/expense/Dummy.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/expense/TestGetAllExpenses.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/expense/TestGetExpenseByEmployee.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/expense/TestGetExpensesPending.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/expense/TestPostApproveExpense.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/expense/TestPostDenyExpense.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/info/Dummy.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/info/TestGetHealthCheck.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/report/Dummy.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/report/TestGenerateCsvReport.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/integration_tests/report/TestGenerateCsvReportNegative.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/api_tests/TestAuthenticationMiddleware.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/api_tests/TestExpenseController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/api_tests/TestReportController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/repository_tests/TestApprovalRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/repository_tests/TestExpenseRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/repository_tests/TestUserRepository$FindByIdTests.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/repository_tests/TestUserRepository$FindByUserNameTests.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/repository_tests/TestUserRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/service_tests/TestAuthenticationService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/service_tests/TestExpenseService$generate_report_ByCategory.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/unit_tests/service_tests/TestExpenseService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/utils/DriverFactory.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/com/revature/utils/TestDatabaseUtil.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/db/test_expense_manager.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/features/authentication.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/features/report.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/features/review_expense.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/features/view_expense.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/sql/reset.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/test-classes/sql/seed.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../employee/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Jenkinsfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/public/auth.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/public/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/public/manager.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/public/manager.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/public/test_expense_manager.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../employee/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../employee/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../employee/.idea/employee.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../employee/.idea/employee.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../employee/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../employee/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/repository/ApprovalRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/repository/ApprovalRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/repository/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/repository/DatabaseConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/manager.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/manager.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Project2/expense_apps/manager/target/classes/manager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/context/TestContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/context/TestContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/hooks/Hooks.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/hooks/Hooks.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/pages/BasePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/pages/BasePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/pages/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/pages/LoginPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/steps/ViewExpenseSteps.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/steps/ViewExpenseSteps.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestAuthLogin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestAuthLogin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestLogout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestLogout.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestPostApiStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/auth/TestPostApiStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestGetAllExpenses.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestGetAllExpenses.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestGetExpenseByEmployee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestGetExpenseByEmployee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestGetExpensesPending.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestGetExpensesPending.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestPostApproveExpense.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestPostApproveExpense.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestPostDenyExpense.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/expense/TestPostDenyExpense.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/info/TestGetHealthCheck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/info/TestGetHealthCheck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/report/TestGenerateCsvReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/report/TestGenerateCsvReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/report/TestGenerateCsvReportNegative.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/integration_tests/report/TestGenerateCsvReportNegative.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/utils/DriverFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/utils/DriverFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/utils/TestDatabaseUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/utils/TestDatabaseUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/db/test_expense_manager.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/db/test_expense_manager.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +30,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging sunni-branch",
+    "git-widget-placeholder": "sunni-branch",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/peter/OneDrive/Desktop/Desktop/QEA/Team-C-Project_2/manager/src/test/resources/db",
     "settings.editor.selected.configurable": "preferences.pluginManager"
