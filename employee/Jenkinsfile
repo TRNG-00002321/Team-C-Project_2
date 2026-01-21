@@ -1,0 +1,260 @@
+pipeline {
+    agent any
+    environment {
+        APP_NAME = 'employee'
+        APP_VERSION = '1.1.0'
+        DOCKER_IMAGE = "${APP_NAME}"
+        DOCKER_TAG = "${BUILD_NUMBER}"
+        
+    }
+    
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timeout(time: 30, unit: 'MINUTES')
+        timestamps()
+        disableConcurrentBuilds()
+    }
+    parameters {
+        booleanParam(
+            name: "TEST_MODE", 
+            defaultValue: true,
+            description: 'Run Tests?'
+        )    }
+
+    stages {
+        stage('Initialize'){
+            steps {
+                sh """
+                echo "==========================================="
+                echo "  Jenkins Pipeline - Employee Application"
+                echo "==========================================="
+                echo " Application: ${APP_NAME} v${APP_VERSION}"
+                echo " Build Number: ${BUILD_NUMBER}"
+                echo " Workspace: ${WORKSPACE}"
+                echo "==========================================="
+                """
+            }
+        }
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                checkout scm
+                echo "Verifying files in workspace:"
+                sh 'ls -la'
+            }
+        }
+        stage('Test') {
+            when {
+                expression { params.TEST_MODE == true }
+            }
+            stages {
+                stage('Setup') {
+                    steps {
+                        dir('employee') {
+                            sh "docker build -t ${DOCKER_IMAGE}-test --target test ."
+                        }
+                    }
+                }
+                stage('Unit Test') {       
+                    steps {
+                        dir('employee')  {
+                            echo 'Running Unit Tests...'
+                            sh """
+                                docker rm -f ${DOCKER_IMAGE}-unit-runner || true
+
+                                docker run --name ${DOCKER_IMAGE}-unit-runner ${DOCKER_IMAGE}-test \
+                                    python -m pytest tests/unit_tests \
+                                    --alluredir=/employee/allure-results \
+                                    --junitxml=/employee/test-results/unit-results.xml
+                            """
+                        }
+                    }
+                    post {
+                        always {
+                            dir('employee'){
+                                sh """
+                                    docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
+                                    docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
+                                    docker rm ${DOCKER_IMAGE}-unit-runner
+                                """
+                            }
+                        }
+                        success {
+                            echo 'Unit Tests Passesd!'
+                        }
+                        failure {
+                            echo 'Unit Tests Failed!'
+                        }
+                    }
+                }
+                stage('Integration Test'){
+                    steps {
+                        dir('employee')  {
+                            echo 'Running Integration Tests...'
+                            sh """
+                                docker rm -f ${DOCKER_IMAGE}-int-runner || true
+
+                                docker run --name ${DOCKER_IMAGE}-int-runner ${DOCKER_IMAGE}-test \
+                                    python -m pytest tests/integration_tests \
+                                    --alluredir=/employee/allure-results \
+                                    --junitxml=/employee/test-results/integration-results.xml
+                            """
+                        }
+                    }  
+                    post {
+                        always {
+                            dir('employee'){
+                                sh """
+                                    docker cp ${DOCKER_IMAGE}-int-runner:/employee/allure-results/. allure-results/
+                                    docker cp ${DOCKER_IMAGE}-int-runner:/employee/test-results/. test-results/
+                                    docker rm ${DOCKER_IMAGE}-int-runner
+                                """
+                            }
+                        }
+                        success {
+                            echo 'Integration Tests Passesd!'
+                        }
+                        failure {
+                            echo 'Integration Tests Failed!'
+                        }
+                    }                  
+                }
+                stage('Cross-Browser E2E Tests') {
+                    steps {
+                        script {
+                            def browsers = ['chrome', 'firefox', 'edge']
+                            def tasks = [:]
+
+                            browsers.each { browserName ->
+                                tasks[browserName] = {
+                                    node { // Or your specific agent label
+                                        dir('employee') {
+                                            echo "Running E2E tests on ${browserName}..."
+                                            try {
+                                                sh """
+                                                    # Use a unique name for each container to avoid collisions
+                                                    docker rm -f ${DOCKER_IMAGE}-${browserName}-runner || true
+
+                                                    docker run --name ${DOCKER_IMAGE}-${browserName}-runner \
+                                                        --shm-size=2gb \
+                                                        ${DOCKER_IMAGE}-test \
+                                                        sh -c "python -m src.main > /dev/null 2>&1 & wait-for-it localhost:5000 -- python -m behave -Dbrowser=${browserName}"
+                                                """
+                                            } finally {
+                                                // Post-execution cleanup and report collection
+                                                sh """
+                                                    docker cp ${DOCKER_IMAGE}-${browserName}-runner:/employee/allure-results/. allure-results/ || true
+                                                    docker rm -f ${DOCKER_IMAGE}-${browserName}-runner || true
+                                                """
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            parallel tasks
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('employee') {
+                    echo 'Building Docker image...'
+                    sh """
+                        docker build --target production -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                        docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
+                    """
+                }
+            }
+            post{
+                success{
+                    echo 'Docker image built successfully:'
+                    sh "docker images | grep ${DOCKER_IMAGE} || true"
+                }
+            }
+        }
+        stage('Test Docker Image') {
+            steps {
+                dir('employee') {
+                    echo 'Testing Docker image...'
+                    sh """
+                    NET_NAME=\$(docker inspect jenkins-p2 -f '{{range \$k, \$v := .NetworkSettings.Networks}}{{\$k}}{{end}}')
+                    echo "Detected Jenkins Network: \$NET_NAME"
+                    docker rm -f employee_temp || true
+                    docker run -d --name employee_temp \
+                        --network \$NET_NAME \
+                        ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    
+                    sleep 5
+                    
+                    RESPONSE_CODE=\$(curl -s -o /dev/null -w "%{http_code}" http://employee_temp:5000/health)
+                    docker stop employee_temp
+                    docker rm employee_temp
+
+                    echo "Health check response code: \$RESPONSE_CODE"
+                    if [ "\$RESPONSE_CODE" -ne 200 ]; then
+                        exit 1                    
+                    fi
+                    """
+                }
+            }
+            post {
+                success {
+                    echo 'Docker Image Ran Sucessfully!'
+                }
+                failure {
+                    echo 'Docker Image Failed !'
+                }
+            }
+        }
+        stage('Deploy'){
+            when {
+                expression { currentBuild.currentResult == 'SUCCESS' }
+            }
+            steps {
+                echo 'Deploying Docker Image...'
+                // Deployment logic goes here
+            }
+        }
+    }
+    post {
+        always {
+            echo '==========================================='
+            echo '   Pipeline Execution Complete'
+            echo '==========================================='
+            echo "Result: ${currentBuild.currentResult}"
+            echo "Duration: ${currentBuild.durationString}"
+            echo '==========================================='
+        }
+        success {
+            echo 'Pipeline Completed Successfully!'
+        }
+        failure {
+            echo 'Pipeline Failed!'
+            // Uncomment for email notification:
+            // emailext subject: "Build ${BUILD_NUMBER} failed",
+            //          body: "Check console output at ${BUILD_URL}",
+            //          to: 'team@example.com'
+        }
+        unstable {
+            echo 'Pipeline Completed with Warnings!'
+        }
+        cleanup {
+            echo 'Cleaning Up Docker Images...'
+            sh """
+                docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG} 2>/dev/null || true
+            """
+
+            echo 'Cleaning Up Workspace...'
+            cleanWs()
+        }
+    }
+}

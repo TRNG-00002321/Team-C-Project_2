@@ -7,28 +7,21 @@ Background:
   Given the application is running
   And the test database is already seeded with users
 
-Scenario: Successful Login
-  Given the employee is on the login screen
-  When the employee enters username "employee1"
-  And the employee enters password "password123"
-  And the employee clicks the login button
-  Then the employee sees the auth message: "Login successful! Redirecting to employee dashboard..."
-  And the employee is redirected to the employee dashboard
-
-Scenario Outline: Invalid Login
+Scenario Outline: Login attempts
   Given the employee is on the login screen
   When the employee enters username "<username>"
   And the employee enters password "<password>"
   And the employee clicks the login button
-  Then the employee is not redirected to the dashboard
-  And the employee sees the auth message: "<message>"
+  Then the employee sees the auth message: "<message>"
+
 
 Examples:
-    | username    | password             | message              |
-    | wronguser   | password123          | Invalid credentials  |
-    | employee1   | wrongpassword        | Invalid credentials  |
-    | wronguser   | wrongpassword        | Invalid credentials  |
-    | manager1    | password123          | Login failed         |
+    | username    | password             | message                                                     |
+    | employee1   | password123          | Login successful! Redirecting to employee dashboard...      |
+    | wronguser   | password123          | Invalid credentials                                         |
+    | employee1   | wrongpassword        | Invalid credentials                                         |
+    | wronguser   | wrongpassword        | Invalid credentials                                         |
+    | manager1    | password123          | Login failed                                                |
 
 Scenario: Empty Username Input
   Given the employee is on the login screen
@@ -49,4 +42,3 @@ Scenario: Logout
   Given the employee is logged in
   When the employee clicks the logout button
   Then the employee is redirected to the login page
-

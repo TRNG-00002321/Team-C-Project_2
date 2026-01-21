@@ -45,7 +45,25 @@ def step_enter_date(context, date):
     year = date[0:4]
     month = date[5:7]
     day = date[8:10]
-    new_date = month + "-" + day + "-" + year
+    new_date = ""
+    browser = context.driver.capabilities['browserName'].lower()
+
+    if browser == "chrome":
+        new_date = month + "/" + day + "/" + year
+    elif browser == "edge" or browser == 'microsoftedge':
+        new_date = month + "/" + day + "/" + year
+        # date_input = context.dashboard_page.wait.until(EC.visibility_of_element_located(("id", "date")))
+        # context.driver.execute_script(
+        #     """
+        #     arguments[0].value = arguments[1];
+        #     arguments[0].dispatchEvent(new Event('input', {bubbles: true}));
+        #     arguments[0].dispatchEvent(new Event('change', {bubbles: true}));
+        #     """,
+        #     date_input, date)
+    else:
+        new_date = date
+
+
     date_field_locator = (By.ID, "date")
     context.dashboard_page.type(date_field_locator, new_date)
 

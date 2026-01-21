@@ -1,3 +1,4 @@
+import allure
 import pytest
 from src.repository import Expense, ExpenseRepository
 from unittest.mock import call
@@ -10,8 +11,12 @@ def setUp(mocker):
     expenseRepo = ExpenseRepository(mock_db)
     yield mock_db, mock_conn, mock_cursor, expenseRepo
 
+@allure.feature("Expense submission, editing, and deletion")
 class TestExpenseRepository:
 
+    @allure.story("Employee expense submission")
+    @allure.title("Test create expense, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_create_expense_positive(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -41,6 +46,9 @@ class TestExpenseRepository:
         assert actualExpense.description == newExpense.description
         assert actualExpense.date == newExpense.date
 
+    @allure.story("Employee expense submission")
+    @allure.title("Test create expense, null expense")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_create_expense_null(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -54,6 +62,9 @@ class TestExpenseRepository:
             setUp[3].create(newExpense)
             assert str(ex) == "'NoneType' object has no attribute 'user_id'"
 
+    @allure.story("Employee expense submission")
+    @allure.title("Test create expense with null attributes")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize("idInput, userIdInput, amountInput, descInput, dateInput", [
         (None, 1, 95.49, "printer supplies", "2025-12-17"),
         (5, None, 95.49, "printer supplies", "2025-12-17"),
@@ -79,6 +90,9 @@ class TestExpenseRepository:
         assert actualExpense.description == newExpense.description
         assert actualExpense.date == newExpense.date
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test find by id, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_find_by_id_positive(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -99,6 +113,9 @@ class TestExpenseRepository:
         assert actualExpense.description == expectedData['description']
         assert actualExpense.date == expectedData['date']
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test find by id, negative test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize("idInput", [
         (-5),
         (9999999),
@@ -119,6 +136,9 @@ class TestExpenseRepository:
             (idInput,))
         assert actualExpense is None
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test find by user id, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_find_by_user_id_positive(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -145,6 +165,9 @@ class TestExpenseRepository:
         assert newExpense2 in actualExpenseList
         assert newExpense3 in actualExpenseList
 
+    @allure.story("Employee viewing expenses")
+    @allure.title("Test find by user id, negative test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize("userIdInput", [
         (-34),
         (567898888),
@@ -165,6 +188,9 @@ class TestExpenseRepository:
             (userIdInput,))
         assert len(actualExpenseList) == 0
 
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_update_expense_positive(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -181,6 +207,9 @@ class TestExpenseRepository:
         setUp[1].commit.assert_called_once()
         assert newExpense == actualExpense
 
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense, null expense")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_update_expense_null(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -192,6 +221,9 @@ class TestExpenseRepository:
             actualExpense = setUp[3].update(newExpense)
             assert str(ex) == "'NoneType' object has no attribute 'amount'"
 
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense with null attributes")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize("idInput, userIdInput, amountInput, descInput, dateInput", [
         (None, 1, 79.32, "printer supplies", "2025-12-17"),
         (5, None, 79.32, "printer supplies", "2025-12-17"),
@@ -211,6 +243,9 @@ class TestExpenseRepository:
         setUp[1].commit.assert_called_once_with()
         assert actualExpense == newExpense
 
+    @allure.story("Employee deleting expenses")
+    @allure.title("Test delete expense, positive test")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_delete_positive(self, setUp):
         # Arrange
         # setUp[0] = mock_db, setUp[1] = mock_conn,
@@ -229,6 +264,9 @@ class TestExpenseRepository:
         setUp[1].commit.assert_called_once()
         assert result == True
 
+    @allure.story("Employee deleting expenses")
+    @allure.title("Test delete expense, negative test")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize("idInput",[
         (-49),
         (83918479),
