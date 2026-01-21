@@ -26,6 +26,8 @@ public class TestContext {
                 .load();
         String browser = dotenv.get("BROWSER", "chrome");
         browser = System.getProperty("BROWSER", "chrome").toLowerCase();
+        System.out.println("Initializing WebDriver for browser: " + browser + ", headless: " + headless);
+        System.out.println(dotenv.get("BROWSER") + ", dotenv browser");
         driver = DriverFactory.createDriver(browser, headless);
     }
 
