@@ -1,5 +1,10 @@
 pipeline {
-    agent none
+    agent{
+    docker {
+        image 'jenkinsdemo4:latest'
+        args '-v expense-data:/data'
+      }
+    }
     tools {
             maven 'maven-3'
         }
