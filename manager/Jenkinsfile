@@ -1,7 +1,8 @@
 pipeline {
     agent {
-        any {
-             args '-v expense-data:/data'
+        docker {
+            image 'eclipse-temurin:17-jdk'
+            args '-v expense-data:/data'
         }
     }
     tools {
