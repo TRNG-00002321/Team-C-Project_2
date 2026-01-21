@@ -1,15 +1,17 @@
 package com.revature.integration_tests.expense;
 
 import com.revature.utils.TestDatabaseUtil;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+@Epic("Manager App Integration Tests")
+@Feature("Expense Management")
 
+@Tag("Integration")
 public class TestGetExpenseByEmployee {
     @BeforeAll
     static void setup() {

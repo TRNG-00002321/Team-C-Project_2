@@ -156,7 +156,7 @@ pipeline {
                 dir('manager'){
                     echo 'Running Chrome E2E Tests:'
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -DBROWSER="edge" -Dbrowser="edge" test -B'
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="chrome" test -B'
                     }
                 }
             }
@@ -173,7 +173,24 @@ pipeline {
                 dir('manager'){
                     echo 'Running Firefox E2E Tests:'
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -DBROWSER="firefox" test -B'
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="firefox" test -B'
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+    stage('Edge E2E Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Firefox E2E Tests:'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="edge" test -B'
                     }
                 }
             }

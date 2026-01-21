@@ -25,10 +25,7 @@ public class TestContext {
                 .ignoreIfMissing()
                 .load();
         String browser = dotenv.get("BROWSER", "chrome");
-        browser = System.getProperty("BROWSER", "chrome").toLowerCase();
-        System.out.println("Initializing WebDriver for browser: " + browser + ", headless: " + headless);
-        System.out.println(dotenv.get("BROWSER") + ", dotenv browser");
-        System.out.println(System.getProperty("browser", "chrome").toLowerCase() + ", lowercase browser");
+        browser = System.getProperty("browser", "chrome").toLowerCase();
         driver = DriverFactory.createDriver(browser, headless);
     }
 
