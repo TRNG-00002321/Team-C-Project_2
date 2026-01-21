@@ -1,5 +1,9 @@
 pipeline {
-    agent { label 'built-in' }
+    agent {
+        any {
+             args '-v expense-data:/data'
+        }
+    }
     tools {
             maven 'maven-3'
         }
