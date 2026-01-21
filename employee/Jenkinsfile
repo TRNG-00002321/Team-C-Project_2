@@ -120,72 +120,39 @@ pipeline {
                         }
                     }                  
                 }
-                // stage('Cross-Browser E2E Tests') {
-                //     steps {
-                //         script {
-                //             def browsers = ['chrome', 'firefox', 'edge']
-                //             def tasks = [:]
-
-                //             browsers.each { browserName ->
-                //                 tasks[browserName] = {
-                //                     node { // Or your specific agent label
-                //                         dir('employee') {
-                //                             echo "Running E2E tests on ${browserName}..."
-                //                             try {
-                //                                 sh """
-                //                                     # Use a unique name for each container to avoid collisions
-                //                                     docker rm -f ${DOCKER_IMAGE}-${browserName}-runner || true
-
-                //                                     docker run --name ${DOCKER_IMAGE}-${browserName}-runner \
-                //                                         --shm-size=2gb \
-                //                                         ${DOCKER_IMAGE}-test \
-                //                                         sh -c "python -m src.main > /dev/null 2>&1 & wait-for-it localhost:5000 -- python -m behave -Dbrowser=${browserName}"
-                //                                 """
-                //                             } finally {
-                //                                 // Post-execution cleanup and report collection
-                //                                 sh """
-                //                                     docker cp ${DOCKER_IMAGE}-${browserName}-runner:/employee/allure-results/. allure-results/ || true
-                //                                     docker rm -f ${DOCKER_IMAGE}-${browserName}-runner || true
-                //                                 """
-                //                             }
-                //                         }
-                //                     }
-                //                 }
-                //             }
-                //             parallel tasks
-                //         }
-                //     }
-                // }
-                stage('E2E Test') {
+                stage('Cross-Browser E2E Tests') {
                     steps {
-                        dir('employee') {
-                            echo "Running E2E tests..."
-                            sh """
-                                docker rm -f ${DOCKER_IMAGE}-e2e-runner || true
+                        script {
+                            def browsers = ['chrome', 'firefox', 'edge']
+                            def tasks = [:]
 
-                                docker run --name ${DOCKER_IMAGE}-e2e-runner \
-                                    --shm-size=2gb \
-                                    ${DOCKER_IMAGE}-test \
-                                    sh -c "python -m src.main > /dev/null 2>&1 & wait-for-it localhost:5000 -- python -m behave -Dbrowser=firefox"
-                            """
-                        }
-                    }
-                    post {
-                        always {
-                            dir('employee') {
-                                sh """
-                                    docker cp ${DOCKER_IMAGE}-e2e-runner:/employee/allure-results/. allure-results/
+                            browsers.each { browserName ->
+                                tasks[browserName] = {
+                                    node { // Or your specific agent label
+                                        dir('employee') {
+                                            echo "Running E2E tests on ${browserName}..."
+                                            try {
+                                                sh """
+                                                    # Use a unique name for each container to avoid collisions
+                                                    docker rm -f ${DOCKER_IMAGE}-${browserName}-runner || true
 
-                                    docker rm ${DOCKER_IMAGE}-e2e-runner
-                                """
-                                    // docker cp ${DOCKER_IMAGE}-e2e-runner:/employee/app_logs.txt logs/
+                                                    docker run --name ${DOCKER_IMAGE}-${browserName}-runner \
+                                                        --shm-size=2gb \
+                                                        ${DOCKER_IMAGE}-test \
+                                                        sh -c "python -m src.main > /dev/null 2>&1 & wait-for-it localhost:5000 -- python -m behave -Dbrowser=${browserName}"
+                                                """
+                                            } finally {
+                                                // Post-execution cleanup and report collection
+                                                sh """
+                                                    docker cp ${DOCKER_IMAGE}-${browserName}-runner:/employee/allure-results/. allure-results/ || true
+                                                    docker rm -f ${DOCKER_IMAGE}-${browserName}-runner || true
+                                                """
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        }
-                        success {
-                            echo 'E2E Tests Passed!'
-                        }
-                        failure {
-                            echo 'E2E Tests Failed!'
+                            parallel tasks
                         }
                     }
                 }
