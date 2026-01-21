@@ -1,0 +1,117 @@
+<testsuite name="submit_expense.Submit new expense" tests="5" errors="0" failures="3" skipped="0" time="19.997155" timestamp="2026-01-21T13:54:36.528329" hostname="DESKTOP-6NBVF6H"><testcase classname="submit_expense.Submit new expense" name="Successful expense submit -- @1.1 Successful submissions" status="failed" time="4.123539"><failure type="AssertionError" message="Expense not found: 123, example description, 2025-12-31">
+<![CDATA[
+Failing step: And the expense is shown with the amount: "123", description: "example description", and the date: "2025-12-31" ... failed in 0.694s
+Location: tests/end_to_end_test/features/submit_expense.feature:21
+ASSERT FAILED: Expense not found: 123, example description, 2025-12-31]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @smoke @happy
+  Scenario Outline: Successful expense submit -- @1.1 Successful submissions
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 2.598s
+    Given the employee is at the submit expense menu ... passed in 0.054s
+    When the employee inputs a new amount: "123" ... passed in 0.071s
+    And the employee inputs a new description: "example description" ... passed in 0.051s
+    And the employee inputs a new date: "2025-12-31" ... passed in 0.045s
+    And the employee clicks the submit expense button ... passed in 0.043s
+    Then the employee sees the message: "Expense submitted successfully!" ... passed in 0.522s
+    And the employee navigates to the expenses screen ... passed in 0.046s
+    And the expense is shown with the amount: "123", description: "example description", and the date: "2025-12-31" ... failed in 0.694s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="submit_expense.Submit new expense" name="Successful expense submit -- @1.2 Successful submissions" status="failed" time="4.53062"><failure type="AssertionError" message="Expense not found: 999, fix door, 2025-01-01">
+<![CDATA[
+Failing step: And the expense is shown with the amount: "999", description: "fix door", and the date: "2025-01-01" ... failed in 0.671s
+Location: tests/end_to_end_test/features/submit_expense.feature:21
+ASSERT FAILED: Expense not found: 999, fix door, 2025-01-01]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @smoke @happy
+  Scenario Outline: Successful expense submit -- @1.2 Successful submissions
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 3.037s
+    Given the employee is at the submit expense menu ... passed in 0.050s
+    When the employee inputs a new amount: "999" ... passed in 0.042s
+    And the employee inputs a new description: "fix door" ... passed in 0.070s
+    And the employee inputs a new date: "2025-01-01" ... passed in 0.044s
+    And the employee clicks the submit expense button ... passed in 0.046s
+    Then the employee sees the message: "Expense submitted successfully!" ... passed in 0.521s
+    And the employee navigates to the expenses screen ... passed in 0.049s
+    And the expense is shown with the amount: "999", description: "fix door", and the date: "2025-01-01" ... failed in 0.671s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="submit_expense.Submit new expense" name="Successful expense submit -- @1.3 Successful submissions" status="failed" time="4.711605"><failure type="AssertionError" message="Expense not found: 100, todays date, 2026-01-21">
+<![CDATA[
+Failing step: And the expense is shown with the amount: "100", description: "todays date", and the date: "TODAY" ... failed in 0.680s
+Location: tests/end_to_end_test/features/submit_expense.feature:21
+ASSERT FAILED: Expense not found: 100, todays date, 2026-01-21]]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+
+  @smoke @happy
+  Scenario Outline: Successful expense submit -- @1.3 Successful submissions
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 3.186s
+    Given the employee is at the submit expense menu ... passed in 0.050s
+    When the employee inputs a new amount: "100" ... passed in 0.047s
+    And the employee inputs a new description: "todays date" ... passed in 0.049s
+    And the employee inputs a new date: "TODAY" ... passed in 0.048s
+    And the employee clicks the submit expense button ... passed in 0.066s
+    Then the employee sees the message: "Expense submitted successfully!" ... passed in 0.522s
+    And the employee navigates to the expenses screen ... passed in 0.063s
+    And the expense is shown with the amount: "100", description: "todays date", and the date: "TODAY" ... failed in 0.680s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="submit_expense.Submit new expense" name="Submit expense validation (empty required fields) -- @1.1 Validation errors" status="passed" time="3.236379"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @validation
+  Scenario Outline: Submit expense validation (empty required fields) -- @1.1 Validation errors
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 3.043s
+    Given the employee is at the submit expense menu ... passed in 0.052s
+    When the employee inputs a new amount: "EMPTY" ... passed in 0.021s
+    And the employee inputs a new description: "example" ... passed in 0.047s
+    And the employee clicks the submit expense button ... passed in 0.055s
+    Then the "amount" field is selected ... passed in 0.008s
+    And the employee stays on the submit menu screen ... passed in 0.010s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="submit_expense.Submit new expense" name="Submit expense validation (empty required fields) -- @1.2 Validation errors" status="passed" time="3.395012"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @validation
+  Scenario Outline: Submit expense validation (empty required fields) -- @1.2 Validation errors
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 3.181s
+    Given the employee is at the submit expense menu ... passed in 0.061s
+    When the employee inputs a new amount: "125" ... passed in 0.044s
+    And the employee inputs a new description: "EMPTY" ... passed in 0.020s
+    And the employee clicks the submit expense button ... passed in 0.069s
+    Then the "description" field is selected ... passed in 0.008s
+    And the employee stays on the submit menu screen ... passed in 0.011s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

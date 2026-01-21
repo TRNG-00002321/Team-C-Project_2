@@ -1,3 +1,4 @@
+# python
 from behave import given, when, then
 from tests.end_to_end_test.pages.login_page import LoginPage
 import allure
@@ -24,14 +25,32 @@ def step_impl(context):
 
 @when(u'the employee enters username "{username}"')
 def step_impl(context, username):
+    # Robust handling: behave can pass empty strings for blank Example cells.
+    # Treat None or empty/whitespace as "missing data" and clear the field.
     with allure.step(f'Enter username: "{username}"'):
-        context.login_page.enter_username(username)
+        username_val = "" if username is None else str(username)
+        if username_val.strip() == "":
+            # Ensure the username input is empty (clear and leave focus as-is)
+            username_input = context.login_page.wait_for_element(
+                context.login_page.USERNAME_FIELD
+            )
+            username_input.clear()
+        else:
+            context.login_page.enter_username(username_val)
 
 
 @when(u'the employee enters password "{password}"')
 def step_impl(context, password):
+    # Robust handling: treat missing/empty password as clearing the field.
     with allure.step(f'Enter password: "{password}"'):
-        context.login_page.enter_password(password)
+        password_val = "" if password is None else str(password)
+        if password_val.strip() == "":
+            password_input = context.login_page.wait_for_element(
+                context.login_page.PASSWORD_FIELD
+            )
+            password_input.clear()
+        else:
+            context.login_page.enter_password(password_val)
 
 
 @when(u'the employee clicks the login button')
@@ -56,57 +75,31 @@ def step_impl(context):
         context.dashboard_page.wait_for_url_contains("/app")
         assert "/app" in context.login_page.get_current_url()
 
+
 @then(u'the employee is not redirected to the dashboard')
 def step_impl(context):
     with allure.step('Verify the user is NOT redirected to the dashboard'):
         assert "/app" not in context.login_page.get_current_url()
 
-@when(u'the employee does not input any value for username')
-def step_impl(context):
-    with allure.step('Clear the username input field'):
-        username_input = context.login_page.wait_for_element(
-            context.login_page.USERNAME_FIELD
-        )
-        username_input.clear()
 
-
-@then(u'the username field is selected')
-def step_impl(context):
-    with allure.step('Assert the username field has focus'):
+@then(u'the login {field} field is selected')
+def step_impl(context, field):
+    with allure.step(f'Assert the {field} field has focus'):
         active_element = context.driver.switch_to.active_element
 
-        username_input = context.login_page.wait_for_element(
-            context.login_page.USERNAME_FIELD
-        )
+        field_lower = field.strip().lower()
+        if field_lower == 'username':
+            target_input = context.login_page.wait_for_element(
+                context.login_page.USERNAME_FIELD
+            )
+        elif field_lower == 'password':
+            target_input = context.login_page.wait_for_element(
+                context.login_page.PASSWORD_FIELD
+            )
+        else:
+            raise AssertionError(f"Unknown field specified in scenario: '{field}'")
 
-        assert active_element == username_input
-
-
-@given(u'the employee enters username "{username}"')
-def step_impl(context, username):
-    with allure.step(f'Enter username (given): "{username}"'):
-        context.login_page.enter_username(username)
-
-
-@when(u'the employee does not input any value for the password')
-def step_impl(context):
-    with allure.step('Clear the password input field'):
-        password_input = context.login_page.wait_for_element(
-            context.login_page.PASSWORD_FIELD
-        )
-        password_input.clear()
-
-
-@then(u'the password field is selected')
-def step_impl(context):
-    with allure.step('Assert the password field has focus'):
-        active_element = context.driver.switch_to.active_element
-
-        password_input = context.login_page.wait_for_element(
-            context.login_page.PASSWORD_FIELD
-        )
-
-        assert active_element == password_input
+        assert active_element == target_input
 
 
 @given(u'the employee is logged in')
@@ -143,3 +136,62 @@ def step_impl(context):
         context.login_page.wait_for_url_contains("/login")
         assert "/login" in context.login_page.get_current_url()
 
+
+# Commented-out / archived step definitions (moved here for organization).
+# Keep these blocks commented in case they are needed for future reference.
+
+# Explicit empty-string handler is redundant now because the parameterized
+# @when('the employee enters username "{username}"') step handles empty
+# values by clearing the field. Kept here in case a literal "" step is needed.
+#@when(u'the employee enters username ""')
+#def step_impl_empty_username(context):
+#    with allure.step('Enter empty username'):
+#        username_input = context.login_page.wait_for_element(
+#            context.login_page.USERNAME_FIELD
+#        )
+#        username_input.clear()
+
+
+# Explicit empty-string handler is redundant now because the parameterized
+# @when('the employee enters password "{password}"') step handles empty
+# values by clearing the field. Kept here in case a literal "" step is needed.
+#@when(u'the employee enters password ""')
+#def step_impl_empty_password(context):
+#    with allure.step('Enter empty password'):
+#        password_input = context.login_page.wait_for_element(
+#            context.login_page.PASSWORD_FIELD
+#        )
+#        password_input.clear()
+
+
+# The explicit "does not input any value for username" step was used in an older
+# non-parameterized version of the feature. The feature now uses parameterized
+# inputs (empty strings are handled by the generic enter-username step), so
+# this specific step is unused. Commented here for reference.
+#@when(u'the employee does not input any value for username')
+#def step_impl(context):
+#    with allure.step('Clear the username input field'):
+#        username_input = context.login_page.wait_for_element(
+#            context.login_page.USERNAME_FIELD
+#        )
+#        username_input.clear()
+
+
+# The duplicate `given` variant of the "enter username" step is not used by
+# the current parameterized feature (the scenarios use the @when form). Keep
+# it commented for now to avoid ambiguity while preserving the code.
+#@given(u'the employee enters username "{username}"')
+#def step_impl(context, username):
+#    with allure.step(f'Enter username (given): "{username}"'):
+#        context.login_page.enter_username(username)
+
+
+# The explicit "does not input any value for the password" step is similarly
+# unused with the new parameterized feature; commented here for reference.
+#@when(u'the employee does not input any value for the password')
+#def step_impl(context):
+#    with allure.step('Clear the password input field'):
+#        password_input = context.login_page.wait_for_element(
+#            context.login_page.PASSWORD_FIELD
+#        )
+#        password_input.clear()

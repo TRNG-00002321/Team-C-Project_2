@@ -1,3 +1,4 @@
+@auth @e2e @employee
 Feature: Employee Authentication
   As an employee
   I want to login with my credentials
@@ -7,6 +8,7 @@ Background:
   Given the application is running
   And the test database is already seeded with users
 
+@login @parameterized @smoke
 Scenario Outline: Login attempts
   Given the employee is on the login screen
   When the employee enters username "<username>"
@@ -23,21 +25,22 @@ Examples:
     | wronguser   | wrongpassword        | Invalid credentials                                         |
     | manager1    | password123          | Login failed                                                |
 
-Scenario: Empty Username Input
+@validation @negative
+Scenario Outline: Empty field validation
   Given the employee is on the login screen
-  When the employee does not input any value for username
+  When the employee enters username "<username>"
+  And the employee enters password "<password>"
   And the employee clicks the login button
-  Then the username field is selected
+  Then the login <field> field is selected
   And the employee is not redirected to the dashboard
 
-Scenario: Empty Password Input
-  Given the employee is on the login screen
-  And the employee enters username "employee1"
-  When the employee does not input any value for the password
-  And the employee clicks the login button
-  Then the password field is selected
-  And the employee is not redirected to the dashboard
+Examples:
+    | field    | username   | password    |
+    | username |            | password123 |
+    | password | employee1  |             |
+    | username |            |             |
 
+@logout @sanity
 Scenario: Logout
   Given the employee is logged in
   When the employee clicks the logout button
