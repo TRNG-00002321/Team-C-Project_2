@@ -25,6 +25,7 @@ public class TestContext {
                 .ignoreIfMissing()
                 .load();
         String browser = dotenv.get("BROWSER", "chrome");
+        browser = System.getProperty("BROWSER", "chrome").toLowerCase();
         driver = DriverFactory.createDriver(browser, headless);
     }
 
