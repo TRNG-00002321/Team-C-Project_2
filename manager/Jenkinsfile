@@ -74,7 +74,7 @@ pipeline {
             steps {
                 dir('manager'){
                 //todo: only run unit tests!
-                    echo 'skipping tests for now:'
+                    echo 'Running Unit Tests:'
                     sh 'mvn -Dtest="com.revature.unit_tests.**" test -B'
                 }
             }
@@ -97,8 +97,6 @@ pipeline {
 
            }
         }
-
-
 
         stage('Start Application') {
             steps {
@@ -135,38 +133,79 @@ pipeline {
                                         fi
                     echo "✅ Application is ready!"
                 '''
-
-
             }
         }
-            stage('Tests Tests') {
-                steps {
-                    dir('manager'){
-                        sh 'ls'
-                        sh 'ls ..'
-                        sh 'ls ../..'
-                        sh 'ls ../../..'
-                        sh 'ls ../../../..'
-                        sh 'ls ../../../../..'
-                    //todo: only run unit tests!
-                        echo 'lumping tests together for now:'
-                        sh 'mvn  -Dtest="com.revature.integration_tests.**" test -B'
-
-
-                    }
-                    dir('manager'){
-                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" test -B'
-
-                    }
+        stage('Integration Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Integration Tests:'
+                    sh 'mvn  -Dtest="com.revature.integration_tests.**" test -B'
                 }
-                post {
-                    always {
-                        dir('manager'){
-                            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-                        }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
                     }
                 }
             }
+        }
+
+        stage('Chrome E2E Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Chrome E2E Tests:'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" test -B'
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+        stage('Firefox E2E Tests') {
+            steps {
+                dir('manager'){
+                    sh '''
+                                        NET_NAME=$(docker inspect jenkinsdemo3 \
+                                          -f '{{range $k, $v := .NetworkSettings.Networks}}{{if ne $k "bridge"}}{{$k}}{{end}}{{end}}')
+                                        echo "Detected Jenkins Network: \$NET_NAME"
+
+
+                                        # Stop any existing container
+                                        docker stop ${APP_NAME} || true
+                                        docker rm ${APP_NAME} || true
+
+                                        # Start the container
+                                        docker run -d \
+                                            -e BROWSER=firefox \
+                                            --name ${APP_NAME} \
+                                            --shm-size=2gb \
+                                            --network \$NET_NAME \
+                                            -p ${APP_PORT}:${APP_PORT} \
+                                            -v expense-data:/data \
+                                            ${APP_NAME}:${BUILD_VERSION}
+                                    '''
+                    echo 'Running Firefox E2E Tests:'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" test -B'
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+
     }
 
     post {
