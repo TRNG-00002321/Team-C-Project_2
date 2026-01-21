@@ -1,228 +1,117 @@
-import os
 import pytest
-from src.main import create_app
-from src.repository import DatabaseConnection
+import allure
 
-TEST_DB_PATH = os.path.abspath(os.path.join(
-    os.path.dirname(__file__),
-    "../../test_db/test_expense_manager.db"
-))
-SEED_SQL_PATH = os.path.abspath(os.path.join(
-    os.path.dirname(__file__),
-    "../../sql/seed.sql"
-))
 
-@pytest.fixture()
-def test_client():
-    # Ensure test DB directory exists
-    os.makedirs(os.path.dirname(TEST_DB_PATH), exist_ok=True)
+@allure.feature("Expense submission, editing, and deletion")
+class TestUpdateExpenseAPI:
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense success")
+    @allure.severity(allure.severity_level.CRITICAL)
+    def test_update_expense_success(self, authenticated_session):
+        """Test updating a pending expense successfully."""
+        expense_id = 1
+        payload = {
+            "amount": 99.99,
+            "description": "Updated lunch",
+            "date": "2025-01-06",
+        }
+        response = authenticated_session.put(
+            f"/api/expenses/{expense_id}", json=payload
+        )
+        assert response.status_code == 200
 
-    # Set DB path BEFORE app creation
-    os.environ["TEST_MODE"] = "true"
-    os.environ["TEST_DATABASE_PATH"] = TEST_DB_PATH
+        data = response.get_json()
+        assert data["message"] == "Expense updated successfully"
+        assert data["expense"]["amount"] == 99.99
+        assert data["expense"]["description"] == "Updated lunch"
 
-    # Initialize schema once
-    db = DatabaseConnection()
-    db.initialize_database()
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense validation fails")
+    @allure.severity(allure.severity_level.NORMAL)
+    @pytest.mark.parametrize(
+        "payload, expected_error",
+        [
+            (
+                {"description": "Updated", "date": "2025-01-06"},
+                "Amount, description, and date are required",
+            ),
+            (
+                {"amount": 99.99, "date": "2025-01-06"},
+                "Amount, description, and date are required",
+            ),
+            (
+                {"amount": 99.99, "description": "Updated"},
+                "Amount, description, and date are required",
+            ),
+            (
+                {"amount": "abc", "description": "Updated", "date": "2025-01-06"},
+                "Amount must be a valid number",
+            ),
+            ({}, "JSON data required"),
+        ],
+    )
+    def test_update_expense_validation_fails(
+        self, authenticated_session, payload, expected_error
+    ):
+        """Test validation rules for updating an expense."""
+        expense_id = 1
+        response = authenticated_session.put(
+            f"/api/expenses/{expense_id}", json=payload
+        )
+        assert response.status_code == 400
+        assert response.get_json()["error"] == expected_error
 
-    app = create_app()
-    app.config["TESTING"] = True
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense not found")
+    @allure.severity(allure.severity_level.NORMAL)
+    def test_update_expense_not_found(self, authenticated_session):
+        """Test updating a non-existent expense."""
+        expense_id = 9999
+        payload = {"amount": 50.0, "description": "Missing", "date": "2025-01-06"}
+        response = authenticated_session.put(
+            f"/api/expenses/{expense_id}", json=payload
+        )
+        assert response.status_code == 404
+        assert response.get_json()["error"] == "Expense not found"
 
-    with app.test_client() as client:
-        yield client
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense isolation")
+    @allure.severity(allure.severity_level.CRITICAL)
+    def test_update_expense_isolation(self, authenticated_session):
+        """Test that a user cannot update another user's expense."""
+        # Expense 4 belongs to employee2
+        expense_id = 4
+        payload = {"amount": 10.0, "description": "Hack", "date": "2025-01-06"}
+        response = authenticated_session.put(
+            f"/api/expenses/{expense_id}", json=payload
+        )
+        assert response.status_code == 404
 
-@pytest.fixture
-def setup_database(test_client):
-    """
-    Reset database state before each test and reseed.
-    Depends on test_client to guarantee schema exists.
-    """
-    db = DatabaseConnection()
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense approved denied fails")
+    @allure.severity(allure.severity_level.NORMAL)
+    def test_update_expense_approved_denied_fails(self, authenticated_session):
+        """Test that an approved or denied expense cannot be edited."""
+        # Expense 2 is approved, Expense 3 is denied (for employee1)
+        for expense_id in [2, 3]:
+            payload = {
+                "amount": 10.0,
+                "description": "Editing reviewed expense",
+                "date": "2025-01-06",
+            }
+            response = authenticated_session.put(
+                f"/api/expenses/{expense_id}", json=payload
+            )
+            # Service should reject this
+            assert response.status_code == 400
+            assert "has been reviewed" in response.get_json()["error"].lower()
 
-    with db.get_connection() as conn:
-        conn.execute("DELETE FROM approvals")
-        conn.execute("DELETE FROM expenses")
-        conn.execute("DELETE FROM users")
-
-        with open(SEED_SQL_PATH, "r") as f:
-            conn.executescript(f.read())
-
-        conn.commit()
-
-    yield
-
-def test_update_expense(setup_database, test_client):
-  auth_response = test_client.post(
-    "/api/auth/login",
-    json={
-      "username": "employee1",
-      "password": "password123"
-    }
-  )
-
-  assert auth_response.status_code == 200
-
-  expense_id = 1
-
-  response = test_client.put(
-    f"/api/expenses/{expense_id}",
-    json={
-      "amount": 99.99,
-      "description": "Updated lunch",
-      "date": "2025-01-06"
-    }
-  )
-
-  assert response.status_code == 200
-
-  data = response.get_json()
-  assert data["expense"]["amount"] == 99.99
-  assert data["expense"]["description"] == "Updated lunch"
-  assert data["message"] == "Expense updated successfully"
-
-@pytest.mark.parametrize("amount, description, date", [
-  (None,"Updated lunch","2025-01-06"),
-  ("99.99",None,"2025-01-06"),
-  ("99.99","Updated lunch",None)
-])
-def test_update_expense_missing_parameter(setup_database, amount, description, date, test_client):
-  auth_response = test_client.post(
-    "/api/auth/login",
-    json={
-      "username": "employee1",
-      "password": "password123"
-    }
-  )
-
-  assert auth_response.status_code == 200
-
-  expense_id = 1
-
-  response = test_client.put(
-    f"/api/expenses/{expense_id}",
-    json={
-      "amount": amount,
-      "description": description,
-      "date": date
-    }
-  )
-
-  assert response.status_code == 400
-
-  data = response.get_json()
-  assert data["error"] == "Amount, description, and date are required"
-
-@pytest.mark.parametrize("amount, description, date", [
-  ("abc","Updated lunch","2025-01-06"),
-  ("3/4","Updated lunch","2025-01-06"),
-])
-def test_update_expense_invalid_amount(setup_database, amount, description, date, test_client):
-  auth_response = test_client.post(
-    "/api/auth/login",
-    json={
-      "username": "employee1",
-      "password": "password123"
-    }
-  )
-
-  assert auth_response.status_code == 200
-
-  expense_id = 1
-
-  response = test_client.put(
-    f"/api/expenses/{expense_id}",
-    json={
-      "amount": amount,
-      "description": description,
-      "date": date
-    }
-  )
-
-  assert response.status_code == 400
-
-  data = response.get_json()
-  assert data["error"] == "Amount must be a valid number"
-
-def test_update_expense_missing_expense_id(setup_database, test_client):
-  auth_response = test_client.post(
-  f"/api/auth/login",
-    json={
-      "username": "employee1",
-      "password": "password123"
-    }
-  )
-
-  assert auth_response.status_code == 200
-
-  expense_id = 9999
-
-  response = test_client.put(
-    f"/api/expenses/{expense_id}",
-    json={
-      "amount": 99.99,
-      "description": "Updated lunch",
-      "date": "2025-01-06"
-    }
-  )
-
-  assert response.status_code == 404
-
-  data = response.get_json()
-  assert data["error"] == "Expense not found"
-
-def test_update_expense_missing_json(setup_database, test_client):
-  auth_response = test_client.post(
-    "/api/auth/login",
-    json={
-      "username": "employee1",
-      "password": "password123"
-    }
-  )
-
-  assert auth_response.status_code == 200
-
-  expense_id = 1
-
-  response = test_client.put(
-    f"/api/expenses/{expense_id}",
-    json={}
-  )
-
-  assert response.status_code == 400
-
-  data = response.get_json()
-  assert data["error"] == "JSON data required"
-
-def test_update_expense_not_owner(setup_database, test_client):
-  auth_response = test_client.post(
-    "/api/auth/login",
-    json={"username": "employee1", "password": "password123"}
-  )
-  assert auth_response.status_code == 200
-
-  # Expense 4 belongs to employee2
-  expense_id = 4
-  response = test_client.put(
-    f"/api/expenses/{expense_id}",
-    json={
-      "amount": 10.0,
-      "description": "Hack attempt",
-      "date": "2025-01-06"
-    }
-  )
-
-  assert response.status_code == 404
-
-def test_update_expense_not_authorized(setup_database, test_client):
-  # Expense 4 belongs to employee2
-  expense_id = 1
-  response = test_client.put(
-    f"/api/expenses/{expense_id}",
-    json={
-      "amount": 10.0,
-      "description": "Hack attempt",
-      "date": "2025-01-06"
-    }
-  )
-
-  assert response.status_code == 401
+    @allure.story("Employee editing expenses")
+    @allure.title("Test update expense unauthorized")
+    @allure.severity(allure.severity_level.CRITICAL)
+    def test_update_expense_unauthorized(self, test_client):
+        """Test updating an expense without authentication."""
+        expense_id = 1
+        payload = {"amount": 10.0, "description": "Unauthorized", "date": "2025-01-06"}
+        response = test_client.put(f"/api/expenses/{expense_id}", json=payload)
+        assert response.status_code == 401

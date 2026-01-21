@@ -124,11 +124,17 @@ public class ReviewExpenseSteps {
         for(int i = 1; i < rows.size(); i++){
             WebElement row = rows.get(i);
             String currentId = row.findElement(By.cssSelector("td:nth-child(1)")).getText();
+            System.out.println(currentId);
             String currentDate = row.findElement(By.cssSelector("td:nth-child(2)")).getText();
+            System.out.println(currentDate);
             String currentAmount = row.findElement(By.cssSelector("td:nth-child(3)")).getText();
+            System.out.println(currentAmount);
             String currentDesc = row.findElement(By.cssSelector("td:nth-child(4)")).getText();
+            System.out.println(currentDesc);
             String currentStatus = row.findElement(By.cssSelector("td:nth-child(5)")).getText();
+            System.out.println(currentStatus);
             String currentComment = row.findElement(By.cssSelector("td:nth-child(7)")).getText();
+            System.out.println(currentComment);
             if(currentId.contains("ID: "+id) && currentDate.contains(date) && currentAmount.contains("$"+amount) && currentDesc.contains(desc) && currentStatus.equals(expectedStatus) && currentComment.equals(expectedComment)) {
                 found = true;
                 break;

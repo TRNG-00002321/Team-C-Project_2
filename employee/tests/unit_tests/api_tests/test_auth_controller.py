@@ -1,8 +1,9 @@
 import pytest
 from flask import Flask
 from src.api import auth_controller
+import allure
 
-
+@allure.feature("Employee authorization")
 class Test_Auth_Controller:
     @pytest.fixture
     def setup(self, mocker):
@@ -15,6 +16,9 @@ class Test_Auth_Controller:
         return app, client
 
     # EU-053
+    @allure.story("Employee login")
+    @allure.title("Test login with missing credentials")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.parametrize("payload", [
         {},
         {"username": "user"},
@@ -29,6 +33,9 @@ class Test_Auth_Controller:
         assert "error" in response.get_json()
 
     # EU-054
+    @allure.story("Employee login")
+    @allure.title("Test login with invalid json")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_login_invalid_json(self, setup):
         response = setup[1].post("/api/auth/login", json=None)
 
@@ -36,6 +43,9 @@ class Test_Auth_Controller:
         assert "error" in response.get_json()
 
     # EU-055
+    @allure.story("Employee login")
+    @allure.title("Test login with invalid credentials")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_login_invalid_credentials(self, setup):
         setup[0].auth_service.authenticate_user.return_value = None
 
@@ -45,6 +55,9 @@ class Test_Auth_Controller:
         assert response.get_json()["error"] == "Invalid credentials"
 
     # EU-056
+    @allure.story("Employee login")
+    @allure.title("Test login with missing credentials")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_login_positive(self, setup):
         user = type("User", (), {"id": 1, "username": "testuser", "role": "admin"})()
 
@@ -64,6 +77,9 @@ class Test_Auth_Controller:
         assert "HttpOnly" in set_cookie_header
 
     # EU-057
+    @allure.story("Employee login")
+    @allure.title("Test login, triggers exception")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_login_exception(self, setup):
         setup[0].auth_service.authenticate_user.side_effect = Exception("Broken")
 
@@ -73,6 +89,9 @@ class Test_Auth_Controller:
         assert response.get_json()["error"] == "Login failed"
 
     # EU-058
+    @allure.story("Employee login")
+    @allure.title("Test logout")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_logout(self, setup):
         response = setup[1].post("/api/auth/logout")
         set_cookie = response.headers.get("Set-Cookie")
@@ -83,6 +102,9 @@ class Test_Auth_Controller:
         assert "HttpOnly" in set_cookie
 
     # EU-059
+    @allure.story("Employee login")
+    @allure.title("Test auth status, negative test")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_status_negative(self, setup):
         response = setup[1].get("/api/auth/status")
 
@@ -90,6 +112,9 @@ class Test_Auth_Controller:
         assert response.get_json() == {"authenticated": False}
 
     # EU-060
+    @allure.story("Employee login")
+    @allure.title("Test auth status, positive test")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_status_positive(self, setup):
         user = type("User", (), {"id": 1, "username": "testuser", "role": "Employee"})()
 
@@ -104,6 +129,9 @@ class Test_Auth_Controller:
         assert data["user"]["role"] == "Employee"
 
     # EU-060
+    @allure.story("Employee login")
+    @allure.title("Test auth status, triggers exception")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.parametrize("side_effect, return_value", [
         (None, None),
         (Exception("bad token"), None)

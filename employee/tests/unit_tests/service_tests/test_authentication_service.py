@@ -1,12 +1,13 @@
 from unittest.mock import MagicMock, patch
 
+import allure
 import jwt
 import pytest
 
 from src.repository import UserRepository, User
 from src.service import AuthenticationService
 
-
+@allure.feature("Employe authorization")
 class Test_Authentication_Service:
 
     @pytest.fixture
@@ -15,6 +16,9 @@ class Test_Authentication_Service:
         service = AuthenticationService(mock_repo, "secretKey")
         return mock_repo, service
 
+    @allure.story("Employee login")
+    @allure.title("Test authenticate user")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize("repo_user, username, password, expectedResult", [
         # EU-011
         (User(1, "testUser1", "testPassword1", "Employee"), "testUser1", "testPassword1", User(1, "testUser1", "testPassword1", "Employee")),
@@ -32,6 +36,9 @@ class Test_Authentication_Service:
         assert result == expectedResult
         setup[0].find_by_username.assert_called_once_with(username)
 
+    @allure.story("Employee login")
+    @allure.title("Test get user by id")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize("user_id, repo_result, expected", [
         # EU-014
         (1, User(1, "testUser1", "pass", "Employee"), User(1, "testUser1", "pass", "Employee")),
@@ -50,6 +57,9 @@ class Test_Authentication_Service:
         setup[0].find_by_id.assert_called_once_with(user_id)
 
     # EU-016
+    @allure.story("Employee login")
+    @allure.title("Test generate jwt token")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_generate_jwt_token(self, setup):
         # Assign
         user = User(1, "testUser", "pass", "Employee")
@@ -63,6 +73,9 @@ class Test_Authentication_Service:
         mock_encode.assert_called_once()
 
     # EU-017
+    @allure.story("Employee login")
+    @allure.title("Test validate jwt token, valid")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_validate_jwt_token_valid(self, setup):
         # Assign
         token = "valid.token"
@@ -76,6 +89,9 @@ class Test_Authentication_Service:
         assert result == payload
 
     # EU-018, EU-019
+    @allure.story("Employee login")
+    @allure.title("Test validate jwt token, invalid")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize(
         "exception",
         [jwt.ExpiredSignatureError, jwt.InvalidTokenError],
@@ -89,6 +105,9 @@ class Test_Authentication_Service:
         assert result is None
 
     # EU-20
+    @allure.story("Employee login")
+    @allure.title("Test get user from jwt token, valid")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_get_user_from_token_valid(self, setup):
         # Assign
         token = "valid.token"
@@ -104,6 +123,9 @@ class Test_Authentication_Service:
         assert result == user1
 
     # EU-21
+    @allure.story("Employee login")
+    @allure.title("Test get user from jwt token, invalid")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_get_user_from_token_invalid(self, setup):
         # Assign
         token = "invalid.token"
