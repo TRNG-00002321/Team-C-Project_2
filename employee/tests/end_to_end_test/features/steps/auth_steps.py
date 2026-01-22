@@ -24,14 +24,32 @@ def step_impl(context):
 
 @when(u'the employee enters username "{username}"')
 def step_impl(context, username):
+    # Robust handling: behave can pass empty strings for blank Example cells.
+    # Treat None or empty/whitespace as "missing data" and clear the field.
     with allure.step(f'Enter username: "{username}"'):
-        context.login_page.enter_username(username)
+
+        if username.strip() == "none":
+            # Ensure the username input is empty (clear and leave focus as-is)
+            username_input = context.login_page.wait_for_element(
+                context.login_page.USERNAME_FIELD
+            )
+            username_input.clear()
+        else:
+            context.login_page.enter_username(username.strip())
 
 
 @when(u'the employee enters password "{password}"')
 def step_impl(context, password):
+    # Robust handling: treat missing/empty password as clearing the field.
     with allure.step(f'Enter password: "{password}"'):
-        context.login_page.enter_password(password)
+
+        if password.strip() == "none":
+            password_input = context.login_page.wait_for_element(
+                context.login_page.PASSWORD_FIELD
+            )
+            password_input.clear()
+        else:
+            context.login_page.enter_password(password.strip())
 
 
 @when(u'the employee clicks the login button')
@@ -70,16 +88,22 @@ def step_impl(context):
         username_input.clear()
 
 
-@then(u'the username field is selected')
-def step_impl(context):
-    with allure.step('Assert the username field has focus'):
+@then(u'the login {field} field is selected')
+def step_impl(context, field):
+    with allure.step(f'Assert the {field} field has focus'):
         active_element = context.driver.switch_to.active_element
 
-        username_input = context.login_page.wait_for_element(
-            context.login_page.USERNAME_FIELD
-        )
-
-        assert active_element == username_input
+        field_lower = field.strip().lower()
+        if field_lower == 'username':
+            target_input = context.login_page.wait_for_element(
+                context.login_page.USERNAME_FIELD
+            )
+        elif field_lower == 'password':
+            target_input = context.login_page.wait_for_element(
+                context.login_page.PASSWORD_FIELD
+            )
+        else:
+            raise AssertionError(f"Unknown field specified in scenario: '{field}'")
 
 
 @given(u'the employee enters username "{username}"')

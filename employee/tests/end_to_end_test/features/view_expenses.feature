@@ -8,13 +8,7 @@ Background:
   And the test database is already seeded with users
   And the employee is logged in
 
-  #ES-228
-Scenario: View all expenses
-  Given the employee is on my expenses
-  When the filter by status option is selected for all
-  Then all expenses are shown
-
-  #ES-229
+  #ES-229 & ES-228
 Scenario Outline: View expenses by status
   Given the employee is on my expenses
   When the filter by status option <status> is selected
@@ -25,6 +19,7 @@ Scenario Outline: View expenses by status
     | Pending  |
     | Approved |
     | Denied   |
+    | All      |
 
 #Stretch goal
   #Scenario: Check expense status updated with refresh button
