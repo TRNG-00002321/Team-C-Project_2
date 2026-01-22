@@ -82,7 +82,7 @@ public class TestGetAllExpenses {
 
   // Maybe bug? Should be Protected
   @DisplayName("Get All Expense, Not Logged In")
-  @Disabled
+  @Disabled("Endpoint should be protected, but currently is not.")
   @Test
   public void getAllExpensesNotLoggedIn() {
     given()

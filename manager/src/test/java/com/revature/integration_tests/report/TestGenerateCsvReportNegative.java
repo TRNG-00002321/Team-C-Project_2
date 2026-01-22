@@ -123,7 +123,7 @@ public class TestGenerateCsvReportNegative {
 
   // Bug? Should be 400 error
   @DisplayName("Get Employee Expense Report, Invalid EmployeeID")
-  @Disabled
+  @Disabled("Endpoint returns 500 error instead of 400 for invalid employee ID")
   @Test
   public void getEmployeeReportInvalidId() {
     String credentials = """
