@@ -82,9 +82,6 @@ public class TestPostApproveExpense {
         );
     }
 //    //Expense must be seeded in the database with the corresponding id for test to pass
-//    @DisplayName("Test approve expense positive test case, expense id exists and expense is pending")
-//    @Test
-//
     @ParameterizedTest(name = "Test approve expense: {0}")
     @MethodSource("postCaseData")
     public void testApprovalPositive(String scenario, int expenseId, String username, String password, int expectedStatus, String expectedMessage, String pathKey){
