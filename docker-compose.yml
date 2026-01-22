@@ -29,7 +29,16 @@ services:
     environment:
       - CHECK_RESULTS_EVERY_SECONDS=10
       - KEEP_HISTORY=1
-      - PROJECT_ID=default
+    networks:
+      - jenkins-net
+
+  allure-ui:
+    image: frankescobar/allure-docker-service-ui
+    container_name: allure-ui
+    ports:
+      - "5252:5252"
+    environment:
+      - ALLURE_DOCKER_PUBLIC_API_URL=http://localhost:5050
     networks:
       - jenkins-net
 
