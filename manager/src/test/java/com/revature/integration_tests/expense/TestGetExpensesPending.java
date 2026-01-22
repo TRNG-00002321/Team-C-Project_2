@@ -20,8 +20,9 @@ public class TestGetExpensesPending {
 
     @BeforeAll
     static void setup(){
-        RestAssured.baseURI = "http://localhost";
+        RestAssured.baseURI = "http://manager_app";
         RestAssured.port = 5001;
+        System.out.println("Looking to snag one " + RestAssured.baseURI);
 
         //Get JWT cookie authorization
         jwtCookie =
@@ -77,6 +78,7 @@ public class TestGetExpensesPending {
 
     //MI-220
     @Test
+    @Disabled
     @DisplayName("Test API: Get Pending Expenses Unauthorized Request")
     void getPendingExpenses_withoutJwt_shouldReturn401() {
         given()

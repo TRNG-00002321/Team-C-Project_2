@@ -20,7 +20,7 @@ public class TestGenerateCsvReportNegative {
   static ResponseSpecification responseSpec;
   @BeforeAll
   public static void setUp() throws SQLException {
-    RestAssured.baseURI="http://localhost:5001/";
+    RestAssured.baseURI="http://manager_app:5001/";
 
     requestSpec= new RequestSpecBuilder()
       .setContentType(ContentType.JSON)

@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.*;
 public class TestLogout {
     @BeforeAll
     static void setup() {
-        RestAssured.baseURI = "http://localhost";
+        RestAssured.baseURI = "http://manager_app";
         RestAssured.port = 5001;
     }
 

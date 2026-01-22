@@ -20,9 +20,11 @@ public class TestContext {
 
     public void initializeDriver(boolean headless) {
         TestDatabaseUtil.resetAndSeed();
-        //Dotenv dotenv = Dotenv.load();
-        //String browser = dotenv.get("BROWSER", "chrome");
-        String browser = System.getProperty("browser", "chrome").toLowerCase();
+        Dotenv dotenv = Dotenv.configure()
+                .systemProperties()
+                .ignoreIfMissing()
+                .load();
+        String browser = dotenv.get("BROWSER", "chrome");
         driver = DriverFactory.createDriver(browser, headless);
     }
 

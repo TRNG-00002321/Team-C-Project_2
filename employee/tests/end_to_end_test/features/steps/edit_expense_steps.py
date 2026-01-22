@@ -56,29 +56,19 @@ def input_date(context, date):
     new_date = ""
 
     browser = context.driver.capabilities['browserName'].lower()
+    print(browser)
 
     if browser == "chrome":
         new_date = month + "/" + day + "/" + year
-        date_field_locator = (By.ID, "edit-date")
-        context.dashboard_page.type(date_field_locator, new_date)
-    elif browser == "edge":
-        # new_date = day + "/" + month + "/" + year
-        date_input = context.dashboard_page.wait.until(EC.visibility_of_element_located(("id", "edit-date")))
-        context.driver.execute_script(
-            """
-            arguments[0].value = arguments[1];
-            arguments[0].dispatchEvent(new Event('input', {bubbles: true}));
-            arguments[0].dispatchEvent(new Event('change', {bubbles: true}));
-            """,
-            date_input, date
-        )
+
+    elif browser == "edge" or browser == 'microsoftedge':
+        new_date = month + "/" + day + "/" + year
+
     else:
         new_date = date
-        date_field_locator = (By.ID, "edit-date")
-        context.dashboard_page.type(date_field_locator, new_date)
 
-
-    time.sleep(5)
+    date_field_locator = (By.ID, "edit-date")
+    context.dashboard_page.type(date_field_locator, new_date)
 
 
 @when("the employee clicks the update expense button")
@@ -109,7 +99,7 @@ def expense_is_shown_updated(context, amount, desc, date):
         old_table = context.dashboard_page.wait_for_element(table_locator)
         wait = WebDriverWait(context.driver, 5)
         wait.until(EC.staleness_of(old_table))
-            # wait for all new elements to exist first
+                        # wait for all new elements to exist first
         context.dashboard_page.wait_for_element(
             (By.XPATH, f"//td[contains(text(), '${amount}')]")
         )
@@ -125,6 +115,7 @@ def expense_is_shown_updated(context, amount, desc, date):
     except TimeoutException:
         # new table exists already
         pass
+
 
 
 

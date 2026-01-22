@@ -15,7 +15,7 @@ public class TestGetHealthCheck {
 
     @BeforeAll
     static void setupBaseUri(){
-        RestAssured.baseURI = "http://localhost";
+        RestAssured.baseURI = "http://manager_app";
         RestAssured.port = 5001;
     }
 
