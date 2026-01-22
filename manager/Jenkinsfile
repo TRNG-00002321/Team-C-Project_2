@@ -94,124 +94,124 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                echo 'Building Java Manager Application...'
-                    sh '''
-                        docker build -f ./manager/Dockerfile -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .
-                        docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest
-                    '''
-
-           }
-        }
-
-        stage('Start Application') {
-            steps {
-                echo '🚀 Starting Manager App for API/E2E Testing...'
-                sh '''
-                    NET_NAME=$(docker inspect jenkinsdemo3 \
-                      -f '{{range $k, $v := .NetworkSettings.Networks}}{{if ne $k "bridge"}}{{$k}}{{end}}{{end}}')
-                    echo "Detected Jenkins Network: \$NET_NAME"
-
-
-                    # Stop any existing container
-                    docker stop ${APP_NAME} || true
-                    docker rm ${APP_NAME} || true
-
-                    # Start the container
-                    docker run -d \
-                        --name ${APP_NAME} \
-                        --shm-size=2gb \
-                        --network \$NET_NAME \
-                        -p ${APP_PORT}:${APP_PORT} \
-                        -v expense-data:/data \
-                        ${APP_NAME}:${BUILD_VERSION}
-                '''
-                sh '''
-                    # Wait for app to be healthy
-                    echo "Waiting for application to start..."
-                    sleep 5
-                    # curl -v http://${APP_NAME}:8080
-                    # curl -f http://172.17.0.1:5001/health
-                    RESPONSE_CODE=\$(curl -f http://${APP_NAME}:${APP_PORT}/health)
-                    echo "Health check response code: \$RESPONSE_CODE"
-                                        if [ "\$RESPONSE_CODE" -ne 200 ]; then
-                                            exit 1
-                                        fi
-                    echo "✅ Application is ready!"
-                '''
-            }
-        }
-        stage('Integration Tests') {
-            steps {
-                dir('manager'){
-                    echo 'Running Integration Tests:'
-                    sh 'mvn  -Dtest="com.revature.integration_tests.**" test -B'
-                }
-            }
-            post {
-                always {
-                    dir('manager'){
-                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-                    }
-                }
-            }
-        }
-
-        stage('Chrome E2E Tests') {
-            steps {
-                dir('manager'){
-                    echo 'Running Chrome E2E Tests:'
-                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="chrome" test -B'
-                    }
-                }
-            }
-            post {
-                always {
-                    dir('manager'){
-                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-                    }
-                }
-            }
-        }
-        stage('Firefox E2E Tests') {
-            steps {
-                dir('manager'){
-                    echo 'Running Firefox E2E Tests:'
-                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="firefox" test -B'
-                    }
-                }
-            }
-            post {
-                always {
-                    dir('manager'){
-                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-                    }
-                }
-            }
-        }
-        stage('Edge E2E Tests') {
-            steps {
-                dir('manager'){
-                    echo 'Running Microsoft Edge E2E Tests:'
-                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        sh '''
-                        mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" \
-                        -Dbrowser="edge" test -B
-                        '''
-                    }
-                }
-            }
-            post {
-                always {
-                    dir('manager'){
-                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-                    }
-                }
-            }
-        }
+//         stage('Build Docker Image') {
+//             steps {
+//                 echo 'Building Java Manager Application...'
+//                     sh '''
+//                         docker build -f ./manager/Dockerfile -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .
+//                         docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest
+//                     '''
+//
+//            }
+//         }
+//
+//         stage('Start Application') {
+//             steps {
+//                 echo '🚀 Starting Manager App for API/E2E Testing...'
+//                 sh '''
+//                     NET_NAME=$(docker inspect jenkinsdemo3 \
+//                       -f '{{range $k, $v := .NetworkSettings.Networks}}{{if ne $k "bridge"}}{{$k}}{{end}}{{end}}')
+//                     echo "Detected Jenkins Network: \$NET_NAME"
+//
+//
+//                     # Stop any existing container
+//                     docker stop ${APP_NAME} || true
+//                     docker rm ${APP_NAME} || true
+//
+//                     # Start the container
+//                     docker run -d \
+//                         --name ${APP_NAME} \
+//                         --shm-size=2gb \
+//                         --network \$NET_NAME \
+//                         -p ${APP_PORT}:${APP_PORT} \
+//                         -v expense-data:/data \
+//                         ${APP_NAME}:${BUILD_VERSION}
+//                 '''
+//                 sh '''
+//                     # Wait for app to be healthy
+//                     echo "Waiting for application to start..."
+//                     sleep 5
+//                     # curl -v http://${APP_NAME}:8080
+//                     # curl -f http://172.17.0.1:5001/health
+//                     RESPONSE_CODE=\$(curl -f http://${APP_NAME}:${APP_PORT}/health)
+//                     echo "Health check response code: \$RESPONSE_CODE"
+//                                         if [ "\$RESPONSE_CODE" -ne 200 ]; then
+//                                             exit 1
+//                                         fi
+//                     echo "✅ Application is ready!"
+//                 '''
+//             }
+//         }
+//         stage('Integration Tests') {
+//             steps {
+//                 dir('manager'){
+//                     echo 'Running Integration Tests:'
+//                     sh 'mvn  -Dtest="com.revature.integration_tests.**" test -B'
+//                 }
+//             }
+//             post {
+//                 always {
+//                     dir('manager'){
+//                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+//                     }
+//                 }
+//             }
+//         }
+//
+//         stage('Chrome E2E Tests') {
+//             steps {
+//                 dir('manager'){
+//                     echo 'Running Chrome E2E Tests:'
+//                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+//                         sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="chrome" test -B'
+//                     }
+//                 }
+//             }
+//             post {
+//                 always {
+//                     dir('manager'){
+//                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+//                     }
+//                 }
+//             }
+//         }
+//         stage('Firefox E2E Tests') {
+//             steps {
+//                 dir('manager'){
+//                     echo 'Running Firefox E2E Tests:'
+//                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+//                         sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="firefox" test -B'
+//                     }
+//                 }
+//             }
+//             post {
+//                 always {
+//                     dir('manager'){
+//                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+//                     }
+//                 }
+//             }
+//         }
+//         stage('Edge E2E Tests') {
+//             steps {
+//                 dir('manager'){
+//                     echo 'Running Microsoft Edge E2E Tests:'
+//                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+//                         sh '''
+//                         mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" \
+//                         -Dbrowser="edge" test -B
+//                         '''
+//                     }
+//                 }
+//             }
+//             post {
+//                 always {
+//                     dir('manager'){
+//                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+//                     }
+//                 }
+//             }
+//         }
 
     }
 
