@@ -1,9 +1,6 @@
-from behave.api.pending_step import StepNotImplementedError
 from behave import given, when, then
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
-import time
-
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -45,103 +42,74 @@ def redirected_to_edit_menu(context):
 @when('the employee inputs into the amount field: "{amount}"')
 def input_amount(context, amount):
     amount_field_locator = (By.ID, "edit-amount")
-    amount_field_locator = (By.ID, "edit-amount")
-    context.dashboard_page.type(amount_field_locator, amount)
+    if amount == "EMPTY":
+        context.dashboard_page.type(amount_field_locator, "")
+    else:
+        context.dashboard_page.type(amount_field_locator, amount)
 
 
 @when('the employee inputs into the description field: "{desc}"')
 def input_description(context, desc):
     description_field_locator = (By.ID, "edit-description")
-    context.dashboard_page.type(description_field_locator, desc)
+    if desc == "EMPTY":
+        context.dashboard_page.type(description_field_locator, "")
+    else:
+        context.dashboard_page.type(description_field_locator, desc)
 
 
 @when('the employee inputs into the date field: "{date}"')
 def input_date(context, date):
-    # adjust date format from YYYY-MM-DD to MM-DD-YYYY
-    # adjust date format from YYYY-MM-DD to MM-DD-YYYY
-    year = date[0:4]
-    month = date[5:7]
-    day = date[8:10]
-    new_date = ""
-
-    browser = context.driver.capabilities['browserName'].lower()
-
-    if browser == "chrome":
-        new_date = month + "/" + day + "/" + year
-    elif browser == "edge":
-        new_date = day + "/" + month + "/" + year
+    if date == "EMPTY":
+        new_date = ""
     else:
-        new_date = date
+        year = date[0:4]
+        month = date[5:7]
+        day = date[8:10]
+        browser = context.driver.capabilities['browserName'].lower()
+        if browser == "chrome" or "edge" in browser:
+            new_date = month + "/" + day + "/" + year
+        else:
+            new_date = date
 
     date_field_locator = (By.ID, "edit-date")
     context.dashboard_page.type(date_field_locator, new_date)
 
 
-@when("the employee clicks the update expense button")
-def click_update_expense_button(context):
-    update_button_locator = (
-        By.CSS_SELECTOR,
-        "#edit-expense-form button[type='submit']",
-    )
-    update_button_locator = (
-        By.CSS_SELECTOR,
-        "#edit-expense-form button[type='submit']",
-    )
+@when("the employee clicks the update button")
+def click_update_button(context):
+    update_button_locator = (By.CSS_SELECTOR, "#edit-expense-form button[type='submit']")
     context.dashboard_page.click(update_button_locator)
 
 
 @then('the employee sees the edit message: "{message}"')
 def edit_message_shown(context, message):
+    if message == "none":
+        return
     edit_message_locator = (By.CSS_SELECTOR, "#edit-message p")
     edit_message = context.dashboard_page.get_text(edit_message_locator)
-    assert edit_message == message
-
+    assert edit_message == message, f"Expected message: '{message}', but got: '{edit_message}'"
 
 @then('the expense is updated with the given "{amount}", "{desc}", and "{date}"')
 def expense_is_shown_updated(context, amount, desc, date):
     # wait till you're back on the My Expenses screen
     refresh_button_locator = (By.ID, "refresh-expenses")
-    refresh_button = context.dashboard_page.wait_for_clickable(refresh_button_locator)
-    refresh_button.click()
+    context.dashboard_page.wait_for_clickable(refresh_button_locator).click()
 
     try:
         table_locator = (By.TAG_NAME, "table")
         old_table = context.dashboard_page.wait_for_element(table_locator)
-        wait = WebDriverWait(context.driver, 5)
-        wait.until(EC.staleness_of(old_table))
+        WebDriverWait(context.driver, 10).until(EC.staleness_of(old_table))
     except TimeoutException:
-        # new table exists already
         pass
 
-    # wait for all new elements to exist first
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '${amount}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '{desc}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), '{date}')]")
-    )
-    context.dashboard_page.wait_for_element(
-        (By.XPATH, f"//td[contains(text(), 'PENDING')]")
-    )
-
-    # time.sleep(1)
-    # find the specific row with specified fields
     rows = context.driver.find_elements(By.TAG_NAME, "tr")
     found = False
     expected_amount = "$" + amount
-    expected_amount = "$" + amount
     for row in rows[1:]:
         row_date = row.find_element(By.CSS_SELECTOR, "td:nth-child(1)").text
-        print(row_date + " vs " + date)
         row_amount = row.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text
-        print(row_amount + " vs " + expected_amount)
         row_description = row.find_element(By.CSS_SELECTOR, "td:nth-child(3)").text
-        print(row_description + " vs " + desc)
         row_status = row.find_element(By.CSS_SELECTOR, "td:nth-child(4)").text
-        print(row_status + " vs PENDING")
         if (
             row_date == date
             and expected_amount in row_amount
@@ -150,7 +118,8 @@ def expense_is_shown_updated(context, amount, desc, date):
         ):
             found = True
             break
-    assert found
+    assert found, f"Expense not found with amount: '{amount}', description: '{desc}', and date: '{date}'"
+
 
 @when("the employee clicks the cancel button")
 def click_cancel_button(context):
@@ -221,7 +190,6 @@ def expense_with_values_exists(context, desc, amount, date):
             found = True
             break
     assert found
-
 
 
 @then(
@@ -302,4 +270,3 @@ def expense_shown_with_updates(context, amount, desc, date):
 #            specific_row = row
 #            break
 #    assert specific_row.is_displayed()
-

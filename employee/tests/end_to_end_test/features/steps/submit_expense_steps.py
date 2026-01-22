@@ -51,13 +51,13 @@ def step_enter_date(context, indate):
     year = indate[0:4]
     month = indate[5:7]
     day = indate[8:10]
-    new_date = ""
+
     browser = context.driver.capabilities['browserName'].lower()
 
     if browser == "chrome" or "edge" in browser:
         new_date = month + "/" + day + "/" + year
     else:
-        new_date = date
+        new_date = indate
 
 
     date_field_locator = (By.ID, "date")
