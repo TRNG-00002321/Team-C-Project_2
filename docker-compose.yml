@@ -24,12 +24,12 @@ services:
     ports:
       - "5050:5050"
     volumes:
-      - allure_results_employee:/app/allure-results
-      - allure_results_manager:/app/allure-results-manager
+      - allure_results_employee:/app/projects/employee/allure-results
+      - allure_results_manager:/app/projects/manager/allure-results
     environment:
-      - PROJECT_ID=employee
       - CHECK_RESULTS_EVERY_SECONDS=10
       - KEEP_HISTORY=1
+      - PROJECT_ID=default
     networks:
       - jenkins-net
 

@@ -66,7 +66,6 @@ pipeline {
                                     ${DOCKER_IMAGE}-test \
                                     python -m pytest tests/unit_tests \
                                     --alluredir=/employee/allure-results \
-                                    --junitxml=/employee/test-results/unit-results.xml
                             """
                         }
                     }
@@ -74,7 +73,6 @@ pipeline {
                         always {
                             dir('employee'){
                                 sh """
-                                    docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/ || true
                                     docker rm -f ${DOCKER_IMAGE}-unit-runner || true
                                 """
                             }
@@ -97,7 +95,6 @@ pipeline {
                                     ${DOCKER_IMAGE}-test \
                                     python -m pytest tests/integration_tests \
                                     --alluredir=/employee/allure-results \
-                                    --junitxml=/employee/test-results/integration-results.xml
                             """
                         }
                     }  
@@ -105,7 +102,6 @@ pipeline {
                         always {
                             dir('employee'){
                                 sh """
-                                    docker cp ${DOCKER_IMAGE}-int-runner:/employee/test-results/. test-results/ || true
                                     docker rm -f ${DOCKER_IMAGE}-int-runner || true
                                 """
                             }
@@ -155,10 +151,7 @@ pipeline {
             }
             post {
                 always {
-                dir('employee') {
-                    sh "ln -sfn /var/jenkins_home/allure-results/employee allure-results"
-                }
-                allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
+                allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: '/var/jenkins_home/allure-results/employee']]
             }
             }
         }
