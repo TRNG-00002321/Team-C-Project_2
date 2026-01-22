@@ -55,7 +55,8 @@ public class DriverFactory {
                         "--no-sandbox",
                         "--disable-dev-shm-usage",
                         "--disable-gpu",
-                        "--window-size=1920,1080"
+                        "--window-size=1920,1080",
+                        "--remote-allow-origins=*"
                 );
                 if (headless) {
                     options.addArguments("--headless=new");
