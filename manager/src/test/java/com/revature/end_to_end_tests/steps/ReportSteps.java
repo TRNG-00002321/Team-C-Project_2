@@ -188,6 +188,7 @@ public class ReportSteps {
 
 
     private String normalizeDate(String date, String browser) {
+        System.out.println("HEEEEELP: " + browser);
         if(browser.equals("firefox"))
         {
             // converts mm/dd/yyyy → yyyy-MM-dd
@@ -198,7 +199,7 @@ public class ReportSteps {
         {
             // converts mm/dd/yyyy → dd-MM-yyyy
             String[] parts = date.split("/");
-            return parts[1] + "-" + parts[0] + "-" + parts[2];
+            return parts[2] + "-" + parts[0] + "-" + parts[1];
         }
         else return date;
 
