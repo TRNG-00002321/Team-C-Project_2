@@ -9,16 +9,9 @@ pipeline {
         APP_NAME = 'manager_app'
         APP_PORT = '5001'
 
-        // AWS EC2 deployment target
-//         EC2_HOST = credentials('ec2-deploy-host')
-//         EC2_USER = 'ec2-user'
-
-        // Build version
         BUILD_VERSION = "${BUILD_NUMBER}"
 
-        // Docker-in-Docker: Host workspace path
-        // When Jenkins runs in a container, Docker daemon needs the HOST path
-        // Set JENKINS_HOME_HOST in Jenkins container env (e.g., /home/ec2-user/jenkins_home)
+
         WORKSPACE_HOST = "${env.JENKINS_HOME_HOST ?: env.JENKINS_HOME}/workspace/${env.JOB_NAME}"
 
         DOCKER_IMAGE = "manager_app"
@@ -57,17 +50,6 @@ pipeline {
                 }
             }
         }
-//         stage('Setup network') {
-//                     steps {
-//                         script {
-//                             // Create a Docker network if it doesn't already exist
-//                             sh '''
-//                                 docker network inspect man-test >/dev/null 2>&1 || \
-//                                 docker network create man-test
-//                             '''
-//                         }
-//                     }
-//                 }
 
         stage('Unit Tests') {
 
@@ -75,15 +57,17 @@ pipeline {
                 dir('manager'){
                 //todo: only run unit tests!
                     echo 'Running Unit Tests:'
-                    sh 'mvn -Dtest="com.revature.unit_tests.**" test -B'
+                    sh 'mvn -Dtest="com.revature.unit_tests.**" -Dallure.results.directory=target/allure-results-unit test -B'
                 }
             }
             post {
                 always {
                     dir('manager'){
-                            copyArtifacts(
-                                filter: "target/allure-results/*"
-                            )
+
+                        allure includeProperties:
+                        false,
+                        jdk: '',
+                        results: [[path: 'target/allure-results']]
                     }
                     dir('manager'){
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
@@ -144,15 +128,16 @@ pipeline {
             steps {
                 dir('manager'){
                     echo 'Running Integration Tests:'
-                    sh 'mvn  -Dtest="com.revature.integration_tests.**" test -B'
+                    sh 'mvn  -Dtest="com.revature.integration_tests.**" -Dallure.results.directory=target/allure-results-integration test -B'
                 }
             }
             post {
                 always {
                     dir('manager'){
-                        copyArtifacts(
-                                filter: "target/allure-results/*"
-                            )
+                        allure includeProperties:
+                        false,
+                        jdk: '',
+                        results: [[path: 'target/allure-results']]
                     }
                     dir('manager'){
 
@@ -227,19 +212,16 @@ pipeline {
                 docker rm ${APP_NAME}-test || true
                 docker rmi ${APP_NAME}:${BUILD_VERSION} || true
             '''
+            sh '''
+                        mkdir -p target/allure-results
+                        cp -r target/allure-results-unit/* target/allure-results/ || true
+                        cp -r target/allure-results-integration/* target/allure-results/ || true
+                    '''
+                    allure results: [[path: 'target/allure-results']]
 
             archiveArtifacts artifacts: '''
                 target/surefire-reports/**/*.xml,
                 ''', allowEmptyArchive: true
-            script {
-                    allure([
-                        includeProperties: false,
-                        jdk: '',
-                        properties: [],
-                        reportBuildPolicy: 'ALWAYS',
-                        results: [[path: 'target/allure-results']]
-                    ])
-                }
         }
     }
 
