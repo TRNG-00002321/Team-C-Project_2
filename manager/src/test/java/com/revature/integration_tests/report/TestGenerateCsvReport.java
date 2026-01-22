@@ -11,8 +11,10 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.provider.Arguments;
 
 import java.sql.SQLException;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -50,6 +52,13 @@ public class TestGenerateCsvReport {
   void resetDatabase() {
     TestDatabaseUtil.resetAndSeed();
   }
+
+    static Stream<Arguments> reportData() {
+        return Stream.of(
+                Arguments.of("Positive", 1, "manager1", "password123", 200, "Expense approved successfully", "message"),
+                Arguments.of("Positive", 2, "manager1", "password123", 200, "Expense approved successfully", "message")
+        );
+    }
 
   @DisplayName("Get Expense Report, Logged In")
   @Test

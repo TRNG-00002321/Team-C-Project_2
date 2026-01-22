@@ -81,10 +81,11 @@ pipeline {
             post {
                 always {
                     dir('manager'){
+
                         allure includeProperties:
                         false,
                         jdk: '',
-                        results: [[path: 'allure-results']]
+                        results: [[path: 'target/allure-results']]
                     }
                     dir('manager'){
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'

@@ -73,45 +73,11 @@ public class TestPostApproveExpense {
         //System.out.println(responseMessage);
     }
 
-//    @DisplayName("Test while logged in, attempt approval of expense that does not exist")
-//    @Test
-//    public void testApproveNoExpense(){
-//        String credentials = """
-//            {
-//                "username":"manager1",
-//                "password":"password123"
-//            }
-//            """;
-//        //log in with valid credentials
-//        Response response1 = given()
-//                .spec(requestSpec)
-//                .body(credentials)
-//                .when()
-//                .post("/api/auth/login")
-//                .then()
-//                .spec(responseSpec)
-//                .statusCode(200)
-//                .extract().response();
-//        String jwtCookie = response1.getCookie("jwt");
-//
-//        //attempt to approve an expense
-//        Response response2 = given()
-//                .spec(requestSpec)
-//                .cookie("jwt", jwtCookie)
-//        .when()
-//                .post("/api/expenses/1234567/approve")
-//        .then()
-//                .statusCode(404)
-//                .extract().response();
-//        assertEquals("Expense not found or could not be approved", response2.jsonPath().getString("title"));
-//
-//        //String responseMessage = response2.asString();
-//        //System.out.println(responseMessage);
-//    }
+
     static Stream<Arguments> postCaseData() {
         return Stream.of(
                 Arguments.of("Positive", 1, "manager1", "password123", 200, "Expense approved successfully", "message"),
-                Arguments.of("Positive", 2, "manager1", "password123", 200, "Expense approved successfully", "message"),
+                Arguments.of("Approved", 2, "manager1", "password123", 200, "Expense approved successfully", "message"),
                 Arguments.of("Negative", 1234567, "manager1", "password123", 404, "Expense not found or could not be approved", "title")
         );
     }
@@ -153,42 +119,4 @@ public class TestPostApproveExpense {
         String message = response2.jsonPath().getString(pathKey);
         assertEquals(expectedMessage, message);
     }
-
-//    //database is already seeded with
-//    @DisplayName("Test attempting to approve an already approved expense while logged in")
-//    @Test
-//    @Disabled("Same exact functionality as approving a pending expense, same expected output")
-//    public void testApprovalAlreadyApproved(){
-//        int expenseId = 2;
-//        String credentials = """
-//            {
-//                "username":"manager1",
-//                "password":"password123"
-//            }
-//            """;
-//        //log in with valid credentials
-//        Response response1 = given()
-//                .spec(requestSpec)
-//                .body(credentials)
-//                .when()
-//                .post("/api/auth/login")
-//                .then()
-//                .spec(responseSpec)
-//                .statusCode(200)
-//                .extract().response();
-//        String jwtCookie = response1.getCookie("jwt");
-//
-//        //approve an expense that is already approved (seeded)
-//        Response response2 = given()
-//                .spec(requestSpec)
-//                .cookie("jwt", jwtCookie)
-//                .when()
-//                .post("/api/expenses/"+ expenseId +"/approve")
-//                .then()
-//                .statusCode(200)
-//                .extract().response();
-//
-//        String message = response2.jsonPath().getString("message");
-//        assertEquals("Expense approved successfully", message);
-//    }
 }
