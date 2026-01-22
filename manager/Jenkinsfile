@@ -158,12 +158,12 @@ pipeline {
             }
             post {
                 always {
-                    dir('manager'){
-                        allure includeProperties:
-                        false,
-                        jdk: '',
-                        results: [[path: 'target/allure-results']]
-                    }
+//                     dir('manager'){
+//                         allure includeProperties:
+//                         false,
+//                         jdk: '',
+//                         results: [[path: 'target/allure-results']]
+//                     }
                     dir('manager'){
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
                     }
@@ -212,7 +212,15 @@ pipeline {
 
     post {
         always {
-            allure results: [[path: 'target/allure-results']]
+            sh """
+                        mkdir -p allure-results
+                        cp -r /var/jenkins_home/allure-results/manager/. allure-results/ || true
+                    """
+            allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'target/allure-results']]
+
+
+
+
             echo '🧹 Cleaning up...'
             sh '''
                 docker stop ${APP_NAME}-test || true

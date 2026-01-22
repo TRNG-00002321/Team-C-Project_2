@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="dc1e0e1f-cfcb-4d65-8ee3-0abc9b71fbb2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/Jenkinsfile" beforeDir="false" afterPath="$PROJECT_DIR$/Jenkinsfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/steps/ReportSteps.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/revature/end_to_end_tests/steps/ReportSteps.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
