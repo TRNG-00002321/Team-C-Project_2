@@ -57,7 +57,7 @@ def step_enter_date(context, indate):
     if browser == "chrome" or "edge" in browser:
         new_date = month + "/" + day + "/" + year
     else:
-        new_date = date
+        new_date = indate
 
 
     date_field_locator = (By.ID, "date")
