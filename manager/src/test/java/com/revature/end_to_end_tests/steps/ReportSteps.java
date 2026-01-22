@@ -209,7 +209,7 @@ public class ReportSteps {
         {
             // converts mm/dd/yyyy → dd-MM-yyyy
             String[] parts = date.split("/");
-            return parts[2] + "-" + parts[0] + "-" + parts[1];
+            return parts[1] + "-" + parts[0] + "-" + parts[2];
         }
         else return date;
 
