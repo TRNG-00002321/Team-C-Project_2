@@ -49,11 +49,11 @@ public class DriverFactory {
 
             case "edge" -> {
 //                WebDriverManager.edgedriver().setup();
+                System.setProperty("webdriver.edge.driver", "/usr/local/bin/msedgedriver");
                 EdgeOptions options = new EdgeOptions();
                 if (headless) {
                     options.addArguments("--headless=new");
                 }
-                System.setProperty("SE_MSEDGEDRIVER_MIRROR_URL", "https://msedgedriver.microsoft.com");
                 driver = new EdgeDriver(options);
             }
 
