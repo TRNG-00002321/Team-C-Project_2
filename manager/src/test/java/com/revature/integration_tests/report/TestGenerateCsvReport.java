@@ -1,6 +1,8 @@
 package com.revature.integration_tests.report;
 
 import com.revature.utils.TestDatabaseUtil;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -16,6 +18,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Epic("Manager App Integration Tests")
+@Feature("Expense Report Generation")
+
+@Tag("Integration")
 public class TestGenerateCsvReport {
   static RequestSpecification requestSpec;
   static ResponseSpecification responseSpec;

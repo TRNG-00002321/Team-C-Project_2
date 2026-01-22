@@ -118,6 +118,10 @@ public class TestExpenseService {
 
     }
 
+    @Epic("Manager App Unit Tests")
+    @Feature("Expense Management")
+
+    @Tag("Unit")
     @Nested
     class generate_report_ByCategory {
 
