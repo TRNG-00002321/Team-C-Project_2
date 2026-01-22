@@ -125,8 +125,13 @@ public class ReportSteps {
         startDateField.clear();
         String browser = System.getProperty("browser", "chrome").toLowerCase();
 
+        System.out.println("Start Date: " + startDate + " on browser: " + browser);
+
         startDate = normalizeDate(startDate,browser);
         startDateField.sendKeys(startDate);
+
+        System.out.println(startDateField.getText() + " | " + startDateField.getAttribute("value"));
+
 
         // Ensure value is set before continuing
         wait.until(driver ->
@@ -149,8 +154,13 @@ public class ReportSteps {
 
         endDateField.clear();
         String browser = System.getProperty("browser", "chrome").toLowerCase();
+
+        System.out.println("End Date: " + endDate + " on browser: " + browser);
+
         endDate = normalizeDate(endDate,browser);
         endDateField.sendKeys(endDate);
+
+        System.out.println(endDateField.getText() + " | " + endDateField.getAttribute("value"));
 
         wait.until(driver ->
                 endDateField.getAttribute("value").length() > 0
