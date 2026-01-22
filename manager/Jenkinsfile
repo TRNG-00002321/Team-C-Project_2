@@ -159,6 +159,12 @@ pipeline {
             post {
                 always {
                     dir('manager'){
+                        allure includeProperties:
+                        false,
+                        jdk: '',
+                        results: [[path: 'target/allure-results']]
+                    }
+                    dir('manager'){
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
                     }
                 }
@@ -206,13 +212,14 @@ pipeline {
 
     post {
         always {
+            allure results: [[path: 'target/allure-results']]
             echo '🧹 Cleaning up...'
             sh '''
                 docker stop ${APP_NAME}-test || true
                 docker rm ${APP_NAME}-test || true
                 docker rmi ${APP_NAME}:${BUILD_VERSION} || true
             '''
-                    allure results: [[path: 'target/allure-results']]
+
 
             archiveArtifacts artifacts: '''
                 target/surefire-reports/**/*.xml,
