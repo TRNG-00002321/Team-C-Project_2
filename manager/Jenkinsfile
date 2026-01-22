@@ -16,6 +16,10 @@ pipeline {
 
         DOCKER_IMAGE = "manager_app"
         BUILD_DOCKER = true
+
+        VOLUME_NAME = "expense_data"
+
+        JENKINS_IMAGE= "jenkins-p2"
     }
 
     options {
@@ -62,13 +66,6 @@ pipeline {
             }
             post {
                 always {
-//                     dir('manager'){
-//
-//                         allure includeProperties:
-//                         false,
-//                         jdk: '',
-//                         results: [[path: 'target/allure-results']]
-//                     }
                     dir('manager'){
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
                     }
@@ -91,7 +88,7 @@ pipeline {
             steps {
                 echo '🚀 Starting Manager App for API/E2E Testing...'
                 sh '''
-                    NET_NAME=$(docker inspect jenkinsdemo3 \
+                    NET_NAME=$(docker inspect ${JENKINS_IMAGE} \
                       -f '{{range $k, $v := .NetworkSettings.Networks}}{{if ne $k "bridge"}}{{$k}}{{end}}{{end}}')
                     echo "Detected Jenkins Network: \$NET_NAME"
 
@@ -106,7 +103,7 @@ pipeline {
                         --shm-size=2gb \
                         --network \$NET_NAME \
                         -p ${APP_PORT}:${APP_PORT} \
-                        -v expense-data:/data \
+                        -v ${VOLUME_NAME}:/data \
                         ${APP_NAME}:${BUILD_VERSION}
                 '''
                 sh '''
@@ -133,12 +130,6 @@ pipeline {
             }
             post {
                 always {
-//                     dir('manager'){
-//                         allure includeProperties:
-//                         false,
-//                         jdk: '',
-//                         results: [[path: 'target/allure-results']]
-//                     }
                     dir('manager'){
 
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
@@ -147,46 +138,40 @@ pipeline {
             }
         }
 
-//         stage('Chrome E2E Tests') {
-//             steps {
-//                 dir('manager'){
-//                     echo 'Running Chrome E2E Tests:'
-//                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-//                         sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="chrome" test -B'
-//                     }
-//                 }
-//             }
-//             post {
-//                 always {
-//                     dir('manager'){
-//                         allure includeProperties:
-//                         false,
-//                         jdk: '',
-//                         results: [[path: 'target/allure-results']]
-//                     }
-//                     dir('manager'){
-//                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-//                     }
-//                 }
-//             }
-//         }
-//         stage('Firefox E2E Tests') {
-//             steps {
-//                 dir('manager'){
-//                     echo 'Running Firefox E2E Tests:'
-//                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-//                         sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="firefox" test -B'
-//                     }
-//                 }
-//             }
-//             post {
-//                 always {
-//                     dir('manager'){
-//                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-//                     }
-//                 }
-//             }
-//         }
+        stage('Chrome E2E Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Chrome E2E Tests:'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="chrome" test -B'
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+        stage('Firefox E2E Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Firefox E2E Tests:'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="firefox" test -B'
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
         stage('Edge E2E Tests') {
             steps {
                 dir('manager'){
