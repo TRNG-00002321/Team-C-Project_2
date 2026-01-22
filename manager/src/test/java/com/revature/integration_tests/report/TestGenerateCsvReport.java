@@ -11,15 +11,18 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.sql.SQLException;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-
 @Epic("Manager App Integration Tests")
-@Feature("Expense Report Generation")
+@Feature("Expense Reporting")
 
 @Tag("Integration")
 public class TestGenerateCsvReport {
@@ -52,97 +55,104 @@ public class TestGenerateCsvReport {
     TestDatabaseUtil.resetAndSeed();
   }
 
-  @DisplayName("Get Expense Report, Logged In")
-  @Test
-  public void getExpenseReportCsvLoggedIn() {
-    String credentials = """
-      {
-          "username":"manager1",
-          "password":"password123"
-      }
-      """;
-    Response authResponse =
-      given()
-        .spec(requestSpec)
-        .body(credentials)
-      .when()
-        .post("/api/auth/login")
-      .then()
-        .spec(responseSpec)
-        .statusCode(200)
-        .extract().response();
-    String jwtCookie = authResponse.getCookie("jwt");
 
-    String csv =
-      given()
-        .spec(requestSpec)
-        .cookie("jwt", jwtCookie)
-      .when()
-        .get("/api/reports/expenses/csv")
-      .then()
-        .statusCode(200)
-        .contentType("text/csv")
-        .extract()
-        .asString();
 
-    assertTrue(csv.startsWith(
-      "Expense ID,Employee,Amount,Description,Date,Status,Reviewer,Comment,Review Date"
-    ));
+    private enum ReportCheck {
+        FULL_ENTRIES, PENDING_CHECKS
+    }
 
-    String[] lines = csv.split("\\R");
-    assertEquals(6, lines.length);
+    // update reportData() to include the check type
+    static Stream<Arguments> reportData() {
+        return Stream.of(
+                Arguments.of("Positive", "manager1", "password123", 200, 6,
+                        "/api/reports/expenses/csv",
+                        "Expense ID,Employee,Amount,Description,Date,Status,Reviewer,Comment,Review Date",
+                        ReportCheck.FULL_ENTRIES),
+                Arguments.of("Pending", "manager1", "password123", 200, 3,
+                        "/api/reports/expenses/pending/csv",
+                        "Expense ID,Employee,Amount,Description,Date,Status,Reviewer,Comment,Review Date",
+                        ReportCheck.PENDING_CHECKS)
+        );
+    }
 
-    assertTrue(csv.contains("1,employee1,50.0"));
-    assertTrue(csv.contains("2,employee1,200.0"));
-    assertTrue(csv.contains("3,employee1,30.0"));
-    assertTrue(csv.contains("4,employee2,75.0"));
-    assertTrue(csv.contains("5,employee2,450.0"));
-  }
+    // helper that performs auth, GET, and shared assertions; returns CSV string
+    private String fetchCsvAndDoBasicChecks(String username,
+                                            String password,
+                                            String endpoint,
+                                            int expectedStatus,
+                                            String expectedHeader,
+                                            int expectedLines) {
+        Response authResponse =
+                given()
+                        .spec(requestSpec)
+                        .body("""
+             {
+               "username": "%s",
+               "password": "%s"
+             }
+             """.formatted(username, password))
+                        .when()
+                        .post("/api/auth/login")
+                        .then()
+                        .spec(responseSpec)
+                        .statusCode(200)
+                        .extract().response();
 
-  @DisplayName("Get Pending Expense Report, Logged In")
-  @Test
-  public void getPendingExpenseReportCsvLoggedIn() {
-    String credentials = """
-      {
-          "username":"manager1",
-          "password":"password123"
-      }
-      """;
-    Response authResponse =
-      given()
-        .spec(requestSpec)
-        .body(credentials)
-      .when()
-        .post("/api/auth/login")
-      .then()
-        .spec(responseSpec)
-        .statusCode(200)
-        .extract().response();
-    String jwtCookie = authResponse.getCookie("jwt");
+        String jwtCookie = authResponse.getCookie("jwt");
 
-    String csv =
-      given()
-        .spec(requestSpec)
-        .cookie("jwt", jwtCookie)
-      .when()
-        .get("/api/reports/expenses/pending/csv")
-      .then()
-        .statusCode(200)
-        .contentType("text/csv")
-        .extract()
-        .asString();
+        String csv =
+                given()
+                        .spec(requestSpec)
+                        .cookie("jwt", jwtCookie)
+                        .when()
+                        .get(endpoint)
+                        .then()
+                        .statusCode(expectedStatus)
+                        .contentType("text/csv")
+                        .extract()
+                        .asString();
 
-    assertTrue(csv.startsWith(
-      "Expense ID,Employee,Amount,Description,Date,Status,Reviewer,Comment,Review Date"
-    ));
+        assertTrue(csv.startsWith(expectedHeader));
+        String[] lines = csv.split("\\R");
+        assertEquals(expectedLines, lines.length);
 
-    String[] lines = csv.split("\\R");
-    assertEquals(3, lines.length);
+        return csv;
+    }
 
-    assertTrue(csv.contains(",pending,"));
-    assertFalse(csv.contains(",approved,"));
-    assertFalse(csv.contains(",denied,"));
-  }
+    // single parameterized test that delegates shared work to the helper and runs case-specific checks
+    @ParameterizedTest(name = "Get Expense Report: {0}")
+    @MethodSource("reportData")
+    public void getExpenseReportCsvLoggedIn(String caseName,
+                                            String username,
+                                            String password,
+                                            int expectedStatus,
+                                            int expectedLines,
+                                            String endpoint,
+                                            String expectedHeader,
+                                            ReportCheck check) {
+
+        String csv = fetchCsvAndDoBasicChecks(username, password, endpoint, expectedStatus, expectedHeader, expectedLines);
+
+        switch (check) {
+            case FULL_ENTRIES -> {
+                String[] expectedEntries = {
+                        "1,employee1,50.0",
+                        "2,employee1,200.0",
+                        "3,employee1,30.0",
+                        "4,employee2,75.0",
+                        "5,employee2,450.0"
+                };
+                for (String entry : expectedEntries) {
+                    assertTrue(csv.contains(entry), "CSV does not contain expected entry: " + entry);
+                }
+            }
+            case PENDING_CHECKS -> {
+                assertTrue(csv.contains(",pending,"), "Pending report should contain pending entries");
+                assertFalse(csv.contains(",approved,"), "Pending report should not contain approved entries");
+                assertFalse(csv.contains(",denied,"), "Pending report should not contain denied entries");
+            }
+        }
+    }
 
   @DisplayName("Get Employee Expense Report, Logged In")
   @Test

@@ -53,17 +53,6 @@ def _select_status(context, status):
 
 #STEP DEFINITIONS
 
-@when(u'the filter by status option is selected for all')
-def step_impl(context):
-    _select_status(context, "All")
-
-
-@then(u'all expenses are shown')
-def step_impl(context):
-    rows = context.driver.find_elements(*EXPENSE_ROWS)
-    assert len(rows) > 0, "No expenses are displayed"
-
-
 @when(u'the filter by status option {status} is selected')
 def step_impl(context, status):
     _select_status(context, status)
@@ -74,18 +63,19 @@ def step_impl(context, status):
     rows = context.driver.find_elements(*EXPENSE_ROWS)
     assert len(rows) > 0, "No expenses are displayed"
 
-    #Check each row in the table
-    for row in rows:
-        cells = row.find_elements(By.TAG_NAME, "td")
+    if status.lower() != "all":
+        #Check each row in the table
+        for row in rows:
+            cells = row.find_elements(By.TAG_NAME, "td")
 
-        # Skip header, spacer, or invalid rows
-        if len(cells) < 4:
-            continue
+            # Skip header, spacer, or invalid rows
+            if len(cells) < 4:
+                continue
 
-        # Status column is the 4th column (index 3)
-        actual_status = cells[3].text.strip()
+            # Status column is the 4th column (index 3)
+            actual_status = cells[3].text.strip()
 
-        assert actual_status.lower() == status.lower(), (
-            f"Expected status '{status}', but found '{actual_status}'"
-        )
+            assert actual_status.lower() == status.lower(), (
+                f"Expected status '{status}', but found '{actual_status}'"
+            )
 

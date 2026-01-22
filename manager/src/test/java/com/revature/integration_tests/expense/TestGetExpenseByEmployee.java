@@ -8,7 +8,6 @@ import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-
 @Epic("Manager App Integration Tests")
 @Feature("Expense Management")
 

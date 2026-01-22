@@ -16,7 +16,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @Epic("Manager App Integration Tests")
 @Feature("Manager Authentication")
 

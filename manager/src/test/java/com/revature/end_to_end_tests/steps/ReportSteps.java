@@ -123,10 +123,15 @@ public class ReportSteps {
         }
 
         startDateField.clear();
-        String browser = System.getProperty("browser").toLowerCase();
+        String browser = System.getProperty("browser", "chrome").toLowerCase();
+
+        System.out.println("Start Date: " + startDate + " on browser: " + browser);
 
         startDate = normalizeDate(startDate,browser);
         startDateField.sendKeys(startDate);
+
+        System.out.println(startDateField.getText() + " | " + startDateField.getAttribute("value"));
+
 
         // Ensure value is set before continuing
         wait.until(driver ->
@@ -148,9 +153,14 @@ public class ReportSteps {
         }
 
         endDateField.clear();
-        String browser = System.getProperty("browser").toLowerCase();
+        String browser = System.getProperty("browser", "chrome").toLowerCase();
+
+        System.out.println("End Date: " + endDate + " on browser: " + browser);
+
         endDate = normalizeDate(endDate,browser);
         endDateField.sendKeys(endDate);
+
+        System.out.println(endDateField.getText() + " | " + endDateField.getAttribute("value"));
 
         wait.until(driver ->
                 endDateField.getAttribute("value").length() > 0
@@ -188,18 +198,19 @@ public class ReportSteps {
 
 
     private String normalizeDate(String date, String browser) {
+        System.out.println("HEEEEELP: " + browser);
         if(browser.equals("firefox"))
         {
             // converts mm/dd/yyyy → yyyy-MM-dd
             String[] parts = date.split("/");
             return parts[2] + "-" + parts[0] + "-" + parts[1];
         }
-        else if (browser.equals("edge"))
-        {
-            // converts mm/dd/yyyy → dd-MM-yyyy
-            String[] parts = date.split("/");
-            return parts[1] + "-" + parts[0] + "-" + parts[2];
-        }
+//        else if (browser.contains("edge"))
+//        {
+//            // converts mm/dd/yyyy → dd-MM-yyyy
+//            String[] parts = date.split("/");
+//            return parts[1] + "-" + parts[0] + "-" + parts[2];
+//        }
         else return date;
 
 

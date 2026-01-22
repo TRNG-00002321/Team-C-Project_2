@@ -13,7 +13,6 @@ import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-
 @Epic("Manager App Integration Tests")
 @Feature("Expense Management")
 
@@ -28,7 +27,6 @@ public class TestGetExpensesPending {
     static void setup(){
         RestAssured.baseURI = "http://manager_app";
         RestAssured.port = 5001;
-        System.out.println("Looking to snag one " + RestAssured.baseURI);
 
         //Get JWT cookie authorization
         jwtCookie =

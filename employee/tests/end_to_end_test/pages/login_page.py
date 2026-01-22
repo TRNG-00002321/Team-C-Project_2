@@ -27,6 +27,7 @@ class LoginPage(BasePage):
         return DashboardPage(self.driver)
 
     def clear_username(self, username):
+
         pass
 
     def login(self, username, password):

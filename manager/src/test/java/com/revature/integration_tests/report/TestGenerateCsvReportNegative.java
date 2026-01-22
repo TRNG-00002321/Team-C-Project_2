@@ -16,9 +16,8 @@ import java.sql.SQLException;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.lessThan;
-
 @Epic("Manager App Integration Tests")
-@Feature("Expense Report Generation")
+@Feature("Expense Reporting")
 
 @Tag("Integration")
 public class TestGenerateCsvReportNegative {

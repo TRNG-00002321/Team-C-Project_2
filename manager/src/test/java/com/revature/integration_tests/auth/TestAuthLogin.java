@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 
+
 @Epic("Manager App Integration Tests")
 @Feature("Manager Authentication")
 

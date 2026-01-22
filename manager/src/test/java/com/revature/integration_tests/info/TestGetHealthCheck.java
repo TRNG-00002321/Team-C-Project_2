@@ -10,9 +10,8 @@ import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
-
 @Epic("Manager App Integration Tests")
-@Feature("API Health Check")
+@Feature("Health Check")
 
 @Tag("Integration")
 public class TestGetHealthCheck {
