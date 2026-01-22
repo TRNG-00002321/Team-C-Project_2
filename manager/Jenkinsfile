@@ -66,13 +66,6 @@ pipeline {
             }
             post {
                 always {
-//                     dir('manager'){
-//
-//                         allure includeProperties:
-//                         false,
-//                         jdk: '',
-//                         results: [[path: 'target/allure-results']]
-//                     }
                     dir('manager'){
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
                     }
@@ -137,12 +130,6 @@ pipeline {
             }
             post {
                 always {
-//                     dir('manager'){
-//                         allure includeProperties:
-//                         false,
-//                         jdk: '',
-//                         results: [[path: 'target/allure-results']]
-//                     }
                     dir('manager'){
 
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
@@ -151,46 +138,40 @@ pipeline {
             }
         }
 
-//         stage('Chrome E2E Tests') {
-//             steps {
-//                 dir('manager'){
-//                     echo 'Running Chrome E2E Tests:'
-//                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-//                         sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="chrome" test -B'
-//                     }
-//                 }
-//             }
-//             post {
-//                 always {
-//                     dir('manager'){
-//                         allure includeProperties:
-//                         false,
-//                         jdk: '',
-//                         results: [[path: 'target/allure-results']]
-//                     }
-//                     dir('manager'){
-//                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-//                     }
-//                 }
-//             }
-//         }
-//         stage('Firefox E2E Tests') {
-//             steps {
-//                 dir('manager'){
-//                     echo 'Running Firefox E2E Tests:'
-//                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-//                         sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="firefox" test -B'
-//                     }
-//                 }
-//             }
-//             post {
-//                 always {
-//                     dir('manager'){
-//                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
-//                     }
-//                 }
-//             }
-//         }
+        stage('Chrome E2E Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Chrome E2E Tests:'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="chrome" test -B'
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+        stage('Firefox E2E Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Firefox E2E Tests:'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="firefox" test -B'
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
         stage('Edge E2E Tests') {
             steps {
                 dir('manager'){
