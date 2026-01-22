@@ -124,7 +124,7 @@ public class ReviewExpenseSteps {
         else
             expectedComment = comment;
         WebDriverWait wait = new WebDriverWait(context.getDriver(), java.time.Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("table")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("tbody")));
         List<WebElement> rows = context.getDriver().findElements(By.cssSelector("#all-expenses-list tr"));
         boolean found = false;
         // skip 1st row b/c it is the header
