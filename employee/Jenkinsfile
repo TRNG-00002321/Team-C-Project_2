@@ -53,6 +53,9 @@ pipeline {
                     steps {
                         dir('employee') {
                             sh "docker build -t ${DOCKER_IMAGE}-test --target test ."
+                            echo "Cleaning Allure Results Volume..."
+                            sh "docker run --rm -v allure_results_employee:/employee/allure-results ${DOCKER_IMAGE}-test sh -c 'rm -rf /employee/allure-results/*'"
+
                         }
                     }
                 }
@@ -132,7 +135,7 @@ pipeline {
                                                         -v allure_results_employee:/employee/allure-results \
                                                         --shm-size=2gb \
                                                         ${DOCKER_IMAGE}-test \
-                                                        sh -c "python -m src.main > /dev/null 2>&1 & wait-for-it localhost:5000 -- python -m behave -Dbrowser=${browserName}"
+                                                        sh -c "mkdir -p allure-results/${browserName} && python -m src.main > /dev/null 2>&1 & wait-for-it localhost:5000 -- python -m behave -Dbrowser=${browserName} -o allure-results/${browserName}"
                                                 """
                                             } finally {
                                                 // Post-execution cleanup and report collection
@@ -154,6 +157,8 @@ pipeline {
                     sh """
                         mkdir -p allure-results
                         cp -r /var/jenkins_home/allure-results/employee/. allure-results/ || true
+                        # Flatten results from subdirectories to ensure Allure picks them all up
+                        find allure-results -mindepth 2 -type f -exec mv {} allure-results/ \\; || true
                     """
                     allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'allure-results']]
                 }
