@@ -19,7 +19,7 @@ pipeline {
 
         VOLUME_NAME = "expense_data"
 
-        JENKINS_IMAGE= "jenkinsdemo4"
+        JENKINS_IMAGE= "jenkinsdemo3"
     }
 
     options {
