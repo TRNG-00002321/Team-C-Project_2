@@ -5,14 +5,32 @@ services:
     ports:
       - "8080:8080"      # Web UI
       - "50000:50000"    # Agent communication
+    user: root  # Required for Docker socket access
+    restart: unless-stopped
     volumes:
       - jenkins_home:/var/jenkins_home
       # Mount Docker socket for Docker-in-Docker builds
       - /var/run/docker.sock:/var/run/docker.sock
+      - allure_results_employee:/var/jenkins_home/allure-results/employee
+      - allure_results_manager:/var/jenkins_home/allure-results/manager
+      - expense_data:/data
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=true
-    user: root  # Required for Docker socket access
-    restart: unless-stopped
+    networks:
+      - jenkins-net
+
+  allure:
+    image: frankescobar/allure-docker-service
+    container_name: allure-service
+    ports:
+      - "5050:5050"
+    user: root
+    volumes:
+      - allure_results_employee:/app/projects/employee/results
+      - allure_results_manager:/app/projects/manager/results
+    environment:
+      - CHECK_RESULTS_EVERY_SECONDS=10
+      - KEEP_HISTORY=1
     networks:
       - jenkins-net
 
@@ -23,3 +41,11 @@ networks:
 volumes:
   jenkins_home:
     name: jenkins_home_p2
+  allure_results_employee:
+    name: allure_results_employee
+  allure_results_manager:
+    name: allure_results_manager
+  expense_data:
+    name: expense_data
+  shared_database:
+    name: shared_database

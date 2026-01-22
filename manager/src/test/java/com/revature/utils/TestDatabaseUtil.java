@@ -12,6 +12,7 @@ public class TestDatabaseUtil {
   private static final DatabaseConnection db = new DatabaseConnection();
 
   public static void resetAndSeed() {
+    System.out.println("Resetting and seeding test database...");
     executeSql("/sql/reset.sql");
     executeSql("/sql/seed.sql");
   }

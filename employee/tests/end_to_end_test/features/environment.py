@@ -59,5 +59,5 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
-    if context.driver:
+    if hasattr(context, 'driver') and context.driver:
         context.driver.quit()

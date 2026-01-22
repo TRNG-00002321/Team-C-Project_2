@@ -1,0 +1,220 @@
+pipeline {
+    agent any
+    tools {
+            maven 'maven-3'
+        }
+
+    environment {
+        // Application image name
+        APP_NAME = 'manager_app'
+        APP_PORT = '5001'
+
+        BUILD_VERSION = "${BUILD_NUMBER}"
+
+
+        WORKSPACE_HOST = "${env.JENKINS_HOME_HOST ?: env.JENKINS_HOME}/workspace/${env.JOB_NAME}"
+
+        DOCKER_IMAGE = "manager_app"
+        BUILD_DOCKER = true
+
+        VOLUME_NAME = "expense_data"
+
+        JENKINS_IMAGE= "jenkins-p2"
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timestamps()
+        timeout(time: 45, unit: 'MINUTES')
+    }
+
+    stages {
+        stage("Validate"){
+            steps{
+                echo "${WORKSPACE_HOST}"
+            }
+        }
+        stage('Checkout') {
+            steps {
+                echo 'checkout step'
+                checkout scm
+                script {
+                    env.GIT_COMMIT_SHORT = sh(
+                        script: 'git rev-parse --short HEAD',
+                        returnStdout: true
+                    ).trim()
+                    echo "Building commit: ${env.GIT_COMMIT_SHORT}"
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('manager') {
+                    sh 'mvn clean compile -B'
+                }
+            }
+        }
+
+        stage('Unit Tests') {
+
+            steps {
+                dir('manager'){
+                //todo: only run unit tests!
+                    echo 'Running Unit Tests:'
+                    sh 'mvn -Dtest="com.revature.unit_tests.**" test -B'
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Java Manager Application...'
+                    sh '''
+                        docker build -f ./manager/Dockerfile -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .
+                        docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest
+                    '''
+
+           }
+        }
+
+        stage('Start Application') {
+            steps {
+                echo '🚀 Starting Manager App for API/E2E Testing...'
+                sh '''
+                    NET_NAME=$(docker inspect ${JENKINS_IMAGE} \
+                      -f '{{range $k, $v := .NetworkSettings.Networks}}{{if ne $k "bridge"}}{{$k}}{{end}}{{end}}')
+                    echo "Detected Jenkins Network: \$NET_NAME"
+
+
+                    # Stop any existing container
+                    docker stop ${APP_NAME} || true
+                    docker rm ${APP_NAME} || true
+
+                    # Start the container
+                    docker run -d \
+                        --name ${APP_NAME} \
+                        --shm-size=2gb \
+                        --network \$NET_NAME \
+                        -p ${APP_PORT}:${APP_PORT} \
+                        -v ${VOLUME_NAME}:/data \
+                        ${APP_NAME}:${BUILD_VERSION}
+                '''
+                sh '''
+                    # Wait for app to be healthy
+                    echo "Waiting for application to start..."
+                    sleep 5
+                    # curl -v http://${APP_NAME}:8080
+                    # curl -f http://172.17.0.1:5001/health
+                    RESPONSE_CODE=\$(curl -f http://${APP_NAME}:${APP_PORT}/health)
+                    echo "Health check response code: \$RESPONSE_CODE"
+                                        if [ "\$RESPONSE_CODE" -ne 200 ]; then
+                                            exit 1
+                                        fi
+                    echo "✅ Application is ready!"
+                '''
+            }
+        }
+        stage('Integration Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Integration Tests:'
+                    sh 'mvn  -Dtest="com.revature.integration_tests.**" test -B'
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+
+        stage('Chrome E2E Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Chrome E2E Tests:'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="chrome" test -B'
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+        stage('Firefox E2E Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Firefox E2E Tests:'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh 'mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" -Dbrowser="firefox" test -B'
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+        stage('Edge E2E Tests') {
+            steps {
+                dir('manager'){
+                    echo 'Running Microsoft Edge E2E Tests:'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        sh '''
+                        mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" \
+                        -Dbrowser="edge" test -B
+                        '''
+                    }
+                }
+            }
+            post {
+                always {
+                    dir('manager'){
+                        junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+        }
+
+    }
+
+    post {
+        always {
+            allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'manager/target/allure-results']]
+
+
+
+
+            echo '🧹 Cleaning up...'
+            sh '''
+                docker stop ${APP_NAME}-test || true
+                docker rm ${APP_NAME}-test || true
+                docker rmi ${APP_NAME}:${BUILD_VERSION} || true
+            '''
+
+
+            archiveArtifacts artifacts: '''
+                target/surefire-reports/**/*.xml,
+                ''', allowEmptyArchive: true
+        }
+    }
+
+//pipeline end
+}

@@ -21,6 +21,12 @@ public class DriverFactory {
             case "chrome" -> {
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions options = new ChromeOptions();
+                options.addArguments(
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu",
+                        "--window-size=1920,1080"
+                );
                 if (headless) {
                     options.addArguments("--headless=new");
                 }
@@ -42,8 +48,16 @@ public class DriverFactory {
             }
 
             case "edge" -> {
-                //WebDriverManager.edgedriver().setup();
+//                WebDriverManager.edgedriver().setup();
+                System.setProperty("webdriver.edge.driver", "/usr/local/bin/msedgedriver");
                 EdgeOptions options = new EdgeOptions();
+                options.addArguments(
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu",
+                        "--window-size=1920,1080",
+                        "--remote-allow-origins=*"
+                );
                 if (headless) {
                     options.addArguments("--headless=new");
                 }

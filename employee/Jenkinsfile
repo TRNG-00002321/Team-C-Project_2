@@ -53,6 +53,8 @@ pipeline {
                     steps {
                         dir('employee') {
                             sh "docker build -t ${DOCKER_IMAGE}-test --target test ."
+                            echo "Cleaning Allure Results Volume..."
+                            sh "docker run --rm -v allure_results_employee:/employee/allure-results ${DOCKER_IMAGE}-test sh -c 'rm -rf /employee/allure-results/*'"
                         }
                     }
                 }
@@ -61,12 +63,11 @@ pipeline {
                         dir('employee')  {
                             echo 'Running Unit Tests...'
                             sh """
-                                docker rm -f ${DOCKER_IMAGE}-unit-runner || true
-
-                                docker run --name ${DOCKER_IMAGE}-unit-runner ${DOCKER_IMAGE}-test \
+                                docker run --name ${DOCKER_IMAGE}-unit-runner \
+                                    -v allure_results_employee:/employee/allure-results \
+                                    ${DOCKER_IMAGE}-test \
                                     python -m pytest tests/unit_tests \
                                     --alluredir=/employee/allure-results \
-                                    --junitxml=/employee/test-results/unit-results.xml
                             """
                         }
                     }
@@ -74,9 +75,7 @@ pipeline {
                         always {
                             dir('employee'){
                                 sh """
-                                    docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
-                                    docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
-                                    docker rm ${DOCKER_IMAGE}-unit-runner
+                                    docker rm -f ${DOCKER_IMAGE}-unit-runner || true
                                 """
                             }
                         }
@@ -93,12 +92,11 @@ pipeline {
                         dir('employee')  {
                             echo 'Running Integration Tests...'
                             sh """
-                                docker rm -f ${DOCKER_IMAGE}-int-runner || true
-
-                                docker run --name ${DOCKER_IMAGE}-int-runner ${DOCKER_IMAGE}-test \
+                                docker run --name ${DOCKER_IMAGE}-int-runner \
+                                    -v allure_results_employee:/employee/allure-results \
+                                    ${DOCKER_IMAGE}-test \
                                     python -m pytest tests/integration_tests \
                                     --alluredir=/employee/allure-results \
-                                    --junitxml=/employee/test-results/integration-results.xml
                             """
                         }
                     }  
@@ -106,9 +104,7 @@ pipeline {
                         always {
                             dir('employee'){
                                 sh """
-                                    docker cp ${DOCKER_IMAGE}-int-runner:/employee/allure-results/. allure-results/
-                                    docker cp ${DOCKER_IMAGE}-int-runner:/employee/test-results/. test-results/
-                                    docker rm ${DOCKER_IMAGE}-int-runner
+                                    docker rm -f ${DOCKER_IMAGE}-int-runner || true
                                 """
                             }
                         }
@@ -120,43 +116,48 @@ pipeline {
                         }
                     }                  
                 }
-                stage('E2E Test') {
+                stage('Cross-Browser E2E Tests') {
                     steps {
-                        dir('employee') {
-                            echo "Running E2E tests..."
-                            sh """
-                                docker rm -f ${DOCKER_IMAGE}-e2e-runner || true
+                        script {
+                            def browsers = ['chrome', 'firefox', 'edge']
+                            def tasks = [:]
 
-                                docker run --name ${DOCKER_IMAGE}-e2e-runner \
-                                    --shm-size=2gb \
-                                    ${DOCKER_IMAGE}-test \
-                                    sh -c "python -m src.main > app_logs.txt 2>&1 & wait-for-it localhost:5000 -- python -m behave"
-                            """
-                        }
-                    }
-                    post {
-                        always {
-                            dir('employee') {
-                                sh """
-                                    docker cp ${DOCKER_IMAGE}-e2e-runner:/employee/allure-results/. allure-results/
-
-                                    docker rm ${DOCKER_IMAGE}-e2e-runner
-                                """
-                                    // docker cp ${DOCKER_IMAGE}-e2e-runner:/employee/app_logs.txt logs/
+                            browsers.each { browserName ->
+                                tasks[browserName] = {
+                                    node { // Or your specific agent label
+                                        dir('employee') {
+                                            echo "Running E2E tests on ${browserName}..."
+                                            try {
+                                                sh """
+                                                    # Use a unique name for each container to avoid collisions
+                                                    docker run --name ${DOCKER_IMAGE}-${browserName}-runner \
+                                                        -v allure_results_employee:/employee/allure-results \
+                                                        --shm-size=2gb \
+                                                        ${DOCKER_IMAGE}-test \
+                                                        sh -c "python -m src.main > /dev/null 2>&1 & wait-for-it localhost:5000 -- python -m behave -Dbrowser=${browserName}"
+                                                """
+                                            } finally {
+                                                // Post-execution cleanup and report collection
+                                                sh """
+                                                    docker rm -f ${DOCKER_IMAGE}-${browserName}-runner || true
+                                                """
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        }
-                        success {
-                            echo 'E2E Tests Passed!'
-                        }
-                        failure {
-                            echo 'E2E Tests Failed!'
+                            parallel tasks
                         }
                     }
                 }
             }
             post {
                 always {
-                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
+                    sh """
+                        mkdir -p allure-results
+                        cp -r /var/jenkins_home/allure-results/employee/. allure-results/ || true
+                    """
+                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'allure-results']]
                 }
             }
         }
@@ -183,27 +184,27 @@ pipeline {
                 dir('employee') {
                     echo 'Testing Docker image...'
                     sh """
-                    NET_NAME=\$(docker inspect jenkins-p2 -f '{{range \$k, \$v := .NetworkSettings.Networks}}{{\$k}}{{end}}')
-                    echo "Detected Jenkins Network: \$NET_NAME"
-                    docker rm -f employee_temp || true
-                    docker run -d --name employee_temp \
-                        --network \$NET_NAME \
-                        ${DOCKER_IMAGE}:${DOCKER_TAG}
-                    
-                    sleep 5
-                    
-                    RESPONSE_CODE=\$(curl -s -o /dev/null -w "%{http_code}" http://employee_temp:5000/health)
-                    docker stop employee_temp
-                    docker rm employee_temp
-
-                    echo "Health check response code: \$RESPONSE_CODE"
-                    if [ "\$RESPONSE_CODE" -ne 200 ]; then
-                        exit 1                    
-                    fi
+                        NET_NAME=\$(docker inspect jenkins-p2 -f '{{range \$k, \$v := .NetworkSettings.Networks}}{{\$k}}{{end}}')
+                        echo "Detected Jenkins Network: \$NET_NAME"
+                        docker rm -f employee_temp || true
+                        docker run -d --name employee_temp \
+                            --network \$NET_NAME \
+                            ${DOCKER_IMAGE}:${DOCKER_TAG}
+                        
+                        sleep 5
+                        
+                        RESPONSE_CODE=\$(curl -s -o /dev/null -w "%{http_code}" http://employee_temp:5000/health)
+                        echo "Health check response code: \$RESPONSE_CODE"
+                        if [ "\$RESPONSE_CODE" -ne 200 ]; then
+                            exit 1                    
+                        fi
                     """
                 }
             }
             post {
+                always {
+                    sh "docker rm -f employee_temp || true"
+                }
                 success {
                     echo 'Docker Image Ran Sucessfully!'
                 }
@@ -218,7 +219,14 @@ pipeline {
             }
             steps {
                 echo 'Deploying Docker Image...'
-                // Deployment logic goes here
+                sh """
+                    docker rm -f employee-prod-container || true
+                    docker run -d --name employee-prod-container \
+                        -p 5000:5000 \
+                        -v shared_database:/employee/data \
+                        -e DATABASE_PATH=/employee/data/expense_manager.db \
+                        ${DOCKER_IMAGE}:${DOCKER_TAG}
+                """
             }
         }
     }
@@ -248,10 +256,11 @@ pipeline {
             echo 'Cleaning Up Docker Images...'
             sh """
                 docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG} 2>/dev/null || true
+                docker image prune -f || true
             """
 
-            echo 'Cleaning Up Workspace...'
-            cleanWs()
+            // echo 'Cleaning Up Workspace...'
+            // cleanWs()
         }
     }
 }

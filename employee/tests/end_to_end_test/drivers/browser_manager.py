@@ -44,12 +44,19 @@ def create_driver(browser_name: str, headless: bool = False):
             service = FirefoxService(GeckoDriverManager().install())
             return webdriver.Firefox(service=service, options=options)
 
+            # service = FirefoxService(GeckoDriverManager().install())
+            return webdriver.Firefox(options=options)
+
         elif browser == "edge":
             options = webdriver.EdgeOptions()
             if headless:
                 options.add_argument("--headless=new")
+            
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-gpu")
+            options.add_argument("--remote-debugging-pipe")
 
-            #service = EdgeService(EdgeChromiumDriverManager().install())
             return webdriver.Edge(options=options) #service=service
 
         else:

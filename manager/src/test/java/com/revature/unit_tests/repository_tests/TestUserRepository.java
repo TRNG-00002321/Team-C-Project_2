@@ -29,6 +29,7 @@ import static org.mockito.Mockito.*;
 @Epic("Manager App Unit Tests")
 @Feature("Manager Authentication")
 
+@Tag("Unit")
 @ExtendWith(MockitoExtension.class)
 public class TestUserRepository {
 
@@ -50,6 +51,10 @@ public class TestUserRepository {
         userRepository = new UserRepository(mockDatabaseConnection);
     }
 
+    @Epic("Manager App Unit Tests")
+    @Feature("Manager Authentication")
+
+    @Tag("Unit")
     @Nested
     @DisplayName("Find By ID Tests")
     class FindByIdTests {
@@ -109,6 +114,11 @@ public class TestUserRepository {
         }
 
     }
+
+    @Epic("Manager App Unit Tests")
+    @Feature("Manager Authentication")
+
+    @Tag("Unit")
     @Nested
     @DisplayName("Find by Username Tests")
     class FindByUserNameTests{

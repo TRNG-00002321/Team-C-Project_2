@@ -75,6 +75,7 @@ public class ApprovalRepository {
             return updatedRows > 0;
             
         } catch (SQLException e) {
+            System.out.println("Here be Gryphons: " + e.getMessage());
             throw new RuntimeException("Error updating approval for expense: " + expenseId, e);
         }
     }

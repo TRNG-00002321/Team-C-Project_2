@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY tests/ ./tests
 COPY behave.ini .
+ENV TEST_MODE=true
 RUN mkdir -p logs test-results allure-results
 
 
