@@ -23,22 +23,13 @@ services:
     container_name: allure-service
     ports:
       - "5050:5050"
+    user: root
     volumes:
-      - allure_results_employee:/app/projects/employee/allure-results
-      - allure_results_manager:/app/projects/manager/allure-results
+      - allure_results_employee:/app/projects/employee/results
+      - allure_results_manager:/app/projects/manager/results
     environment:
       - CHECK_RESULTS_EVERY_SECONDS=10
       - KEEP_HISTORY=1
-    networks:
-      - jenkins-net
-
-  allure-ui:
-    image: frankescobar/allure-docker-service-ui
-    container_name: allure-ui
-    ports:
-      - "5252:5252"
-    environment:
-      - ALLURE_DOCKER_PUBLIC_API_URL=http://localhost:5050
     networks:
       - jenkins-net
 
