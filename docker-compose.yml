@@ -44,3 +44,5 @@ volumes:
     name: allure_results_employee
   allure_results_manager:
     name: allure_results_manager
+  shared_database:
+    name: shared_database
