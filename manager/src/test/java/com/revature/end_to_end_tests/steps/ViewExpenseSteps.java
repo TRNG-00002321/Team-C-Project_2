@@ -20,19 +20,19 @@ public class ViewExpenseSteps {
     private DashboardPage dashboardPage;
     private WebDriver driver;
 
-    public ViewExpenseSteps(TestContext context){
+    public ViewExpenseSteps(TestContext context) {
         this.context = context;
         this.driver = context.getDriver();
     }
 
     @Given("the manager is on the all expenses screen")
     public void theManagerIsOnTheAllExpensesScreen() {
-        //login isnt always necessary
-//        LoginPage loginPage = new LoginPage(driver);
-//        System.out.println("we are paging it" + driver.getCurrentUrl());
-//        dashboardPage = loginPage.login("manager1", "password123");
+        // login isnt always necessary
+        // LoginPage loginPage = new LoginPage(driver);
+        // System.out.println("we are paging it" + driver.getCurrentUrl());
+        // dashboardPage = loginPage.login("manager1", "password123");
         System.out.println("we are paging it" + driver.getCurrentUrl());
-//
+        //
 
         dashboardPage = context.dashboardPage();
         dashboardPage.goToAllExpensesScreen();
@@ -76,6 +76,7 @@ public class ViewExpenseSteps {
 
     @Then("the manager is shown the message: {string}")
     public void theManagerIsShownTheMessage(String arg0) {
+        dashboardPage.waitForElement(By.tagName("p"));
         WebElement message = driver.findElement(By.tagName("p"));
         assertEquals(arg0, message.getText());
     }
