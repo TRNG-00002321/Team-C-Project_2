@@ -17,9 +17,9 @@ pipeline {
         DOCKER_IMAGE = "manager_app"
         BUILD_DOCKER = true
 
-        VOLUME_NAME = "expense_data"
+        VOLUME_NAME = "expense-data"
 
-        JENKINS_IMAGE= "jenkinsdemo3"
+        JENKINS_CONTAINER= "jenkinsdemo3"
     }
 
     options {
@@ -88,7 +88,7 @@ pipeline {
             steps {
                 echo '🚀 Starting Manager App for API/E2E Testing...'
                 sh '''
-                    NET_NAME=$(docker inspect ${JENKINS_IMAGE} \
+                    NET_NAME=$(docker inspect ${JENKINS_CONTAINER} \
                       -f '{{range $k, $v := .NetworkSettings.Networks}}{{if ne $k "bridge"}}{{$k}}{{end}}{{end}}')
                     echo "Detected Jenkins Network: \$NET_NAME"
 
