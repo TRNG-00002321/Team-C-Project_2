@@ -155,8 +155,11 @@ pipeline {
             }
             post {
                 always {
-                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: '/var/jenkins_home/allure-results/employee']]
+                dir('employee') {
+                    sh "ln -sfn /var/jenkins_home/allure-results/employee allure-results"
                 }
+                allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
+            }
             }
         }
 

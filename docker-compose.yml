@@ -15,8 +15,6 @@ services:
       - allure_results_manager:/var/jenkins_home/allure-results/manager
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=true
-    user: root  # Required for Docker socket access
-    restart: unless-stopped
     networks:
       - jenkins-net
 
@@ -26,9 +24,10 @@ services:
     ports:
       - "5050:5050"
     volumes:
-      - allure_results_employee:/app/allure-results/employee
-      - allure_results_manager:/app/allure-results/manager
+      - allure_results_employee:/app/allure-results
+      - allure_results_manager:/app/allure-results-manager
     environment:
+      - PROJECT_ID=employee
       - CHECK_RESULTS_EVERY_SECONDS=10
       - KEEP_HISTORY=1
     networks:
