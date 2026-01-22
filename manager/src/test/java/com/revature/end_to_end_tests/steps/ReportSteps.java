@@ -205,12 +205,12 @@ public class ReportSteps {
             String[] parts = date.split("/");
             return parts[2] + "-" + parts[0] + "-" + parts[1];
         }
-        else if (browser.contains("edge"))
-        {
-            // converts mm/dd/yyyy → dd-MM-yyyy
-            String[] parts = date.split("/");
-            return parts[1] + "-" + parts[0] + "-" + parts[2];
-        }
+//        else if (browser.contains("edge"))
+//        {
+//            // converts mm/dd/yyyy → dd-MM-yyyy
+//            String[] parts = date.split("/");
+//            return parts[1] + "-" + parts[0] + "-" + parts[2];
+//        }
         else return date;
 
 

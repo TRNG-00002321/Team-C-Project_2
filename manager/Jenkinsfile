@@ -212,10 +212,6 @@ pipeline {
 
     post {
         always {
-//             sh """
-//                         mkdir -p allure-results
-//                         cp -r /var/jenkins_home/allure-results/manager/. allure-results/ || true
-//                     """
             allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'manager/target/allure-results']]
 
 
