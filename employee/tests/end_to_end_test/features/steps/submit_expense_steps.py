@@ -28,7 +28,8 @@ def step_enter_amount(context, amount):
     context.dashboard_page = DashboardPage(context.driver)
     amount_input = context.dashboard_page.wait_for_element((By.ID, 'amount'))
     amount_input.clear()
-    amount_input.send_keys(amount)
+    if amount != "EMPTY":
+        amount_input.send_keys(amount)
 
 
 @when(u'the employee inputs a new description: "{description}"')
@@ -36,22 +37,25 @@ def step_enter_description(context, description):
     context.dashboard_page = DashboardPage(context.driver)
     description_input = context.dashboard_page.wait_for_element((By.ID, 'description'))
     description_input.clear()
-    description_input.send_keys(description)
+    if description != "EMPTY":
+        description_input.send_keys(description)
 
 
-@when(u'the employee inputs a new date: "{date}"')
-def step_enter_date(context, date):
+@when(u'the employee inputs a new date: "{indate}"')
+def step_enter_date(context, indate):
     context.dashboard_page = DashboardPage(context.driver)
-    year = date[0:4]
-    month = date[5:7]
-    day = date[8:10]
+
+    if indate == "TODAY":
+        indate = date.today().strftime("%Y-%m-%d")
+
+    year = indate[0:4]
+    month = indate[5:7]
+    day = indate[8:10]
     new_date = ""
     browser = context.driver.capabilities['browserName'].lower()
 
-    if browser == "chrome":
+    if browser == "chrome" or "edge" in browser:
         new_date = month + "/" + day + "/" + year
-    elif browser == "edge":
-        new_date = day + "/" + month + "/" + year
     else:
         new_date = date
 
@@ -80,14 +84,19 @@ def step_go_to_expenses(context):
     return context.dashboard_page.go_to_view_my_expenses_screen()
 
 
-@then(u'the expense is shown with the amount: "{amount}", description: "{description}", and the date: "{date}"')
-def step_expense_is_shown(context, amount, description, date):
+@then(u'the expense is shown with the amount: "{amount}", description: "{description}", and the date: "{edate}"')
+def step_expense_is_shown(context, amount, description, edate):
      context.dashboard_page = DashboardPage(context.driver)
 
-     context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{date}')]"))
      context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '${amount}')]"))
      context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{description}')]"))
      #time.sleep(1)
+
+     if edate == "TODAY":
+         expected_iso = date.today().strftime("%Y-%m-%d")
+     else:
+         expected_iso = edate
+
      rows = context.driver.find_elements(By.TAG_NAME, "tr")
      found = False
      expected_amount = "$" + amount
@@ -95,10 +104,127 @@ def step_expense_is_shown(context, amount, description, date):
          row_date = row.find_element(By.CSS_SELECTOR, "td:nth-child(1)").text
          row_amount = row.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text
          row_description = row.find_element(By.CSS_SELECTOR, "td:nth-child(3)").text
-         if row_date == date and expected_amount in row_amount and row_description == description:
+         if expected_iso in row_date and expected_amount in row_amount and row_description == description:
              found = True
              break
-     assert found, f"Expense not found: {amount}, {description}, {date}"
+     assert found, f"Expense not found: {amount}, {description}, {edate}"
+
+
+
+# @when(u'the amount field is empty')
+# def step_empty_amount_field(context):
+#     #dashboard_page = DashboardPage(context.driver)
+#     context.dashboard_page = DashboardPage(context.driver)
+#     amount_field = context.dashboard_page.wait_for_element((By.ID, 'amount'))
+#     value = amount_field.get_attribute("value")
+#     assert value == "", f"Expected amount field is to be empty, but found '{value}'"
+
+
+#
+# @then(u'the amount field is selected')
+# def step_empty_field_prompts_for_amount(context):
+#     #dashboard_page = DashboardPage(context.driver)
+#     context.dashboard_page = DashboardPage(context.driver)
+#     amount_field = context.dashboard_page.wait_for_element((By.ID, 'amount'))
+#     is_focused = amount_field == context.driver.switch_to.active_element
+#     assert is_focused, "Amount field is not selected or focused as expected"
+
+
+@then(u'the employee stays on the submit menu screen')
+def step_user_remains_on_submit_menu(context):
+    #dashboard_page = DashboardPage(context.driver)
+    context.dashboard_page = DashboardPage(context.driver)
+    stay_on_page = context.dashboard_page.is_displayed((By.ID, 'submit-expense-section'))
+    assert stay_on_page, "Employee is not on the submit menu"
+
+
+
+#
+# @when(u'the description field is empty')
+# def step_empty_description_field(context):
+#     #dashboard_page = DashboardPage(context.driver)
+#     context.dashboard_page = DashboardPage(context.driver)
+#     description_field = context.dashboard_page.wait_for_element((By.ID, 'description'))
+#     value = description_field.get_attribute("value")
+#     assert value == "", f"Expected description field is to be empty, but found '{value}'"
+#
+#
+# @then(u'the description field is selected')
+# def step_empty_field_prompts_for_description(context):
+#     #dashboard_page = DashboardPage(context.driver)
+#     context.dashboard_page = DashboardPage(context.driver)
+#     description_field = context.dashboard_page.wait_for_element((By.ID, 'description'))
+#     is_focused = description_field == context.driver.switch_to.active_element
+#     assert is_focused, "Description field is not selected or focused as expected"
+#
+
+
+@then(u'an expense with today\'s date, amount: "{amount}" and description: "{description}" is shown')
+def step_automatic_date_inception(context, amount, description):
+    #dashboard_page = DashboardPage(context.driver)
+    context.dashboard_page = DashboardPage(context.driver)
+
+    context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '${amount}')]"))
+    context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{description}')]"))
+    expected_date = date.today().strftime("%Y-%m-%d")
+
+    rows = context.driver.find_elements(By.TAG_NAME, "tr")
+    found = False
+    expected_amount = "$" + amount
+    for row in rows[1:]:
+        row_date = row.find_element(By.CSS_SELECTOR, "td:nth-child(1)").text
+        print(row_date)
+        row_amount = row.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text
+        print(row_amount)
+        row_description = row.find_element(By.CSS_SELECTOR, "td:nth-child(3)").text
+        print(row_description)
+        if expected_date in row_date and expected_amount in row_amount and row_description == description:
+            found = True
+            break
+    assert found, f"Expense not found: {amount}, {description}, {expected_date}"
+
+
+@then(u'the "{focus_field}" field is selected')
+def step_focus_field_selected(context, focus_field):
+    """Generic step to handle generated steps like: Then the "amount" field is selected
+    Delegates to the existing specific step implementations for amount/description.
+    """
+    context.dashboard_page = DashboardPage(context.driver)
+    focus_field_lower = focus_field.lower()
+    if focus_field_lower == 'amount':
+        amount_field = context.dashboard_page.wait_for_element((By.ID, 'amount'))
+        is_focused = amount_field == context.driver.switch_to.active_element
+        assert is_focused, "Amount field is not selected or focused as expected"
+    if focus_field_lower == 'description':
+        description_field = context.dashboard_page.wait_for_element((By.ID, 'description'))
+        is_focused = description_field == context.driver.switch_to.active_element
+        assert is_focused, "Description field is not selected or focused as expected"
+
+
+
+
+#@when(u'the employee inputs a new amount: "125"')
+#def step_enter_amount(context, amount):
+#    #dashboard_page = DashboardPage(context.driver)
+#    amount_input = context.dashboard_page.wait_for_element((By.ID, 'amount'))
+#    amount_input.clear()
+#    amount_input.send_keys(amount)
+
+#@when(u'the employee inputs a new amount: "100"')
+#def step_enter_amount(context, amount):
+#    #dashboard_page = DashboardPage(context.driver)
+#    amount_input = context.dashboard_page.wait_for_element((By.ID, 'amount'))
+#    amount_input.clear()
+#    amount_input.send_keys(amount)
+
+
+#@when(u'the employee inputs a new description: "today\'s date"')
+#def step_enter_description(context, description):
+#    #dashboard_page = DashboardPage(context.driver)
+#    description_input = context.dashboard_page.wait_for_element((By.ID, 'description'))
+#    description_input.clear()
+#    description_input.send_keys(description)
+
 
 #@when(u'the employee inputs a new amount: 999')
 #def step_enter_amount(context, amount):
@@ -140,98 +266,3 @@ def step_expense_is_shown(context, amount, description, date):
 #            found = True
 #            break
 #    assert found, f"Expense not found: {amount}, {description}, {date}"
-
-
-@when(u'the amount field is empty')
-def step_empty_amount_field(context):
-    #dashboard_page = DashboardPage(context.driver)
-    context.dashboard_page = DashboardPage(context.driver)
-    amount_field = context.dashboard_page.wait_for_element((By.ID, 'amount'))
-    value = amount_field.get_attribute("value")
-    assert value == "", f"Expected amount field is to be empty, but found '{value}'"
-
-
-
-@then(u'the amount field is selected')
-def step_empty_field_prompts_for_amount(context):
-    #dashboard_page = DashboardPage(context.driver)
-    context.dashboard_page = DashboardPage(context.driver)
-    amount_field = context.dashboard_page.wait_for_element((By.ID, 'amount'))
-    is_focused = amount_field == context.driver.switch_to.active_element
-    assert is_focused, "Amount field is not selected or focused as expected"
-
-
-@then(u'the employee stays on the submit menu screen')
-def step_user_remains_on_submit_menu(context):
-    #dashboard_page = DashboardPage(context.driver)
-    context.dashboard_page = DashboardPage(context.driver)
-    stay_on_page = context.dashboard_page.is_displayed((By.ID, 'submit-expense-section'))
-    assert stay_on_page, "Employee is not on the submit menu"
-
-
-#@when(u'the employee inputs a new amount: "125"')
-#def step_enter_amount(context, amount):
-#    #dashboard_page = DashboardPage(context.driver)
-#    amount_input = context.dashboard_page.wait_for_element((By.ID, 'amount'))
-#    amount_input.clear()
-#    amount_input.send_keys(amount)
-
-
-@when(u'the description field is empty')
-def step_empty_description_field(context):
-    #dashboard_page = DashboardPage(context.driver)
-    context.dashboard_page = DashboardPage(context.driver)
-    description_field = context.dashboard_page.wait_for_element((By.ID, 'description'))
-    value = description_field.get_attribute("value")
-    assert value == "", f"Expected description field is to be empty, but found '{value}'"
-
-
-@then(u'the description field is selected')
-def step_empty_field_prompts_for_description(context):
-    #dashboard_page = DashboardPage(context.driver)
-    context.dashboard_page = DashboardPage(context.driver)
-    description_field = context.dashboard_page.wait_for_element((By.ID, 'description'))
-    is_focused = description_field == context.driver.switch_to.active_element
-    assert is_focused, "Description field is not selected or focused as expected"
-
-
-#@when(u'the employee inputs a new amount: "100"')
-#def step_enter_amount(context, amount):
-#    #dashboard_page = DashboardPage(context.driver)
-#    amount_input = context.dashboard_page.wait_for_element((By.ID, 'amount'))
-#    amount_input.clear()
-#    amount_input.send_keys(amount)
-
-
-#@when(u'the employee inputs a new description: "today\'s date"')
-#def step_enter_description(context, description):
-#    #dashboard_page = DashboardPage(context.driver)
-#    description_input = context.dashboard_page.wait_for_element((By.ID, 'description'))
-#    description_input.clear()
-#    description_input.send_keys(description)
-
-@then(u'an expense with today\'s date, amount: "{amount}" and description: "{description}" is shown')
-def step_automatic_date_inception(context, amount, description):
-    #dashboard_page = DashboardPage(context.driver)
-    context.dashboard_page = DashboardPage(context.driver)
-
-    context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '${amount}')]"))
-    context.dashboard_page.wait_for_element((By.XPATH, f"//td[contains(text(), '{description}')]"))
-    expected_date = date.today().strftime("%Y-%m-%d")
-
-    rows = context.driver.find_elements(By.TAG_NAME, "tr")
-    found = False
-    expected_amount = "$" + amount
-    for row in rows[1:]:
-        row_date = row.find_element(By.CSS_SELECTOR, "td:nth-child(1)").text
-        print(row_date)
-        row_amount = row.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text
-        print(row_amount)
-        row_description = row.find_element(By.CSS_SELECTOR, "td:nth-child(3)").text
-        print(row_description)
-        if expected_date in row_date and expected_amount in row_amount and row_description == description:
-            found = True
-            break
-    assert found, f"Expense not found: {amount}, {description}, {expected_date}"
-
-

@@ -1,118 +1,118 @@
-<testsuite name="authentication.Employee Authentication" tests="8" errors="0" failures="0" skipped="0" time="9.754679" timestamp="2026-01-19T20:00:54.102229" hostname="DESKTOP-6NBVF6H"><testcase classname="authentication.Employee Authentication" name="Login attempts -- @1.1 " status="passed" time="1.067527"><system-out>
+<testsuite name="authentication.Employee Authentication" tests="8" errors="0" failures="0" skipped="0" time="9.327623" timestamp="2026-01-22T10:22:47.878508" hostname="DESKTOP-6NBVF6H"><testcase classname="authentication.Employee Authentication" name="Login attempts -- @1.1 " status="passed" time="1.101611"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario Outline: Login attempts -- @1.1 
     Given the application is running ... passed in 0.000s
     And the test database is already seeded with users ... passed in 0.000s
-    Given the employee is on the login screen ... passed in 0.341s
-    When the employee enters username "employee1" ... passed in 0.082s
-    And the employee enters password "password123" ... passed in 0.049s
-    And the employee clicks the login button ... passed in 0.053s
-    Then the employee sees the auth message: "Login successful! Redirecting to employee dashboard..." ... passed in 0.542s
+    Given the employee is on the login screen ... passed in 0.347s
+    When the employee enters username "employee1" ... passed in 0.070s
+    And the employee enters password "password123" ... passed in 0.050s
+    And the employee clicks the login button ... passed in 0.047s
+    Then the employee sees the auth message: "Login successful! Redirecting to employee dashboard..." ... passed in 0.586s
 
 @scenario.end
 --------------------------------------------------------------------------------
 ]]>
-</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Login attempts -- @1.2 " status="passed" time="1.070732"><system-out>
+</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Login attempts -- @1.2 " status="passed" time="1.040779"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario Outline: Login attempts -- @1.2 
     Given the application is running ... passed in 0.000s
     And the test database is already seeded with users ... passed in 0.000s
-    Given the employee is on the login screen ... passed in 0.314s
-    When the employee enters username "wronguser" ... passed in 0.096s
-    And the employee enters password "password123" ... passed in 0.053s
-    And the employee clicks the login button ... passed in 0.076s
-    Then the employee sees the auth message: "Invalid credentials" ... passed in 0.532s
+    Given the employee is on the login screen ... passed in 0.345s
+    When the employee enters username "wronguser" ... passed in 0.063s
+    And the employee enters password "password123" ... passed in 0.059s
+    And the employee clicks the login button ... passed in 0.053s
+    Then the employee sees the auth message: "Invalid credentials" ... passed in 0.521s
 
 @scenario.end
 --------------------------------------------------------------------------------
 ]]>
-</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Login attempts -- @1.3 " status="passed" time="1.031184"><system-out>
+</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Login attempts -- @1.3 " status="passed" time="1.061947"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario Outline: Login attempts -- @1.3 
     Given the application is running ... passed in 0.000s
     And the test database is already seeded with users ... passed in 0.000s
-    Given the employee is on the login screen ... passed in 0.332s
-    When the employee enters username "employee1" ... passed in 0.074s
-    And the employee enters password "wrongpassword" ... passed in 0.039s
-    And the employee clicks the login button ... passed in 0.043s
-    Then the employee sees the auth message: "Invalid credentials" ... passed in 0.543s
+    Given the employee is on the login screen ... passed in 0.340s
+    When the employee enters username "employee1" ... passed in 0.076s
+    And the employee enters password "wrongpassword" ... passed in 0.059s
+    And the employee clicks the login button ... passed in 0.056s
+    Then the employee sees the auth message: "Invalid credentials" ... passed in 0.532s
 
 @scenario.end
 --------------------------------------------------------------------------------
 ]]>
-</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Login attempts -- @1.4 " status="passed" time="1.032862"><system-out>
+</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Login attempts -- @1.4 " status="passed" time="1.130537"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario Outline: Login attempts -- @1.4 
     Given the application is running ... passed in 0.000s
     And the test database is already seeded with users ... passed in 0.000s
-    Given the employee is on the login screen ... passed in 0.334s
-    When the employee enters username "wronguser" ... passed in 0.057s
-    And the employee enters password "wrongpassword" ... passed in 0.041s
-    And the employee clicks the login button ... passed in 0.058s
-    Then the employee sees the auth message: "Invalid credentials" ... passed in 0.543s
+    Given the employee is on the login screen ... passed in 0.344s
+    When the employee enters username "wronguser" ... passed in 0.155s
+    And the employee enters password "wrongpassword" ... passed in 0.052s
+    And the employee clicks the login button ... passed in 0.055s
+    Then the employee sees the auth message: "Invalid credentials" ... passed in 0.524s
 
 @scenario.end
 --------------------------------------------------------------------------------
 ]]>
-</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Login attempts -- @1.5 " status="passed" time="1.024326"><system-out>
+</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Login attempts -- @1.5 " status="passed" time="1.028115"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario Outline: Login attempts -- @1.5 
     Given the application is running ... passed in 0.000s
     And the test database is already seeded with users ... passed in 0.000s
-    Given the employee is on the login screen ... passed in 0.332s
-    When the employee enters username "manager1" ... passed in 0.074s
-    And the employee enters password "password123" ... passed in 0.037s
-    And the employee clicks the login button ... passed in 0.064s
-    Then the employee sees the auth message: "Login failed" ... passed in 0.517s
+    Given the employee is on the login screen ... passed in 0.338s
+    When the employee enters username "manager1" ... passed in 0.062s
+    And the employee enters password "password123" ... passed in 0.053s
+    And the employee clicks the login button ... passed in 0.055s
+    Then the employee sees the auth message: "Login failed" ... passed in 0.520s
 
 @scenario.end
 --------------------------------------------------------------------------------
 ]]>
-</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Empty Username Input" status="passed" time="0.461542"><system-out>
+</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Empty Username Input" status="passed" time="0.445141"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario: Empty Username Input
     Given the application is running ... passed in 0.000s
     And the test database is already seeded with users ... passed in 0.000s
-    Given the employee is on the login screen ... passed in 0.318s
-    When the employee does not input any value for username ... passed in 0.063s
-    And the employee clicks the login button ... passed in 0.068s
-    Then the username field is selected ... passed in 0.009s
-    And the employee is not redirected to the dashboard ... passed in 0.003s
+    Given the employee is on the login screen ... passed in 0.334s
+    When the employee does not input any value for username ... passed in 0.033s
+    And the employee clicks the login button ... passed in 0.065s
+    Then the username field is selected ... passed in 0.008s
+    And the employee is not redirected to the dashboard ... passed in 0.004s
 
 @scenario.end
 --------------------------------------------------------------------------------
 ]]>
-</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Empty Password Input" status="passed" time="0.495378"><system-out>
+</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Empty Password Input" status="passed" time="0.498729"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario: Empty Password Input
     Given the application is running ... passed in 0.000s
     And the test database is already seeded with users ... passed in 0.000s
-    Given the employee is on the login screen ... passed in 0.338s
-    And the employee enters username "employee1" ... passed in 0.079s
-    When the employee does not input any value for the password ... passed in 0.018s
-    And the employee clicks the login button ... passed in 0.051s
-    Then the password field is selected ... passed in 0.006s
-    And the employee is not redirected to the dashboard ... passed in 0.003s
+    Given the employee is on the login screen ... passed in 0.340s
+    And the employee enters username "employee1" ... passed in 0.063s
+    When the employee does not input any value for the password ... passed in 0.025s
+    And the employee clicks the login button ... passed in 0.059s
+    Then the password field is selected ... passed in 0.008s
+    And the employee is not redirected to the dashboard ... passed in 0.004s
 
 @scenario.end
 --------------------------------------------------------------------------------
 ]]>
-</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Logout" status="passed" time="3.571128"><system-out>
+</system-out></testcase><testcase classname="authentication.Employee Authentication" name="Logout" status="passed" time="3.020764"><system-out>
 <![CDATA[
 @scenario.begin
   Scenario: Logout
     Given the application is running ... passed in 0.000s
     And the test database is already seeded with users ... passed in 0.000s
-    Given the employee is logged in ... passed in 3.180s
-    When the employee clicks the logout button ... passed in 0.062s
-    Then the employee is redirected to the login page ... passed in 0.328s
+    Given the employee is logged in ... passed in 2.628s
+    When the employee clicks the logout button ... passed in 0.052s
+    Then the employee is redirected to the login page ... passed in 0.340s
 
 @scenario.end
 --------------------------------------------------------------------------------
