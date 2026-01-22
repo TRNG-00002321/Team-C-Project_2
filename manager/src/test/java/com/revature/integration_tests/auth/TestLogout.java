@@ -1,17 +1,19 @@
 package com.revature.integration_tests.auth;
 
 import com.revature.utils.TestDatabaseUtil;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+@Epic("Manager App Integration Tests")
+@Feature("Manager Authentication")
 
+@Tag("Integration")
 public class TestLogout {
     @BeforeAll
     static void setup() {

@@ -44,7 +44,7 @@ public class LoginPage extends BasePage{
         System.out.println("Clicking login button on page" + driver.getCurrentUrl());
         wait.until(ExpectedConditions.elementToBeClickable(loginButton));
         System.out.println("Login button is clickable" + driver.getCurrentUrl());
-        System.out.println(driver.findElement(By.cssSelector("button[type='submit']")).getText());
+//        System.out.println(driver.findElement(By.cssSelector("button[type='submit']")).getText());
         System.out.println(loginButton.getText());
         loginButton.click();
         return new DashboardPage(this.driver);

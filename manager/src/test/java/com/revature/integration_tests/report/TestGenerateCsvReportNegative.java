@@ -1,6 +1,8 @@
 package com.revature.integration_tests.report;
 
 import com.revature.utils.TestDatabaseUtil;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -14,7 +16,10 @@ import java.sql.SQLException;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.lessThan;
+@Epic("Manager App Integration Tests")
+@Feature("Expense Reporting")
 
+@Tag("Integration")
 public class TestGenerateCsvReportNegative {
   static RequestSpecification requestSpec;
   static ResponseSpecification responseSpec;

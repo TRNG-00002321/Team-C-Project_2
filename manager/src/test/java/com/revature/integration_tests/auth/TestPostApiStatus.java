@@ -1,6 +1,8 @@
 package com.revature.integration_tests.auth;
 
 import com.revature.utils.TestDatabaseUtil;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -14,7 +16,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+@Epic("Manager App Integration Tests")
+@Feature("Manager Authentication")
 
+@Tag("Integration")
 public class TestPostApiStatus {
     static RequestSpecification requestSpec;
     static ResponseSpecification responseSpec;

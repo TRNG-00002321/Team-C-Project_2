@@ -41,35 +41,35 @@ public class DashboardPage extends BasePage {
 
     // DEFINED ACTIONS
     public void goToPendingExpensesScreen() {
-        wait.until(ExpectedConditions.visibilityOf(pendingExpensesButon));
+        wait.until(ExpectedConditions.elementToBeClickable(pendingExpensesButon));
         pendingExpensesButon.click();
     }
 
     public void goToAllExpensesScreen() {
-        wait.until(ExpectedConditions.visibilityOf(allExpensesButton));
+        wait.until(ExpectedConditions.elementToBeClickable(allExpensesButton));
         allExpensesButton.click();
     }
 
 
     public LoginPage logout() {
-        wait.until(ExpectedConditions.visibilityOf(logoutButton));
+        wait.until(ExpectedConditions.elementToBeClickable(logoutButton));
         logoutButton.click();
         return new LoginPage(this.driver);
     }
 
     public void goToGenerateReportsScreen() {
-        wait.until(ExpectedConditions.visibilityOf(generateReportsButton));
+        wait.until(ExpectedConditions.elementToBeClickable(generateReportsButton));
         generateReportsButton.click();
     }
 
     // REPORT GENERATION
     public void generateByExpenses() {
-        wait.until(ExpectedConditions.visibilityOf(AllExpensesReport));
+        wait.until(ExpectedConditions.elementToBeClickable(AllExpensesReport));
         AllExpensesReport.click();
     }
 
     public void generateByPending() {
-        wait.until(ExpectedConditions.visibilityOf(PendingReport));
+        wait.until(ExpectedConditions.elementToBeClickable(PendingReport));
         PendingReport.click();
     }
 
