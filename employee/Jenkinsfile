@@ -74,8 +74,8 @@ pipeline {
                         always {
                             dir('employee'){
                                 sh """
-                                    docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
-                                    docker rm ${DOCKER_IMAGE}-unit-runner
+                                    docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/ || true
+                                    docker rm -f ${DOCKER_IMAGE}-unit-runner || true
                                 """
                             }
                         }
@@ -105,8 +105,8 @@ pipeline {
                         always {
                             dir('employee'){
                                 sh """
-                                    docker cp ${DOCKER_IMAGE}-int-runner:/employee/test-results/. test-results/
-                                    docker rm ${DOCKER_IMAGE}-int-runner
+                                    docker cp ${DOCKER_IMAGE}-int-runner:/employee/test-results/. test-results/ || true
+                                    docker rm -f ${DOCKER_IMAGE}-int-runner || true
                                 """
                             }
                         }
@@ -155,7 +155,7 @@ pipeline {
             }
             post {
                 always {
-                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: 'employee/allure-results']]
+                    allure includeProperties: false, jdk: '', resultPolicy: 'LEAVE_AS_IS', results: [[path: '/var/jenkins_home/allure-results/employee']]
                 }
             }
         }
@@ -182,27 +182,27 @@ pipeline {
                 dir('employee') {
                     echo 'Testing Docker image...'
                     sh """
-                    NET_NAME=\$(docker inspect jenkins-p2 -f '{{range \$k, \$v := .NetworkSettings.Networks}}{{\$k}}{{end}}')
-                    echo "Detected Jenkins Network: \$NET_NAME"
-                    docker rm -f employee_temp || true
-                    docker run -d --name employee_temp \
-                        --network \$NET_NAME \
-                        ${DOCKER_IMAGE}:${DOCKER_TAG}
-                    
-                    sleep 5
-                    
-                    RESPONSE_CODE=\$(curl -s -o /dev/null -w "%{http_code}" http://employee_temp:5000/health)
-                    docker stop employee_temp
-                    docker rm employee_temp
-
-                    echo "Health check response code: \$RESPONSE_CODE"
-                    if [ "\$RESPONSE_CODE" -ne 200 ]; then
-                        exit 1                    
-                    fi
+                        NET_NAME=\$(docker inspect jenkins-p2 -f '{{range \$k, \$v := .NetworkSettings.Networks}}{{\$k}}{{end}}')
+                        echo "Detected Jenkins Network: \$NET_NAME"
+                        docker rm -f employee_temp || true
+                        docker run -d --name employee_temp \
+                            --network \$NET_NAME \
+                            ${DOCKER_IMAGE}:${DOCKER_TAG}
+                        
+                        sleep 5
+                        
+                        RESPONSE_CODE=\$(curl -s -o /dev/null -w "%{http_code}" http://employee_temp:5000/health)
+                        echo "Health check response code: \$RESPONSE_CODE"
+                        if [ "\$RESPONSE_CODE" -ne 200 ]; then
+                            exit 1                    
+                        fi
                     """
                 }
             }
             post {
+                always {
+                    sh "docker rm -f employee_temp || true"
+                }
                 success {
                     echo 'Docker Image Ran Sucessfully!'
                 }
@@ -217,8 +217,10 @@ pipeline {
             }
             steps {
                 echo 'Deploying Docker Image...'
-                // Deployment logic goes here
-                sh "docker run -d -p 5000:5000 ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                sh """
+                    docker rm -f employee-prod-container || true
+                    docker run -d --name employee-prod-container -p 5000:5000 ${DOCKER_IMAGE}:${DOCKER_TAG}
+                """
             }
         }
     }
