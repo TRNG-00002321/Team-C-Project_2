@@ -48,7 +48,7 @@ public class DriverFactory {
             }
 
             case "edge" -> {
-                WebDriverManager.edgedriver().setup();
+//                WebDriverManager.edgedriver().setup();
                 EdgeOptions options = new EdgeOptions();
                 options.addArguments(
                         "--no-sandbox",
