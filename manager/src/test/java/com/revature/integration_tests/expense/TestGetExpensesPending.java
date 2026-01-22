@@ -27,7 +27,6 @@ public class TestGetExpensesPending {
     static void setup(){
         RestAssured.baseURI = "http://manager_app";
         RestAssured.port = 5001;
-        System.out.println("Looking to snag one " + RestAssured.baseURI);
 
         //Get JWT cookie authorization
         jwtCookie =
