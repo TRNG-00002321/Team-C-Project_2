@@ -1,0 +1,57 @@
+<testsuite name="view_expenses.View expenses" tests="4" errors="0" failures="0" skipped="0" time="13.767604" timestamp="2026-01-22T10:53:46.072216" hostname="DESKTOP-6NBVF6H"><testcase classname="view_expenses.View expenses" name="View expenses by status -- @1.1 " status="passed" time="3.78513"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: View expenses by status -- @1.1 
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 3.041s
+    Given the employee is on my expenses ... passed in 0.087s
+    When the filter by status option Pending is selected ... passed in 0.623s
+    Then all expenses only with status: Pending are shown ... passed in 0.034s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="view_expenses.View expenses" name="View expenses by status -- @1.2 " status="passed" time="3.324245"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: View expenses by status -- @1.2 
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 2.613s
+    Given the employee is on my expenses ... passed in 0.069s
+    When the filter by status option Approved is selected ... passed in 0.624s
+    Then all expenses only with status: Approved are shown ... passed in 0.018s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="view_expenses.View expenses" name="View expenses by status -- @1.3 " status="passed" time="3.291286"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: View expenses by status -- @1.3 
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 2.586s
+    Given the employee is on my expenses ... passed in 0.061s
+    When the filter by status option Denied is selected ... passed in 0.626s
+    Then all expenses only with status: Denied are shown ... passed in 0.017s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="view_expenses.View expenses" name="View expenses by status -- @1.4 " status="passed" time="3.366943"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: View expenses by status -- @1.4 
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 3.248s
+    Given the employee is on my expenses ... passed in 0.054s
+    When the filter by status option All is selected ... passed in 0.059s
+    Then all expenses only with status: All are shown ... passed in 0.005s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

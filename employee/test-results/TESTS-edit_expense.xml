@@ -1,0 +1,99 @@
+<testsuite name="edit_expense.Edit expense" tests="4" errors="0" failures="2" skipped="0" time="41.56039" timestamp="2026-01-22T11:14:53.304100" hostname="DESKTOP-6NBVF6H"><testcase classname="edit_expense.Edit expense" name="Edit Expense -- @1.1 " status="passed" time="6.357474"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: Edit Expense -- @1.1 
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 3.250s
+    Given the employee is on my expenses ... passed in 0.065s
+    And an expense with the description: "Client lunch" is shown ... passed in 0.012s
+    And the expense with description "Client lunch" is pending ... passed in 0.014s
+    When the employee clicks the edit button for the expense with description "Client lunch" ... passed in 0.102s
+    And the employee is redirected to the edit menu ... passed in 0.532s
+    And the employee inputs into the amount field: "123" ... passed in 0.043s
+    And the employee inputs into the description field: "example description" ... passed in 0.050s
+    And the employee inputs into the date field: "2025-12-30" ... passed in 0.049s
+    And the employee clicks the action update button ... passed in 0.044s
+    Then the employee sees the edit message: "Expense updated successfully!" ... passed in 0.521s
+    And the new expense is shown with the amount: "123", description: "example description", and the date: "2025-12-30" ... passed in 1.673s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="edit_expense.Edit expense" name="Edit Expense -- @1.2 " status="passed" time="6.450399"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: Edit Expense -- @1.2 
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 3.248s
+    Given the employee is on my expenses ... passed in 0.067s
+    And an expense with the description: "Client lunch" is shown ... passed in 0.013s
+    And the expense with description "Client lunch" is pending ... passed in 0.020s
+    When the employee clicks the edit button for the expense with description "Client lunch" ... passed in 0.117s
+    And the employee is redirected to the edit menu ... passed in 0.552s
+    And the employee inputs into the amount field: "999" ... passed in 0.058s
+    And the employee inputs into the description field: "fix door" ... passed in 0.060s
+    And the employee inputs into the date field: "2025-10-10" ... passed in 0.055s
+    And the employee clicks the action update button ... passed in 0.058s
+    Then the employee sees the edit message: "Expense updated successfully!" ... passed in 0.526s
+    And the new expense is shown with the amount: "999", description: "fix door", and the date: "2025-10-10" ... passed in 1.676s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="edit_expense.Edit expense" name="Edit Expense -- @1.3 " status="failed" time="14.344377"><failure type="AssertionError" message="Edit message not found or incorrect. Expected: 'none'">
+<![CDATA[
+Failing step: Then the employee sees the edit message: "none" ... failed in 10.143s
+Location: tests/end_to_end_test/features/edit_expense.feature:21
+ASSERT FAILED: Edit message not found or incorrect. Expected: 'none']]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: Edit Expense -- @1.3 
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 3.237s
+    Given the employee is on my expenses ... passed in 0.066s
+    And an expense with the description: "Client lunch" is shown ... passed in 0.012s
+    And the expense with description "Client lunch" is pending ... passed in 0.014s
+    When the employee clicks the edit button for the expense with description "Client lunch" ... passed in 0.092s
+    And the employee is redirected to the edit menu ... passed in 0.534s
+    And the employee inputs into the amount field: "999999" ... passed in 0.052s
+    And the employee inputs into the description field: "wont be updated" ... passed in 0.068s
+    And the employee inputs into the date field: "2025-12-30" ... passed in 0.064s
+    And the employee clicks the action cancel button ... passed in 0.062s
+    Then the employee sees the edit message: "none" ... failed in 10.143s
+    And the new expense is shown with the amount: "50", description: "Client lunch", and the date: "2025-01-05" ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="edit_expense.Edit expense" name="Edit Expense -- @1.4 " status="failed" time="14.408139"><failure type="AssertionError" message="Edit message not found or incorrect. Expected: 'Expense updated successfully!'">
+<![CDATA[
+Failing step: Then the employee sees the edit message: "Expense updated successfully!" ... failed in 10.156s
+Location: tests/end_to_end_test/features/edit_expense.feature:21
+ASSERT FAILED: Edit message not found or incorrect. Expected: 'Expense updated successfully!']]>
+</failure><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario Outline: Edit Expense -- @1.4 
+    Given the application is running ... passed in 0.000s
+    And the test database is already seeded with users ... passed in 0.000s
+    And the employee is logged in ... passed in 3.245s
+    Given the employee is on my expenses ... passed in 0.070s
+    And an expense with the description: "Client lunch" is shown ... passed in 0.014s
+    And the expense with description "Client lunch" is pending ... passed in 0.017s
+    When the employee clicks the edit button for the expense with description "Client lunch" ... passed in 0.126s
+    And the employee is redirected to the edit menu ... passed in 0.538s
+    And the employee inputs into the amount field: "none" ... passed in 0.051s
+    And the employee inputs into the description field: "none" ... passed in 0.061s
+    And the employee inputs into the date field: "none" ... passed in 0.056s
+    And the employee clicks the action update button ... passed in 0.072s
+    Then the employee sees the edit message: "Expense updated successfully!" ... failed in 10.156s
+    And the new expense is shown with the amount: "50", description: "Client lunch", and the date: "2025-01-05" ... skipped in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>
