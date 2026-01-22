@@ -51,6 +51,12 @@ public class DriverFactory {
 //                WebDriverManager.edgedriver().setup();
                 System.setProperty("webdriver.edge.driver", "/usr/local/bin/msedgedriver");
                 EdgeOptions options = new EdgeOptions();
+                options.addArguments(
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu",
+                        "--window-size=1920,1080"
+                );
                 if (headless) {
                     options.addArguments("--headless=new");
                 }
