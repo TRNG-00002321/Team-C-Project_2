@@ -53,6 +53,8 @@ pipeline {
                     steps {
                         dir('employee') {
                             sh "docker build -t ${DOCKER_IMAGE}-test --target test ."
+                            echo "Cleaning Allure Results Volume..."
+                            sh "docker run --rm -v allure_results_employee:/employee/allure-results ${DOCKER_IMAGE}-test sh -c 'rm -rf /employee/allure-results/*'"
                         }
                     }
                 }
