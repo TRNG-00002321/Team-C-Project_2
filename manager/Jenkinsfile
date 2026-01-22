@@ -81,11 +81,11 @@ pipeline {
             post {
                 always {
                     dir('manager'){
-
-                        allure includeProperties:
-                        false,
-                        jdk: '',
-                        results: [[path: 'target/allure-results']]
+                            copyArtifacts(
+                                filter: "target/allure-results/*",
+                                projectName: 'unit-tests',
+                                selector: lastCompleted()
+                            )
                     }
                     dir('manager'){
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
@@ -152,11 +152,11 @@ pipeline {
             post {
                 always {
                     dir('manager'){
-
-                        allure includeProperties:
-                        false,
-                        jdk: '',
-                        results: [[path: 'target/allure-results']]
+                        copyArtifacts(
+                                filter: "target/allure-results/*",
+                                projectName: 'integration-tests',
+                                selector: lastCompleted()
+                            )
                     }
                     dir('manager'){
 
@@ -235,6 +235,15 @@ pipeline {
             archiveArtifacts artifacts: '''
                 target/surefire-reports/**/*.xml,
                 ''', allowEmptyArchive: true
+            script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                        results: [[path: 'target/allure-results']]
+                    ])
+                }
         }
     }
 
