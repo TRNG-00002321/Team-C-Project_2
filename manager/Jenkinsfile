@@ -16,6 +16,10 @@ pipeline {
 
         DOCKER_IMAGE = "manager_app"
         BUILD_DOCKER = true
+
+        VOLUME_NAME = "expense_data"
+
+        JENKINS_IMAGE= "jenkins-p2"
     }
 
     options {
@@ -91,7 +95,7 @@ pipeline {
             steps {
                 echo '🚀 Starting Manager App for API/E2E Testing...'
                 sh '''
-                    NET_NAME=$(docker inspect jenkinsdemo3 \
+                    NET_NAME=$(docker inspect ${JENKINS_IMAGE} \
                       -f '{{range $k, $v := .NetworkSettings.Networks}}{{if ne $k "bridge"}}{{$k}}{{end}}{{end}}')
                     echo "Detected Jenkins Network: \$NET_NAME"
 
@@ -106,7 +110,7 @@ pipeline {
                         --shm-size=2gb \
                         --network \$NET_NAME \
                         -p ${APP_PORT}:${APP_PORT} \
-                        -v expense-data:/data \
+                        -v ${VOLUME_NAME}:/data \
                         ${APP_NAME}:${BUILD_VERSION}
                 '''
                 sh '''
