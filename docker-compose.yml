@@ -46,6 +46,6 @@ volumes:
   allure_results_manager:
     name: allure_results_manager
   expense_data:
-    name: expense_data;
+    name: expense_data
   shared_database:
     name: shared_database
