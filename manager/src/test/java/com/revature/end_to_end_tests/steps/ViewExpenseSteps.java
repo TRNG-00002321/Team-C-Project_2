@@ -76,6 +76,7 @@ public class ViewExpenseSteps {
 
     @Then("the manager is shown the message: {string}")
     public void theManagerIsShownTheMessage(String arg0) {
+        dashboardPage.waitForElement(By.tagName("p"));
         WebElement message = driver.findElement(By.tagName("p"));
         assertEquals(arg0, message.getText());
     }
