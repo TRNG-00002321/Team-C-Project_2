@@ -9,6 +9,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class ReviewExpenseSteps {
     TestContext context;
     DashboardPage dashboardPage;
 
-    public ReviewExpenseSteps(TestContext context){
+    public ReviewExpenseSteps(TestContext context) {
         this.context = context;
     }
 
@@ -26,7 +28,7 @@ public class ReviewExpenseSteps {
     public void theManagerIsOnThePendingExpensesScreen() {
         dashboardPage = context.dashboardPage();
         dashboardPage.goToPendingExpensesScreen();
-        //find h3 of the web element where id = 'pending-expenses-section'
+        // find h3 of the web element where id = 'pending-expenses-section'
         WebElement div = dashboardPage.waitForElement(By.id("pending-expenses-section"));
         WebElement header3 = div.findElement(By.tagName("h3"));
         assertEquals("Pending Expenses for Review", header3.getText());
@@ -37,14 +39,15 @@ public class ReviewExpenseSteps {
         List<WebElement> rows = context.getDriver().findElements(By.cssSelector("#pending-expenses-list tr"));
         boolean found = false;
 
-        //skip 1st row b/c it is the header
-        for(int i = 1; i < rows.size(); i++){
+        // skip 1st row b/c it is the header
+        for (int i = 1; i < rows.size(); i++) {
             WebElement row = rows.get(i);
             String currentId = row.findElement(By.cssSelector("td:nth-child(1)")).getText();
             String currentDate = row.findElement(By.cssSelector("td:nth-child(2)")).getText();
             String currentAmount = row.findElement(By.cssSelector("td:nth-child(3)")).getText();
             String currentDesc = row.findElement(By.cssSelector("td:nth-child(4)")).getText();
-            if(currentId.contains("ID: "+id) && currentDate.contains(date) && currentAmount.contains("$"+amount) && currentDesc.contains(desc)) {
+            if (currentId.contains("ID: " + id) && currentDate.contains(date) && currentAmount.contains("$" + amount)
+                    && currentDesc.contains(desc)) {
                 found = true;
                 break;
             }
@@ -53,18 +56,20 @@ public class ReviewExpenseSteps {
     }
 
     @When("the manager clicks the review button for an expense with id: {string}, date: {string}, amount: {string}, and description: {string}")
-    public void theManagerClicksTheReviewButtonForAnExpenseWithIdDateAmountAndDescription(String id, String date, String amount, String desc) {
+    public void theManagerClicksTheReviewButtonForAnExpenseWithIdDateAmountAndDescription(String id, String date,
+            String amount, String desc) {
         List<WebElement> rows = context.getDriver().findElements(By.cssSelector("#pending-expenses-list tr"));
         WebElement specificRow = null;
 
-        //skip 1st row b/c it is the header
-        for(int i = 1; i < rows.size(); i++){
+        // skip 1st row b/c it is the header
+        for (int i = 1; i < rows.size(); i++) {
             WebElement row = rows.get(i);
             String currentId = row.findElement(By.cssSelector("td:nth-child(1)")).getText();
             String currentDate = row.findElement(By.cssSelector("td:nth-child(2)")).getText();
             String currentAmount = row.findElement(By.cssSelector("td:nth-child(3)")).getText();
             String currentDesc = row.findElement(By.cssSelector("td:nth-child(4)")).getText();
-            if(currentId.contains("ID: "+id) && currentDate.contains(date) && currentAmount.contains("$"+amount) && currentDesc.contains(desc)) {
+            if (currentId.contains("ID: " + id) && currentDate.contains(date) && currentAmount.contains("$" + amount)
+                    && currentDesc.contains(desc)) {
                 specificRow = rows.get(i);
                 break;
             }
@@ -83,7 +88,7 @@ public class ReviewExpenseSteps {
     @And("the manager clicks the {string} button")
     public void theManagerClicksTheButton(String arg0) {
         dashboardPage = context.dashboardPage();
-        String buttonId = arg0.toLowerCase()+"-expense";
+        String buttonId = arg0.toLowerCase() + "-expense";
         WebElement button = dashboardPage.waitForElement(By.id(buttonId));
         button.click();
     }
@@ -103,25 +108,27 @@ public class ReviewExpenseSteps {
     }
 
     @And("an expense with id: {string}, date: {string}, amount: {string}, and description: {string} is shown as {string}, with comment {string}")
-    public void anExpenseWithIdDateAmountAndDescriptionIsShownAsWithComment(String id, String date, String amount, String desc, String status, String comment) {
+    public void anExpenseWithIdDateAmountAndDescriptionIsShownAsWithComment(String id, String date, String amount,
+            String desc, String status, String comment) {
         String expectedStatus = null;
         String expectedComment = null;
 
-        if(status.equals("Approve"))
+        if (status.equals("Approve"))
             expectedStatus = "APPROVED";
-        else if(status.equals("Deny"))
+        else if (status.equals("Deny"))
             expectedStatus = "DENIED";
         else
             fail("Status is not approve or deny");
-        if(comment == null || comment.isEmpty())
+        if (comment == null || comment.isEmpty())
             expectedComment = "-";
         else
             expectedComment = comment;
-
+        WebDriverWait wait = new WebDriverWait(context.getDriver(), java.time.Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("table")));
         List<WebElement> rows = context.getDriver().findElements(By.cssSelector("#all-expenses-list tr"));
         boolean found = false;
-        //skip 1st row b/c it is the header
-        for(int i = 1; i < rows.size(); i++){
+        // skip 1st row b/c it is the header
+        for (int i = 1; i < rows.size(); i++) {
             WebElement row = rows.get(i);
             String currentId = row.findElement(By.cssSelector("td:nth-child(1)")).getText();
             System.out.println(currentId);
@@ -135,7 +142,9 @@ public class ReviewExpenseSteps {
             System.out.println(currentStatus);
             String currentComment = row.findElement(By.cssSelector("td:nth-child(7)")).getText();
             System.out.println(currentComment);
-            if(currentId.contains("ID: "+id) && currentDate.contains(date) && currentAmount.contains("$"+amount) && currentDesc.contains(desc) && currentStatus.equals(expectedStatus) && currentComment.equals(expectedComment)) {
+            if (currentId.contains("ID: " + id) && currentDate.contains(date) && currentAmount.contains("$" + amount)
+                    && currentDesc.contains(desc) && currentStatus.equals(expectedStatus)
+                    && currentComment.equals(expectedComment)) {
                 found = true;
                 break;
             }
@@ -152,7 +161,7 @@ public class ReviewExpenseSteps {
     @Then("the manager should stay on the pending expenses screen")
     public void theManagerShouldStayOnThePendingExpensesScreen() {
         dashboardPage = context.dashboardPage();
-        //find h3 of the web element where id = 'pending-expenses-section'
+        // find h3 of the web element where id = 'pending-expenses-section'
         WebElement div = dashboardPage.waitForElement(By.id("pending-expenses-section"));
         WebElement header3 = div.findElement(By.tagName("h3"));
         assertEquals("Pending Expenses for Review", header3.getText());
