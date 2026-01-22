@@ -57,18 +57,18 @@ pipeline {
                 dir('manager'){
                 //todo: only run unit tests!
                     echo 'Running Unit Tests:'
-                    sh 'mvn -Dtest="com.revature.unit_tests.**" -Dallure.results.directory=target/allure-results-unit test -B'
+                    sh 'mvn -Dtest="com.revature.unit_tests.**" test -B'
                 }
             }
             post {
                 always {
-                    dir('manager'){
-
-                        allure includeProperties:
-                        false,
-                        jdk: '',
-                        results: [[path: 'target/allure-results']]
-                    }
+//                     dir('manager'){
+//
+//                         allure includeProperties:
+//                         false,
+//                         jdk: '',
+//                         results: [[path: 'target/allure-results']]
+//                     }
                     dir('manager'){
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
                     }
@@ -128,17 +128,17 @@ pipeline {
             steps {
                 dir('manager'){
                     echo 'Running Integration Tests:'
-                    sh 'mvn  -Dtest="com.revature.integration_tests.**" -Dallure.results.directory=target/allure-results-integration test -B'
+                    sh 'mvn  -Dtest="com.revature.integration_tests.**" test -B'
                 }
             }
             post {
                 always {
-                    dir('manager'){
-                        allure includeProperties:
-                        false,
-                        jdk: '',
-                        results: [[path: 'target/allure-results']]
-                    }
+//                     dir('manager'){
+//                         allure includeProperties:
+//                         false,
+//                         jdk: '',
+//                         results: [[path: 'target/allure-results']]
+//                     }
                     dir('manager'){
 
                         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
@@ -212,11 +212,6 @@ pipeline {
                 docker rm ${APP_NAME}-test || true
                 docker rmi ${APP_NAME}:${BUILD_VERSION} || true
             '''
-            sh '''
-                        mkdir -p target/allure-results
-                        cp -r target/allure-results-unit/* target/allure-results/ || true
-                        cp -r target/allure-results-integration/* target/allure-results/ || true
-                    '''
                     allure results: [[path: 'target/allure-results']]
 
             archiveArtifacts artifacts: '''
