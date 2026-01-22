@@ -188,10 +188,11 @@ pipeline {
         stage('Edge E2E Tests') {
             steps {
                 dir('manager'){
-                    echo 'Running Firefox E2E Tests:'
+                    echo 'Running Microsoft Edge E2E Tests:'
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                         sh '''
                         mvn -Dtest="com.revature.end_to_end_tests.runners.TestRunner" \
+                        -Dwdm.microsoft.edgeDriverBaseUrl=https://msedgedriver.microsoft.com
                         -Dwdm.edgeDriverBaseUrl=https://msedgedriver.microsoft.com -Dbrowser="edge" test -B
                         '''
                     }
