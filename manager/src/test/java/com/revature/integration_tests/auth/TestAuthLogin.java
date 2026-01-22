@@ -1,6 +1,8 @@
 package com.revature.integration_tests.auth;
 
 import com.revature.utils.TestDatabaseUtil;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
@@ -12,6 +14,10 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 
+@Epic("Manager App Integration Tests")
+@Feature("Manager Authentication")
+
+@Tag("Integration")
 public class TestAuthLogin {
     @BeforeAll
     static void setup(){
