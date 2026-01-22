@@ -82,9 +82,7 @@ pipeline {
                 always {
                     dir('manager'){
                             copyArtifacts(
-                                filter: "target/allure-results/*",
-                                projectName: 'unit-tests',
-                                selector: lastCompleted()
+                                filter: "target/allure-results/*"
                             )
                     }
                     dir('manager'){
@@ -153,9 +151,7 @@ pipeline {
                 always {
                     dir('manager'){
                         copyArtifacts(
-                                filter: "target/allure-results/*",
-                                projectName: 'integration-tests',
-                                selector: lastCompleted()
+                                filter: "target/allure-results/*"
                             )
                     }
                     dir('manager'){
