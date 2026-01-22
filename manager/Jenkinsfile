@@ -17,9 +17,9 @@ pipeline {
         DOCKER_IMAGE = "manager_app"
         BUILD_DOCKER = true
 
-        VOLUME_NAME = "expense-data"
+        VOLUME_NAME = "expense_data"
 
-        JENKINS_CONTAINER= "jenkinsdemo3"
+        JENKINS_CONTAINER= "jenkins-p2"
     }
 
     options {
