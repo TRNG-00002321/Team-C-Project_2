@@ -16,6 +16,20 @@ services:
     networks:
       - jenkins-net
 
+  allure:
+    image: frankescobar/allure-docker-service
+    container_name: allure-service
+    ports:
+      - "5050:5050"
+    volumes:
+      - allure_results_employee:/app/allure-results/employee
+      - allure_results_manager:/app/allure-results/manager
+    environment:
+      - CHECK_RESULTS_EVERY_SECONDS=10
+      - KEEP_HISTORY=1
+    networks:
+      - jenkins-net
+
 networks:
   jenkins-net:
     driver: bridge
@@ -23,3 +37,7 @@ networks:
 volumes:
   jenkins_home:
     name: jenkins_home_p2
+  allure_results_employee:
+    name: allure_results_employee
+  allure_results_manager:
+    name: allure_results_manager

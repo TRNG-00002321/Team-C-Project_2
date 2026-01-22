@@ -61,9 +61,9 @@ pipeline {
                         dir('employee')  {
                             echo 'Running Unit Tests...'
                             sh """
-                                docker rm -f ${DOCKER_IMAGE}-unit-runner || true
-
-                                docker run --name ${DOCKER_IMAGE}-unit-runner ${DOCKER_IMAGE}-test \
+                                docker run --name ${DOCKER_IMAGE}-unit-runner \
+                                    -v allure_results_employee:/employee/allure-results \
+                                    ${DOCKER_IMAGE}-test \
                                     python -m pytest tests/unit_tests \
                                     --alluredir=/employee/allure-results \
                                     --junitxml=/employee/test-results/unit-results.xml
@@ -74,7 +74,6 @@ pipeline {
                         always {
                             dir('employee'){
                                 sh """
-                                    docker cp ${DOCKER_IMAGE}-unit-runner:/employee/allure-results/. allure-results/
                                     docker cp ${DOCKER_IMAGE}-unit-runner:/employee/test-results/. test-results/
                                     docker rm ${DOCKER_IMAGE}-unit-runner
                                 """
@@ -93,9 +92,9 @@ pipeline {
                         dir('employee')  {
                             echo 'Running Integration Tests...'
                             sh """
-                                docker rm -f ${DOCKER_IMAGE}-int-runner || true
-
-                                docker run --name ${DOCKER_IMAGE}-int-runner ${DOCKER_IMAGE}-test \
+                                docker run --name ${DOCKER_IMAGE}-int-runner \
+                                    -v allure_results_employee:/employee/allure-results \
+                                    ${DOCKER_IMAGE}-test \
                                     python -m pytest tests/integration_tests \
                                     --alluredir=/employee/allure-results \
                                     --junitxml=/employee/test-results/integration-results.xml
@@ -106,7 +105,6 @@ pipeline {
                         always {
                             dir('employee'){
                                 sh """
-                                    docker cp ${DOCKER_IMAGE}-int-runner:/employee/allure-results/. allure-results/
                                     docker cp ${DOCKER_IMAGE}-int-runner:/employee/test-results/. test-results/
                                     docker rm ${DOCKER_IMAGE}-int-runner
                                 """
@@ -134,9 +132,8 @@ pipeline {
                                             try {
                                                 sh """
                                                     # Use a unique name for each container to avoid collisions
-                                                    docker rm -f ${DOCKER_IMAGE}-${browserName}-runner || true
-
                                                     docker run --name ${DOCKER_IMAGE}-${browserName}-runner \
+                                                        -v allure_results_employee:/employee/allure-results \
                                                         --shm-size=2gb \
                                                         ${DOCKER_IMAGE}-test \
                                                         sh -c "python -m src.main > /dev/null 2>&1 & wait-for-it localhost:5000 -- python -m behave -Dbrowser=${browserName}"
@@ -144,7 +141,6 @@ pipeline {
                                             } finally {
                                                 // Post-execution cleanup and report collection
                                                 sh """
-                                                    docker cp ${DOCKER_IMAGE}-${browserName}-runner:/employee/allure-results/. allure-results/ || true
                                                     docker rm -f ${DOCKER_IMAGE}-${browserName}-runner || true
                                                 """
                                             }
