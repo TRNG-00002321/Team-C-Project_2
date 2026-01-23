@@ -7,7 +7,6 @@ pipeline {
         DOCKER_TAG = "${BUILD_NUMBER}"
         
     }
-    
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
@@ -36,14 +35,7 @@ pipeline {
                 """
             }
         }
-        stage('Checkout') {
-            steps {
-                echo 'Checking out source code...'
-                checkout scm
-                echo "Verifying files in workspace:"
-                sh 'ls -la'
-            }
-        }
+
         stage('Test') {
             when {
                 expression { params.TEST_MODE == true }
