@@ -65,7 +65,7 @@ pipeline {
                     }
                     post {
                         always {
-                            dir('employee'){==
+                            dir('employee'){
                                 sh """
                                     docker rm -f ${DOCKER_IMAGE}-unit-runner || true
                                 """
